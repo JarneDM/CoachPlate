@@ -1,11 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Users, CalendarDays, NotepadText, Sparkles } from "lucide-react";
+import { Users, CalendarDays, NotepadText, Sparkles, CircleDollarSign } from "lucide-react";
 import { StatCard } from "@/components/ui/StatsCard";
 import { QuickAction } from "@/components/QuickAction";
 import { getCoach } from "@/app/services/coaches/getCoach";
-import { getClients } from "@/app/services/clients/getClients";
+import { getClients } from "@/app/services/clients/clients";
 import { getMealPlans } from "@/app/services/coaches/mealplans/getMealPlans";
 import { getRecentClients } from "@/app/services/coaches/recentclients/getRecentClients";
 import { getSubscription } from "@/app/services/coaches/subscription/getSubscription";
@@ -52,7 +52,7 @@ export default async function DashboardPage() {
         <StatCard
           label="Huidig plan"
           value={subscription?.plan ?? "Gratis"}
-          icon={<NotepadText className="w-5 h-5 text-black" />}
+          icon={<CircleDollarSign className="w-5 h-5 text-black" />}
           href="/dashboard/settings"
           capitalize
         />
