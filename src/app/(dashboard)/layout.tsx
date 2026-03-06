@@ -1,8 +1,9 @@
 import { createClient } from "@/lib/supabase/server";
 import { ensureCoachProfile } from "@/lib/supabase/ensureCoachProfile";
 import { redirect } from "next/navigation";
-import Link from "next/link";
 import LogoutButton from "@/components/LogoutButton";
+import { LayoutDashboard, NotepadText, Settings, Users, CalendarDays } from "lucide-react";
+import { NavItem } from "@/components/NavItem";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -24,11 +25,11 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </div>
 
         <nav className="flex-1 p-4 space-y-1">
-          <NavItem href="/dashboard" icon="📊" label="Dashboard" />
-          <NavItem href="/dashboard/clients" icon="👥" label="Klanten" />
-          <NavItem href="/dashboard/meal-plans" icon="🗓️" label="Weekplannen" />
-          <NavItem href="/dashboard/recipes" icon="🍽️" label="Recepten" />
-          <NavItem href="/dashboard/settings" icon="⚙️" label="Instellingen" />
+          <NavItem href="/dashboard" icon={<LayoutDashboard className="w-5 h-5" />} label="Dashboard" />
+          <NavItem href="/dashboard/clients" icon={<Users className="w-5 h-5" />} label="Klanten" />
+          <NavItem href="/dashboard/meal-plans" icon={<CalendarDays className="w-5 h-5" />} label="Weekplannen" />
+          <NavItem href="/dashboard/recipes" icon={<NotepadText className="w-5 h-5" />} label="Recepten" />
+          <NavItem href="/dashboard/settings" icon={<Settings className="w-5 h-5" />} label="Instellingen" />
         </nav>
 
         <div className="p-4 border-t border-gray-100">
@@ -50,14 +51,4 @@ export default async function DashboardLayout({ children }: { children: React.Re
   );
 }
 
-function NavItem({ href, icon, label }: { href: string; icon: string; label: string }) {
-  return (
-    <Link
-      href={href}
-      className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
-    >
-      <span>{icon}</span>
-      <span>{label}</span>
-    </Link>
-  );
-}
+
