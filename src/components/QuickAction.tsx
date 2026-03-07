@@ -13,3 +13,15 @@ export function QuickAction({ href, icon, title, description }: { href: string; 
     </Link>
   );
 }
+
+export function ActionButton({ href, icon, label }: { href: string; icon: string; label: string }) {
+  return (
+    <Link
+      href={href}
+      className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg border border-gray-100 hover:border-green-200 hover:bg-green-50 transition-colors text-sm text-gray-700 hover:text-green-700"
+    >
+      <span>{icon}</span>
+      <span className="font-medium">{label}</span>
+    </Link>
+  );
+}

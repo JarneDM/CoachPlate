@@ -1,0 +1,23 @@
+import { createClient } from "@/lib/supabase/server";
+import { Client } from "@/types";
+
+
+export const getClients = async (user: { id: string }) => {
+  const supabase = await createClient();
+  const data = await supabase.from("clients").select("*", { count: "exact", head: true }).eq("coach_id", user.id);
+
+  return data;
+};
+
+export async function getClientById(id: string): Promise<Client | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.from("clients").select("*").eq("id", id).maybeSingle();
+
+  if (error) {
+    console.error("Error fetching client:", error);
+    return null;
+  }
+
+  return data;
+}

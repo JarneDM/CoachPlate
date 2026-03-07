@@ -1,9 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Users, CalendarDays, NotepadText, Sparkles } from "lucide-react";
+import { Users, CalendarDays, NotepadText, Sparkles, CircleDollarSign } from "lucide-react";
 import { StatCard } from "@/components/ui/StatsCard";
 import { QuickAction } from "@/components/QuickAction";
+import { getCoach } from "@/app/services/coaches/getCoach";
+import { getClients } from "@/app/services/clients/clients";
+import { getMealPlans } from "@/app/services/coaches/mealplans/getMealPlans";
+import { getRecentClients } from "@/app/services/coaches/recentclients/getRecentClients";
+import { getSubscription } from "@/app/services/coaches/subscription/getSubscription";
+import { Client } from "@/types";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -14,24 +20,14 @@ export default async function DashboardPage() {
   if (!user) redirect("/login");
 
   const [{ data: coach }, { count: clientCount }, { count: planCount }] = await Promise.all([
-    supabase.from("coaches").select("*").eq("id", user.id).single(),
-    supabase.from("clients").select("*", { count: "exact", head: true }).eq("coach_id", user.id),
-    supabase.from("meal_plans").select("*", { count: "exact", head: true }).eq("coach_id", user.id),
+    getCoach(user),
+    getClients(user),
+    getMealPlans(user),
   ]);
 
-  const { data: recentClients } = await supabase
-    .from("clients")
-    .select("*")
-    .eq("coach_id", user.id)
-    .order("created_at", { ascending: false })
-    .limit(5);
+  const { data: recentClients } = await getRecentClients(user);
 
-  const { data: subscription } = await supabase
-    .from("subscriptions")
-    .select("*")
-    .eq("coach_id", user.id)
-    .eq("status", "active")
-    .single();
+  const { data: subscription } = await getSubscription(user);
 
   return (
     <div>
@@ -56,7 +52,7 @@ export default async function DashboardPage() {
         <StatCard
           label="Huidig plan"
           value={subscription?.plan ?? "Gratis"}
-          icon={<NotepadText className="w-5 h-5 text-black" />}
+          icon={<CircleDollarSign className="w-5 h-5 text-black" />}
           href="/dashboard/settings"
           capitalize
         />
@@ -80,14 +76,14 @@ export default async function DashboardPage() {
       <div className="bg-white rounded-xl border border-gray-100 p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-gray-900">Recente klanten</h2>
-          <Link href="/dashboard/clients" className="text-sm text-green-600 hover:underline">
+          <Link href="/clients" className="text-sm text-green-600 hover:underline">
             Alle klanten →
           </Link>
         </div>
 
         {recentClients && recentClients.length > 0 ? (
           <div className="space-y-3">
-            {recentClients.map((client) => (
+            {recentClients.map((client: Client) => (
               <div key={client.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center text-gray-600 font-medium text-sm">
@@ -98,7 +94,7 @@ export default async function DashboardPage() {
                     <p className="text-xs text-gray-400">{client.goal ?? "Geen doel ingesteld"}</p>
                   </div>
                 </div>
-                <Link href={`/dashboard/clients/${client.id}`} className="text-xs text-green-600 hover:underline">
+                <Link href={`/clients/${client.id}`} className="text-xs text-green-600 hover:underline">
                   Bekijk →
                 </Link>
               </div>
@@ -109,7 +105,7 @@ export default async function DashboardPage() {
             <Users className="w-10 h-10 text-gray-400 mx-auto mb-8" />
             <p className="text-gray-400 text-sm mb-3">Je hebt nog geen klanten toegevoegd.</p>
             <Link
-              href="/dashboard/clients/new"
+              href="/clients/add"
               className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
             >
               Eerste klant toevoegen
@@ -120,25 +116,25 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-2 gap-4 mt-6">
         <QuickAction
-          href="/dashboard/clients/new"
+          href="/clients/add"
           icon={<Users className="w-5 h-5 text-black" />}
           title="Nieuwe klant"
           description="Voeg een klant toe"
         />
         <QuickAction
-          href="/dashboard/meal-plans/new"
+          href="/meal-plans/new"
           icon={<CalendarDays className="w-5 h-5 text-black" />}
           title="Nieuw weekplan"
           description="Maak een weekplan aan"
         />
         <QuickAction
-          href="/dashboard/recipes/new"
+          href="/recipes/new"
           icon={<NotepadText className="w-5 h-5 text-black" />}
           title="Nieuw recept"
           description="Voeg een recept toe"
         />
         <QuickAction
-          href="/dashboard/meal-plans/new?ai=true"
+          href="/meal-plans/new?ai=true"
           icon={<Sparkles className="w-5 h-5 text-black" />}
           title="AI weekplan"
           description="Genereer met AI"
