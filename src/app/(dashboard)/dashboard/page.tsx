@@ -5,7 +5,7 @@ import { Users, CalendarDays, NotepadText, Sparkles, CircleDollarSign } from "lu
 import { StatCard } from "@/components/ui/StatsCard";
 import { QuickAction } from "@/components/QuickAction";
 import { getCoach } from "@/app/services/coaches/getCoach";
-import { getClients } from "@/app/services/clients/clients";
+import { getClientsCount } from "@/app/services/clients/clients";
 import { getMealPlans } from "@/app/services/coaches/mealplans/getMealPlans";
 import { getRecentClients } from "@/app/services/coaches/recentclients/getRecentClients";
 import { getSubscription } from "@/app/services/coaches/subscription/getSubscription";
@@ -20,9 +20,9 @@ export default async function DashboardPage() {
   if (!user) redirect("/login");
 
   const [{ data: coach }, { count: clientCount }, { count: planCount }] = await Promise.all([
-    getCoach(user),
-    getClients(user),
-    getMealPlans(user),
+    getCoach(),
+    getClientsCount(),
+    getMealPlans(),
   ]);
 
   const { data: recentClients } = await getRecentClients(user);
@@ -37,23 +37,13 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-3 gap-6 mb-8">
-        <StatCard
-          label="Actieve klanten"
-          value={clientCount ?? 0}
-          icon={<Users className="w-5 h-5 text-black" />}
-          href="/dashboard/clients"
-        />
-        <StatCard
-          label="Weekplannen"
-          value={planCount ?? 0}
-          icon={<CalendarDays className="w-5 h-5 text-black" />}
-          href="/dashboard/meal-plans"
-        />
+        <StatCard label="Actieve klanten" value={clientCount ?? 0} icon={<Users className="w-5 h-5 text-black" />} href="/clients" />
+        <StatCard label="Weekplannen" value={planCount ?? 0} icon={<CalendarDays className="w-5 h-5 text-black" />} href="/meal-plans" />
         <StatCard
           label="Huidig plan"
           value={subscription?.plan ?? "Gratis"}
           icon={<CircleDollarSign className="w-5 h-5 text-black" />}
-          href="/dashboard/settings"
+          href="/settings"
           capitalize
         />
       </div>
@@ -65,7 +55,7 @@ export default async function DashboardPage() {
             <p className="text-green-700 text-sm mt-1">Genereer weekplannen met AI, onbeperkt klanten en meer.</p>
           </div>
           <Link
-            href="/dashboard/settings#pricing"
+            href="/settings#pricing"
             className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors whitespace-nowrap ml-4"
           >
             Bekijk plannen

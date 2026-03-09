@@ -2,11 +2,22 @@ import { createClient } from "@/lib/supabase/server";
 import { Client } from "@/types";
 
 
-export const getClients = async (user: { id: string }) => {
+export const getClients = async () => {
   const supabase = await createClient();
-  const data = await supabase.from("clients").select("*", { count: "exact", head: true }).eq("coach_id", user.id);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  return data;
+  return supabase.from("clients").select("*").eq("coach_id", user?.id);
+};
+
+export const getClientsCount = async () => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  return supabase.from("clients").select("*", { count: "exact", head: true }).eq("coach_id", user?.id);
 };
 
 export async function getClientById(id: string): Promise<Client | null> {

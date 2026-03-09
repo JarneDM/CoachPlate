@@ -26,10 +26,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
         <nav className="flex-1 p-4 space-y-1">
           <NavItem href="/dashboard" icon={<LayoutDashboard className="w-5 h-5" />} label="Dashboard" />
-          <NavItem href="/dashboard/clients" icon={<Users className="w-5 h-5" />} label="Klanten" />
-          <NavItem href="/dashboard/meal-plans" icon={<CalendarDays className="w-5 h-5" />} label="Weekplannen" />
-          <NavItem href="/dashboard/recipes" icon={<NotepadText className="w-5 h-5" />} label="Recepten" />
-          <NavItem href="/dashboard/settings" icon={<Settings className="w-5 h-5" />} label="Instellingen" />
+          <NavItem href="/clients" icon={<Users className="w-5 h-5" />} label="Klanten" />
+          <NavItem href="/meal-plans" icon={<CalendarDays className="w-5 h-5" />} label="Weekplannen" />
+          <NavItem href="/recipes" icon={<NotepadText className="w-5 h-5" />} label="Recepten" />
+          <NavItem href="/settings" icon={<Settings className="w-5 h-5" />} label="Instellingen" />
         </nav>
 
         <div className="p-4 border-t border-gray-100">
