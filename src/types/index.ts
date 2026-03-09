@@ -27,6 +27,12 @@ export interface Client {
   created_at: string;
 }
 
+export type AddClientPageProps = {
+  searchParams?: Promise<{
+    error?: string;
+  }>;
+};
+
 export interface Recipe {
   id: string;
   coach_id: string;

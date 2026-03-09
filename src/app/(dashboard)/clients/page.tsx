@@ -15,7 +15,7 @@ async function ClientsPage() {
       <Link className="bg-green-500 p-2 rounded-md shadow w-fit hover:bg-green-600" href="/clients/add">
         Add New Client
       </Link>
-      <div className="text-black flex flex-col-2 justify-center items-center gap-4">
+      <div className="text-black grid grid-cols-1 md:grid-cols-2 justify-center items-center gap-4">
         {clients?.map((client) => (
           <div key={client.id} className="border p-4 rounded-lg mb-4 flex justify-between items-center w-full shadow-md">
             <div className="flex justify-between space-x-4 items-center">
