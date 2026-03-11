@@ -33,6 +33,15 @@ export type AddClientPageProps = {
   }>;
 };
 
+export type EditClientPageProps = {
+  params: Promise<{
+    id: string;
+  }>;
+  searchParams?: Promise<{
+    error?: string;
+  }>;
+};
+
 export interface Recipe {
   id: string;
   coach_id: string;
