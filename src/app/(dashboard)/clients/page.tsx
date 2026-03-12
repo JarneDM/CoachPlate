@@ -1,9 +1,8 @@
 import { getClients } from "@/app/services/clients/clients";
-// import { Client } from "@/types";
 import Link from "next/link";
 
 async function ClientsPage() {
-  const { data: clients } = await getClients();
+  const clients = await getClients();
 
   if (!clients || clients.length === 0) {
     return <p>No clients found. Start by adding a new client!</p>;
