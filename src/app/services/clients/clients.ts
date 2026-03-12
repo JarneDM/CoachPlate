@@ -2,14 +2,25 @@ import { createClient } from "@/lib/supabase/server";
 import { Client } from "@/types";
 
 
-export const getClients = async () => {
+export async function getClients() {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  return supabase.from("clients").select("*").eq("coach_id", user?.id);
-};
+  const { data, error } = await supabase
+    .from("clients")
+    .select("id, full_name")
+    .eq("coach_id", user!.id)
+    .order("full_name", { ascending: true });
+
+  if (error) {
+    console.error("Error fetching clients:", error);
+    return [];
+  }
+
+  return data;
+}
 
 export const getClientsCount = async () => {
   const supabase = await createClient();
@@ -32,3 +43,4 @@ export async function getClientById(id: string): Promise<Client | null> {
 
   return data;
 }
+
