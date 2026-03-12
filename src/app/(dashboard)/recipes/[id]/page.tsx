@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ChefHat, Clock, Flame, Dumbbell, Wheat, Droplets, UtensilsCrossed, ArrowLeft, Scale, BookOpen, Pencil } from "lucide-react";
 import { MacroCard } from "@/components/recipes/MacroCard";
+import { Ingredient } from "@/types/index";
 
 async function RecipeDetail({ params }: { params: { id: string } }) {
   const { id } = await params;
@@ -18,10 +19,22 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
 
   if (!recipe) notFound();
 
-  const totalCalories = recipe.recipe_ingredients.reduce((total, ri) => total + (ri.amount_g / 100) * ri.ingredients.calories, 0);
-  const totalProtein = recipe.recipe_ingredients.reduce((total, ri) => total + (ri.amount_g / 100) * ri.ingredients.protein_g, 0);
-  const totalCarbs = recipe.recipe_ingredients.reduce((total, ri) => total + (ri.amount_g / 100) * ri.ingredients.carbs_g, 0);
-  const totalFat = recipe.recipe_ingredients.reduce((total, ri) => total + (ri.amount_g / 100) * ri.ingredients.fat_g, 0);
+  const totalCalories: number = recipe.recipe_ingredients.reduce(
+    (total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.calories,
+    0,
+  );
+  const totalProtein: number = recipe.recipe_ingredients.reduce(
+    (total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.protein_g,
+    0,
+  );
+  const totalCarbs: number = recipe.recipe_ingredients.reduce(
+    (total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.carbs_g,
+    0,
+  );
+  const totalFat: number = recipe.recipe_ingredients.reduce(
+    (total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.fat_g,
+    0,
+  );
 
   const perServing = {
     calories: totalCalories / (recipe.servings ?? 1),
@@ -149,7 +162,7 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
 
             {recipe.recipe_ingredients.length > 0 ? (
               <ul className="space-y-2">
-                {recipe.recipe_ingredients.map((ri) => (
+                {recipe.recipe_ingredients.map((ri: Ingredient) => (
                   <li key={ri.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
                     <span className="text-sm text-gray-700 truncate flex-1">{ri.ingredients.name}</span>
                     <span className="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-full ml-2 shrink-0">
@@ -168,7 +181,7 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
                 Totaal gewicht
               </span>
               <span className="text-xs font-semibold text-gray-600">
-                {recipe.recipe_ingredients.reduce((t, ri) => t + ri.amount_g, 0)}g
+                {recipe.recipe_ingredients.reduce((t: number, ri: Ingredient) => t + ri.amount_g, 0)}g
               </span>
             </div>
           </div>
