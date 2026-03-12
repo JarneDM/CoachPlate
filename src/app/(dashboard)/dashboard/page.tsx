@@ -19,11 +19,13 @@ export default async function DashboardPage() {
 
   if (!user) redirect("/login");
 
-  const [{ data: coach }, { count: clientCount }, { count: planCount }] = await Promise.all([
+  const [{ data: coach }, { count: clientCount }, mealPlans] = await Promise.all([
     getCoach(),
     getClientsCount(),
     getMealPlans(),
   ]);
+
+  const planCount = mealPlans.length;
 
   const { data: recentClients } = await getRecentClients(user);
 
