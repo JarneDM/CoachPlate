@@ -82,7 +82,7 @@ export default function DayColumn({ day, dayName, mealTypes, client, onAddRecipe
         <div className="grid grid-cols-3 gap-1 text-center">
           <div>
             <p className="text-xs font-bold text-blue-600">{Math.round(totals.protein_g)}g</p>
-            <p className="text-xs text-gray-400">prot</p>
+            <p className="text-xs text-gray-400">eiwit</p>
           </div>
           <div>
             <p className="text-xs font-bold text-yellow-600">{Math.round(totals.carbs_g)}g</p>

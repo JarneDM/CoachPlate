@@ -2,6 +2,7 @@ import { getMealPlans } from "@/app/services/coaches/mealplans/getMealPlans";
 import React from "react";
 import Link from "next/link";
 import { CalendarDays, User, ArrowRight, Plus, Clock } from "lucide-react";
+import Button from "@/components/CTA/Button";
 
 async function MealPlans() {
   let mealplans: Awaited<ReturnType<typeof getMealPlans>> = [];
@@ -16,13 +17,7 @@ async function MealPlans() {
             {mealplans.length} {mealplans.length === 1 ? "plan" : "plannen"} aangemaakt
           </p>
         </div>
-        <Link
-          href="/meal-plans/new"
-          className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-        >
-          <Plus size={14} />
-          Nieuw weekplan
-        </Link>
+        <Button href="/meal-plans/new" label="Nieuw weekplan" icon={<Plus size={14} />} />
       </div>
 
       {mealplans.length > 0 ? (

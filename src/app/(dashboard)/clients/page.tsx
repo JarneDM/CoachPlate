@@ -1,4 +1,5 @@
 import { getClients } from "@/app/services/clients/clients";
+import Button from "@/components/CTA/Button";
 import Link from "next/link";
 
 async function ClientsPage() {
@@ -11,9 +12,10 @@ async function ClientsPage() {
   return (
     <div className="text-black flex flex-col gap-4">
       <h1 className="text-3xl justify-center flex items-center">Clients</h1>
-      <Link className="bg-green-500 p-2 rounded-md shadow w-fit hover:bg-green-600" href="/clients/add">
-        Add New Client
-      </Link>
+      <div className="flex space-x-3 text-white font-bold">
+        <Button href="/clients/add" label="Voeg een client toe" />
+        <Button href="/meal-plans/new" label="Maak een weekplan" />
+      </div>
       <div className="text-black grid grid-cols-1 md:grid-cols-2 justify-center items-center gap-4">
         {clients?.map((client) => (
           <div key={client.id} className="border p-4 rounded-lg mb-4 flex justify-between items-center w-full shadow-md">
