@@ -18,10 +18,7 @@ export default async function MealPlanBuilderPage({ params }: { params: Promise<
     <div className="max-w-full">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <Link
-            href="/dashboard/meal-plans"
-            className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 transition-colors"
-          >
+          <Link href="/meal-plans" className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 transition-colors">
             <ArrowLeft size={14} />
             Weekplannen
           </Link>

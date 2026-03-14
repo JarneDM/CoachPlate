@@ -24,7 +24,6 @@ async function ClientsPage() {
               <h2 className="text-lg font-semibold">{client.full_name}</h2>
               <p className="text-sm text-gray-600">{client.email}</p>
               <p className="text-sm text-gray-600">{client.birth_date}</p>
-              <p className="text-sm text-gray-600">{client.gender}</p>
             </div>
             <Link href={`/clients/${client.id}`} className="text-green-500 hover:underline">
               View Details
