@@ -10,6 +10,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { ClientOption } from "@/types/interfaces";
+import Link from "next/link";
 
 
 
@@ -71,12 +72,7 @@ export default function NewMealPlanForm({ clients }: { clients: ClientOption[] }
 
   return (
     <div className="space-y-6">
-
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg p-3">
-          {error}
-        </div>
-      )}
+      {error && <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg p-3">{error}</div>}
 
       <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-4">
         <h2 className="font-semibold text-gray-900 text-sm">Basisinformatie</h2>
@@ -89,11 +85,11 @@ export default function NewMealPlanForm({ clients }: { clients: ClientOption[] }
           <div className="relative">
             <select
               value={clientId}
-              onChange={e => handleClientChange(e.target.value)}
+              onChange={(e) => handleClientChange(e.target.value)}
               className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none bg-white"
             >
               <option value="">Selecteer een klant</option>
-              {clients.map(client => (
+              {clients.map((client) => (
                 <option key={client.id} value={client.id}>
                   {client.full_name}
                 </option>
@@ -111,15 +107,12 @@ export default function NewMealPlanForm({ clients }: { clients: ClientOption[] }
           <input
             type="text"
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
             placeholder="bv. Jan — Week 12"
             className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-          <p className="text-xs text-gray-400 mt-1">
-            Wordt automatisch ingevuld als je een klant selecteert.
-          </p>
+          <p className="text-xs text-gray-400 mt-1">Wordt automatisch ingevuld als je een klant selecteert.</p>
         </div>
-
       </div>
 
       <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-4">
@@ -134,7 +127,7 @@ export default function NewMealPlanForm({ clients }: { clients: ClientOption[] }
             <input
               type="date"
               value={startDate}
-              onChange={e => handleStartDate(e.target.value)}
+              onChange={(e) => handleStartDate(e.target.value)}
               className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
@@ -146,14 +139,12 @@ export default function NewMealPlanForm({ clients }: { clients: ClientOption[] }
             <input
               type="date"
               value={endDate}
-              onChange={e => setEndDate(e.target.value)}
+              onChange={(e) => setEndDate(e.target.value)}
               className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
           </div>
         </div>
-        <p className="text-xs text-gray-400">
-          Einddatum wordt automatisch op 7 dagen na startdatum gezet.
-        </p>
+        <p className="text-xs text-gray-400">Einddatum wordt automatisch op 7 dagen na startdatum gezet.</p>
       </div>
 
       <div className="bg-white rounded-xl border border-gray-100 p-6">
@@ -163,7 +154,7 @@ export default function NewMealPlanForm({ clients }: { clients: ClientOption[] }
         </label>
         <textarea
           value={notes}
-          onChange={e => setNotes(e.target.value)}
+          onChange={(e) => setNotes(e.target.value)}
           placeholder="Extra info over dit weekplan..."
           rows={3}
           className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
@@ -171,12 +162,12 @@ export default function NewMealPlanForm({ clients }: { clients: ClientOption[] }
       </div>
 
       <div className="flex items-center justify-end gap-3 pb-8">
-        <a
-          href="/dashboard/meal-plans"
+        <Link
+          href="/meal-plans"
           className="text-sm text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
         >
           Annuleer
-        </a>
+        </Link>
         <button
           onClick={handleSubmit}
           disabled={loading || !name || !clientId}

@@ -8,11 +8,7 @@ export async function getClients() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data, error } = await supabase
-    .from("clients")
-    .select("id, full_name")
-    .eq("coach_id", user!.id)
-    .order("full_name", { ascending: true });
+  const { data, error } = await supabase.from("clients").select("*").eq("coach_id", user!.id).order("full_name", { ascending: true });
 
   if (error) {
     console.error("Error fetching clients:", error);
