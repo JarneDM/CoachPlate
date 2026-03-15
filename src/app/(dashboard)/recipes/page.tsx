@@ -73,7 +73,9 @@ export default async function RecipesPage() {
           </div>
           <h3 className="font-semibold text-gray-900 mb-2">Nog geen recepten</h3>
           <p className="text-gray-400 text-sm mb-6">Maak je eerste recept aan om te gebruiken in weekplannen.</p>
-          <Button href="/recipes/new" label="Eerste recept aanmaken" icon={<Plus size={14} />} />
+          <div className="items-center justify-center flex">
+            <Button href="/recipes/new" label="Eerste recept aanmaken" icon={<Plus size={14} />} width="max-w-[300px] w-auto" />
+          </div>
         </div>
       )}
     </div>
