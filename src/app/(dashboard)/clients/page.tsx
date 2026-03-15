@@ -76,7 +76,9 @@ async function ClientsPage() {
           </div>
           <h3 className="font-semibold text-gray-900 mb-2">Nog geen klanten</h3>
           <p className="text-gray-400 text-sm mb-6">Voeg je eerste klant toe om te beginnen.</p>
-          <Button href="/clients/add" label="Eerste klant toevoegen" icon={<Plus size={14} />} />
+          <div className="flex items-center justify-center">
+            <Button href="/clients/add" label="Eerste klant toevoegen" icon={<Plus size={14} />} width="max-w-[300px] w-auto" />
+          </div>
         </div>
       )}
     </div>
