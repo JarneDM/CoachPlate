@@ -5,11 +5,11 @@ export function MacroCard({
   unit,
   colorClass,
 }: {
-  icon: React.ReactNode;
+  icon?: React.ReactNode;
   label: string;
   value: string;
   unit: string;
-  colorClass: string;
+  colorClass?: string;
 }) {
   return (
     <div className={`${colorClass} rounded-xl p-4`}>

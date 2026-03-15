@@ -76,3 +76,22 @@ export interface Props {
   client: Client | null;
   day?: Day;
 }
+
+export interface GeneratedIngredient {
+  name: string;
+  amount_g: number;
+  calories: number;
+  protein_g: number;
+  carbs_g: number;
+  fat_g: number;
+}
+
+export interface GeneratedRecipe {
+  name: string;
+  description: string;
+  instructions: string;
+  prep_time_min: number;
+  servings: number;
+  meal_type: string;
+  ingredients: GeneratedIngredient[];
+}
