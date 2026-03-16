@@ -128,7 +128,7 @@ export async function POST(req: NextRequest) {
 
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
-    max_tokens: 10000,
+    max_tokens: 15000,
     messages: [
       {
         role: "user",
@@ -148,7 +148,7 @@ Maandag, Dinsdag, Woensdag, Donderdag, Vrijdag, Zaterdag, Zondag
 
 Voor elke dag geef exact 4 maaltijden: ontbijt, lunch, avondeten, snack.
 Voor elke maaltijd geef: name, calories, protein_g, carbs_g, fat_g en ingredients.
-ingredients is een array met minimum 3 ingrediënten.
+ingredients is een array met minimum 3, maximum 5 ingrediënten.
 Elke ingredient heeft: name, amount_g, calories, protein_g, carbs_g, fat_g.
 Macro's voor ingredienten zijn per 100g.
 Geef amount_g als hele getallen (integers, geen decimalen).
