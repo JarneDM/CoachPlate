@@ -19,22 +19,20 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
 
   if (!recipe) notFound();
 
-  const totalCalories: number = recipe.recipe_ingredients.reduce(
-    (total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.calories,
-    0,
-  );
-  const totalProtein: number = recipe.recipe_ingredients.reduce(
-    (total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.protein_g,
-    0,
-  );
-  const totalCarbs: number = recipe.recipe_ingredients.reduce(
-    (total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.carbs_g,
-    0,
-  );
-  const totalFat: number = recipe.recipe_ingredients.reduce(
-    (total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.fat_g,
-    0,
-  );
+  const hasIngredients = recipe.recipe_ingredients.length > 0;
+
+  const totalCalories: number = hasIngredients
+    ? recipe.recipe_ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.calories, 0)
+    : (recipe.calories ?? 0) * (recipe.servings ?? 1);
+  const totalProtein: number = hasIngredients
+    ? recipe.recipe_ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.protein_g, 0)
+    : (recipe.protein_g ?? 0) * (recipe.servings ?? 1);
+  const totalCarbs: number = hasIngredients
+    ? recipe.recipe_ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.carbs_g, 0)
+    : (recipe.carbs_g ?? 0) * (recipe.servings ?? 1);
+  const totalFat: number = hasIngredients
+    ? recipe.recipe_ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.fat_g, 0)
+    : (recipe.fat_g ?? 0) * (recipe.servings ?? 1);
 
   const perServing = {
     calories: totalCalories / (recipe.servings ?? 1),
