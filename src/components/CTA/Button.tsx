@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from "next/link";
 
-function Button({ href, label, icon, width }: { href: string; label: string; icon?: React.ReactNode; width?: string }) {
+function Button({ href, label, icon, width }: { href: string; label?: string; icon?: React.ReactNode; width?: string }) {
   return (
     <div>
       <Link
