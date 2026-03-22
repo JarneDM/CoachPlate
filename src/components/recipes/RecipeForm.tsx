@@ -5,6 +5,7 @@ import { createRecipe } from "@/app/services/recipes/actions";
 import { searchIngredients, type FoodFactsResult } from "@/app/services/ingredients/open-food-facts";
 import { MacroTotal } from "@/components/recipes/MacroTotal";
 import { IngredientRow } from "@/types/interfaces";
+import Link from "next/link";
 
 
 const mealTypes = ["ontbijt", "lunch", "avondeten", "snack"];
@@ -275,9 +276,9 @@ export default function RecipeForm() {
       </div>
 
       <div className="flex items-center justify-end gap-3">
-        <a href="/recipes" className="text-sm text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+        <Link href="/recipes" className="text-sm text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
           Annuleer
-        </a>
+        </Link>
         <button
           onClick={handleSubmit}
           disabled={loading || !name || ingredients.length === 0}

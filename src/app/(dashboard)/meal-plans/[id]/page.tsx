@@ -2,7 +2,7 @@ import { getMealPlanById } from "@/app/services/coaches/mealplans/meal-plans";
 import { getRecipes } from "@/app/services/recipes/recipes";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, User } from "lucide-react";
 import WeekBuilder from "@/components/meal-plans/WeekBuilder";
 
 export default async function MealPlanBuilderPage({ params }: { params: Promise<{ id: string }> }) {
@@ -26,7 +26,9 @@ export default async function MealPlanBuilderPage({ params }: { params: Promise<
           <h1 className="text-lg font-bold text-gray-900">{plan.name}</h1>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-400">👤 {plan.clients?.full_name}</span>
+          <span className="text-sm text-gray-400 flex items-center gap-1">
+            <User size={16} /> {plan.clients?.full_name}
+          </span>
           {plan.start_date && (
             <span className="text-sm text-gray-400">
               ·{" "}

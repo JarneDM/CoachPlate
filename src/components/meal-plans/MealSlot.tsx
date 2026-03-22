@@ -1,5 +1,6 @@
 import { Plus, X } from "lucide-react";
 import { MealRecipe } from "@/types/interfaces";
+import Link from "next/link";
 
 interface Props {
   mealType: string;
@@ -32,7 +33,11 @@ export default function MealSlot({ mealType, label, mealRecipes, onAdd, onRemove
       {mealRecipes.length > 0 ? (
         <div className="space-y-1.5">
           {mealRecipes.map((mr) => (
-            <div key={mr.id} className="group flex items-start justify-between gap-1 bg-gray-50 rounded-lg p-1.5">
+            <Link
+              key={mr.id}
+              href={`/recipes/${mr.recipes.id}`}
+              className="group flex items-start justify-between gap-1 bg-gray-50 rounded-lg p-1.5"
+            >
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium text-gray-700 truncate leading-tight">{mr.recipes.name}</p>
                 <div className="flex items-center gap-1.5 mt-0.5">
@@ -48,7 +53,7 @@ export default function MealSlot({ mealType, label, mealRecipes, onAdd, onRemove
               >
                 <X size={10} />
               </button>
-            </div>
+            </Link>
           ))}
         </div>
       ) : (

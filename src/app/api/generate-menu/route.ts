@@ -136,7 +136,7 @@ export async function POST(req: NextRequest) {
 
 Naam: ${client.full_name}
 Doel: ${client.goal || "geen specifiek doel"}
-Calorie doel per dag: ${client.calories_goal}
+Calorie doel per dag: ${client.calories_goal} (zo dicht mogelijk, kleine afwijkingen van 100-200kcal zijn oké)
 Proteïne doel per dag (g): ${client.protein_goal}
 Koolhydraten doel per dag (g): ${client.carbs_goal}
 Vet doel per dag (g): ${client.fat_goal}
