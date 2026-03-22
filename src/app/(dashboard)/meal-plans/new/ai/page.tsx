@@ -20,7 +20,7 @@ export default async function AIMealPlanPage() {
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-gray-900">AI weekmenu generator</h1>
         <p className="text-gray-400 text-sm mt-1">
-          Kies een klant en AI genereert automatisch een volledig weekplan op basis van zijn doelen.
+          Kies een klant en AI genereert automatisch een volledig weekplan op basis van zijn/haar doelen.
         </p>
       </div>
 

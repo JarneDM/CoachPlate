@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 
 interface GeneratedMeal {
   name: string;
+  instructions?: string;
+  prep_time_min?: number;
   calories: number;
   protein_g: number;
   carbs_g: number;
@@ -99,11 +101,14 @@ export async function createMealPlanFromAI({
 
       if (mealError || !createdMeal) continue;
 
+      //! CHECK FOR DUPLICATE RECIPES BASED ON NAME + MACROS, TO AVOID CREATING TOO MANY SIMILAR RECIPES IN THE DB. THIS IS IMPORTANT BECAUSE THE AI SOMETIMES CREATES SLIGHT VARIATIONS OF THE SAME RECIPE FOR DIFFERENT MEALS.
       const { data: recipe, error: recipeError } = await supabase
         .from("recipes")
         .insert({
           coach_id: user!.id,
           name: meal.name,
+          instructions: meal.instructions,
+          prep_time_min: meal.prep_time_min,
           meal_type: mealType,
           calories: meal.calories,
           protein_g: meal.protein_g,
@@ -133,11 +138,7 @@ export async function createMealPlanFromAI({
 
           let ingredientId: string | null = null;
 
-          const { data: existingIngredient } = await supabase
-            .from("ingredients")
-            .select("id")
-            .eq("name", normalizedName)
-            .maybeSingle();
+          const { data: existingIngredient } = await supabase.from("ingredients").select("id").eq("name", normalizedName).maybeSingle();
 
           if (existingIngredient) {
             ingredientId = existingIngredient.id;

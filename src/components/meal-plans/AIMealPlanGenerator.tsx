@@ -123,7 +123,7 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
             fat_goal: selectedClient.fat_goal ?? 65,
             allergies: selectedClient.allergies ?? [],
             preferences: extraWishes || selectedClient.preferences || "",
-            goal: selectedClient.goal ?? "gezond eten",
+            goal: selectedClient.goal,
           },
         }),
       });
@@ -189,6 +189,7 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
               </label>
               <div className="relative">
                 <select
+                  disabled={loading}
                   value={clientId}
                   onChange={(e) => handleClientChange(e.target.value)}
                   className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none bg-white"
@@ -234,6 +235,7 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Plan naam</label>
               <input
+                disabled={loading}
                 type="text"
                 value={planName}
                 onChange={(e) => setPlanName(e.target.value)}
@@ -245,6 +247,7 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Extra wensen (optioneel)</label>
               <input
+                disabled={loading}
                 type="text"
                 value={extraWishes}
                 onChange={(e) => setExtraWishes(e.target.value)}
@@ -269,7 +272,7 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
                 <ChefHat size={20} className="text-green-600" />
               </div>
               <p className="text-sm text-gray-500">AI maakt je weekplan aan...</p>
-              <p className="text-xs text-gray-400 mt-1">Dit kan een paar minuutjes duren</p>
+              <p className="text-xs text-gray-400 mt-1">Dit kan een paar minuten duren</p>
             </div>
           )}
         </>

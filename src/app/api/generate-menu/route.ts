@@ -128,21 +128,22 @@ export async function POST(req: NextRequest) {
 
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
-    max_tokens: 15000,
+    max_tokens: 25000,
     messages: [
       {
         role: "user",
-        content: `Je bent een professionele diëtist. Genereer een volledig weekmenu voor deze klant:
+        content: `Je bent een professionele diëtist. Genereer een volledig realistische weekmenu voor deze klant:
 
 Naam: ${client.full_name}
 Doel: ${client.goal || "geen specifiek doel"}
-Calorie doel per dag: ${client.calories_goal} (zo dicht mogelijk, kleine afwijkingen van 100-200kcal zijn oké)
+Calorie doel per dag: ${client.calories_goal} 
 Proteïne doel per dag (g): ${client.protein_goal}
 Koolhydraten doel per dag (g): ${client.carbs_goal}
 Vet doel per dag (g): ${client.fat_goal}
 Allergieën: ${(client.allergies || []).join(", ") || "geen"}
 Voorkeuren en wensen: ${client.preferences || "geen"}
 
+Kom zo dicht mogelijk bij de opgegeven macro doelen voor elke dag, maar overschrijd ze niet. Maak gevarieerde maaltijden die passen bij de voorkeuren en allergieën van de klant.
 Maak EXACT 7 dagen met deze dag-namen in volgorde:
 Maandag, Dinsdag, Woensdag, Donderdag, Vrijdag, Zaterdag, Zondag
 
@@ -161,10 +162,10 @@ Geef ALLEEN geldige JSON terug, zonder markdown of extra uitleg, in exact dit fo
     {
       "day": "Maandag",
       "meals": {
-        "ontbijt": { "name": "...", "calories": 450, "protein_g": 35, "carbs_g": 45, "fat_g": 15, "ingredients": [{ "name": "...", "amount_g": 100, "calories": 120, "protein_g": 8, "carbs_g": 10, "fat_g": 5 }] },
-        "lunch": { "name": "...", "calories": 550, "protein_g": 40, "carbs_g": 55, "fat_g": 18, "ingredients": [{ "name": "...", "amount_g": 100, "calories": 120, "protein_g": 8, "carbs_g": 10, "fat_g": 5 }] },
-        "avondeten": { "name": "...", "calories": 650, "protein_g": 45, "carbs_g": 60, "fat_g": 22, "ingredients": [{ "name": "...", "amount_g": 100, "calories": 120, "protein_g": 8, "carbs_g": 10, "fat_g": 5 }] },
-        "snack": { "name": "...", "calories": 250, "protein_g": 20, "carbs_g": 20, "fat_g": 10, "ingredients": [{ "name": "...", "amount_g": 100, "calories": 120, "protein_g": 8, "carbs_g": 10, "fat_g": 5 }] }
+        "ontbijt": { "name": "...", "calories": 450, "protein_g": 35, "carbs_g": 45, "fat_g": 15, "ingredients": [{ "name": "...", "amount_g": 100, "calories": 120, "protein_g": 8, "carbs_g": 10, "fat_g": 5 }], instructions: "stap 1,stap 2,stap 3", prep_time_min: 15 },
+        "lunch": { "name": "...", "calories": 550, "protein_g": 40, "carbs_g": 55, "fat_g": 18, "ingredients": [{ "name": "...", "amount_g": 100, "calories": 120, "protein_g": 8, "carbs_g": 10, "fat_g": 5 }], instructions: "stap 1,stap 2,stap 3", prep_time_min: 20 },
+        "avondeten": { "name": "...", "calories": 650, "protein_g": 45, "carbs_g": 60, "fat_g": 22, "ingredients": [{ "name": "...", "amount_g": 100, "calories": 120, "protein_g": 8, "carbs_g": 10, "fat_g": 5 }], instructions: "stap 1,stap 2,stap 3", prep_time_min: 30 },
+        "snack": { "name": "...", "calories": 250, "protein_g": 20, "carbs_g": 20, "fat_g": 10, "ingredients": [{ "name": "...", "amount_g": 100, "calories": 120, "protein_g": 8, "carbs_g": 10,="fat_g": 5 }], instructions: "stap 1,stap 2,stap 3", prep_time_min: 10 }
       }
     }
   ]
