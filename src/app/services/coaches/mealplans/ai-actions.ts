@@ -102,6 +102,28 @@ export async function createMealPlanFromAI({
       if (mealError || !createdMeal) continue;
 
       //! CHECK FOR DUPLICATE RECIPES BASED ON NAME + MACROS, TO AVOID CREATING TOO MANY SIMILAR RECIPES IN THE DB. THIS IS IMPORTANT BECAUSE THE AI SOMETIMES CREATES SLIGHT VARIATIONS OF THE SAME RECIPE FOR DIFFERENT MEALS.
+      const { data: existingRecipe } = await supabase
+        .from("recipes")
+        .select("id")
+        .eq("coach_id", user!.id)
+        .eq("name".toLocaleLowerCase(), meal.name.toLocaleLowerCase())
+        .eq("calories", meal.calories)
+        .eq("protein_g", meal.protein_g)
+        .eq("carbs_g", meal.carbs_g)
+        .eq("fat_g", meal.fat_g)
+        .maybeSingle();
+
+      if (existingRecipe) {
+        const { error: linkError } = await supabase.from("meal_recipes").insert({
+          meal_id: createdMeal.id,
+          recipe_id: existingRecipe.id,
+          servings: 1,
+        });
+
+        console.log(`8. Bestaand recept linken:`, "error:", linkError);
+        continue;
+      }
+
       const { data: recipe, error: recipeError } = await supabase
         .from("recipes")
         .insert({
