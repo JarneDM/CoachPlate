@@ -12,6 +12,8 @@ interface GeneratedMeal {
   carbs_g: number;
   fat_g: number;
   ingredients: GeneratedIngredient[];
+  instructions: string;
+  prep_time_min: number;
 }
 
 interface GeneratedIngredient {
@@ -92,6 +94,8 @@ function isGeneratedMeal(value: unknown): value is GeneratedMeal {
     typeof meal.protein_g === "number" &&
     typeof meal.carbs_g === "number" &&
     typeof meal.fat_g === "number" &&
+    typeof meal.instructions === "string" &&
+    typeof meal.prep_time_min === "number" &&
     hasValidIngredients
   );
 }
@@ -128,48 +132,20 @@ export async function POST(req: NextRequest) {
 
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
-    max_tokens: 25000,
+    max_tokens: 15000,
+    system:
+      "Antwoord ALLEEN met geldige JSON. Geen tekst voor of na. Geen markdown code blocks. Kom zodicht mogelijk bij het gevraagde doel van kcal/proteïne/kh/vet, kleine afwijkingen (100 - 200ckal) maakt niet uit. Gebruik de exacte structuur zoals hieronder, inclusief alle velden, ook al zijn sommige waarden 0 of lege lijsten.",
     messages: [
       {
         role: "user",
-        content: `Je bent een professionele diëtist. Genereer een volledig realistische weekmenu voor deze klant:
+        content: `Genereer een volledig weekmenu in JSON formaat voor:
+Klant: ${client.full_name}
+Kcal/dag: ${client.calories_goal} | Proteïne: ${client.protein_goal}g | Kh: ${client.carbs_goal}g | Vet: ${client.fat_goal}g
+Allergie(ën): ${(client.allergies || []).join(", ") || "geen"}
+Voorkeur: ${client.preferences || "geen"}
 
-Naam: ${client.full_name}
-Doel: ${client.goal || "geen specifiek doel"}
-Calorie doel per dag: ${client.calories_goal} 
-Proteïne doel per dag (g): ${client.protein_goal}
-Koolhydraten doel per dag (g): ${client.carbs_goal}
-Vet doel per dag (g): ${client.fat_goal}
-Allergieën: ${(client.allergies || []).join(", ") || "geen"}
-Voorkeuren en wensen: ${client.preferences || "geen"}
-
-Kom zo dicht mogelijk bij de opgegeven macro doelen voor elke dag, maar overschrijd ze niet. Maak gevarieerde maaltijden die passen bij de voorkeuren en allergieën van de klant.
-Maak EXACT 7 dagen met deze dag-namen in volgorde:
-Maandag, Dinsdag, Woensdag, Donderdag, Vrijdag, Zaterdag, Zondag
-
-Voor elke dag geef exact 4 maaltijden: ontbijt, lunch, avondeten, snack.
-Voor elke maaltijd geef: name, calories, protein_g, carbs_g, fat_g en ingredients.
-ingredients is een array met minimum 3, maximum 5 ingrediënten.
-Elke ingredient heeft: name, amount_g, calories, protein_g, carbs_g, fat_g.
-Macro's voor ingredienten zijn per 100g.
-Geef amount_g als hele getallen (integers, geen decimalen).
-Gebruik alleen numerieke waardes voor macro's (geen strings).
-Houd tekst compact: maaltijdnaam max 6 woorden, ingredientnaam max 2 woorden.
-
-Geef ALLEEN geldige JSON terug, zonder markdown of extra uitleg, in exact dit formaat:
-{
-  "days": [
-    {
-      "day": "Maandag",
-      "meals": {
-        "ontbijt": { "name": "...", "calories": 450, "protein_g": 35, "carbs_g": 45, "fat_g": 15, "ingredients": [{ "name": "...", "amount_g": 100, "calories": 120, "protein_g": 8, "carbs_g": 10, "fat_g": 5 }], instructions: "stap 1,stap 2,stap 3", prep_time_min: 15 },
-        "lunch": { "name": "...", "calories": 550, "protein_g": 40, "carbs_g": 55, "fat_g": 18, "ingredients": [{ "name": "...", "amount_g": 100, "calories": 120, "protein_g": 8, "carbs_g": 10, "fat_g": 5 }], instructions: "stap 1,stap 2,stap 3", prep_time_min: 20 },
-        "avondeten": { "name": "...", "calories": 650, "protein_g": 45, "carbs_g": 60, "fat_g": 22, "ingredients": [{ "name": "...", "amount_g": 100, "calories": 120, "protein_g": 8, "carbs_g": 10, "fat_g": 5 }], instructions: "stap 1,stap 2,stap 3", prep_time_min: 30 },
-        "snack": { "name": "...", "calories": 250, "protein_g": 20, "carbs_g": 20, "fat_g": 10, "ingredients": [{ "name": "...", "amount_g": 100, "calories": 120, "protein_g": 8, "carbs_g": 10,="fat_g": 5 }], instructions: "stap 1,stap 2,stap 3", prep_time_min: 10 }
-      }
-    }
-  ]
-}`,
+RETOURNEER ALLEEN DIT JSON FORMAAT, NIETS ANDERS:
+{"days":[{"day":"Maandag","meals":{"ontbijt":{"name":"Ontbijt naam","calories":450,"protein_g":35,"carbs_g":45,"fat_g":15,"prep_time_min":15,"instructions":"stap 1,stap 2,stap 3","ingredients":[{"name":"ingredient",amount_g":100,"calories":120,"protein_g":8,"carbs_g":10,"fat_g":5}]},"lunch":{"name":"Lunch","calories":550,"protein_g":40,"carbs_g":55,"fat_g":18,"prep_time_min":20,"instructions":"stap 1,stap 2","ingredients":[{"name":"ingredient","amount_g":150,"calories":140,"protein_g":10,"carbs_g":15,"fat_g":6}]},"avondeten":{"name":"Diner","calories":650,"protein_g":45,"carbs_g":60,"fat_g":22,"prep_time_min":30,"instructions":"stap 1,stap 2,stap 3","ingredients":[{"name":"ingredient","amount_g":200,"calories":160,"protein_g":12,"carbs_g":18,"fat_g":8}]},"snack":{"name":"Snack","calories":250,"protein_g":20,"carbs_g":20,"fat_g":10,"prep_time_min":10,"instructions":"bereid","ingredients":[{"name":"ingredient","amount_g":100,"calories":120,"protein_g":8,"carbs_g":10,"fat_g":5}]}}},{"day":"Dinsdag","meals":{...}},...7 dagen totaal]}`,
       },
     ],
   });
@@ -179,19 +155,23 @@ Geef ALLEEN geldige JSON terug, zonder markdown of extra uitleg, in exact dit fo
     return NextResponse.json({ error: "Onverwacht antwoord van AI" }, { status: 500 });
   }
 
-  if (message.stop_reason === "max_tokens" || !response.text.trim().endsWith("}")) {
-    return NextResponse.json(
-      { error: "AI antwoord werd afgekapt. Probeer opnieuw of verklein de wensen." },
-      { status: 502 },
-    );
+  if (message.stop_reason === "max_tokens") {
+    return NextResponse.json({ error: "AI antwoord werd afgekapt. Probeer opnieuw." }, { status: 502 });
   }
 
-  const menu = tryParsePlan(response.text);
-
-  if (!menu) {
-    console.error("AI response kon niet geparsed/gevalideerd worden:", response.text);
+  const trimmedResponse = response.text.trim();
+  if (!trimmedResponse.startsWith("{") || !trimmedResponse.endsWith("}")) {
+    console.error("Ongeldig AI antwoord format. Gekregen:", trimmedResponse);
     return NextResponse.json({ error: "AI gaf geen geldige JSON terug" }, { status: 500 });
   }
 
+  const menu = tryParsePlan(trimmedResponse);
+
+  if (!menu) {
+    console.error("AI response kon niet geparsed/gevalideerd worden:", trimmedResponse.substring(0, 300));
+    return NextResponse.json({ error: "AI gaf geen geldige menu structuur terug" }, { status: 500 });
+  }
+
+  console.log(message.usage);
   return NextResponse.json({ menu });
 }

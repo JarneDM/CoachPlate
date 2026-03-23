@@ -146,9 +146,9 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
                 <BookOpen size={16} className="text-green-600" />
                 <h2 className="font-semibold text-gray-900 text-sm">Bereidingswijze</h2>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
-                <ol>
-                  {recipe.instructions.split(",stap").map((step: string, index: number) => {
+              <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
+                <ol className="list-decimal">
+                  {recipe.instructions.split(",").map((step: string, index: number) => {
                     return (
                       <li key={index} className="mb-2">
                         {step}
@@ -156,7 +156,7 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
                     );
                   })}
                 </ol>
-              </p>
+              </div>
             </div>
           )}
         </div>
