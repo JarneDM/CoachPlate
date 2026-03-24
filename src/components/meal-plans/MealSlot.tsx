@@ -33,13 +33,11 @@ export default function MealSlot({ mealType, label, mealRecipes, onAdd, onRemove
       {mealRecipes.length > 0 ? (
         <div className="space-y-1.5">
           {mealRecipes.map((mr) => (
-            <Link
-              key={mr.id}
-              href={`/recipes/${mr.recipes.id}`}
-              className="group flex items-start justify-between gap-1 bg-gray-50 rounded-lg p-1.5"
-            >
+            <div key={mr.id} className="group flex items-start justify-between gap-1 bg-gray-50 rounded-lg p-1.5">
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-gray-700 truncate leading-tight">{mr.recipes.name}</p>
+                <Link href={`/recipes/${mr.recipes.id}`} className="text-xs font-medium text-gray-700 truncate leading-tight">
+                  {mr.recipes.name.length > 20 ? mr.recipes.name.slice(0, 17) + "..." : mr.recipes.name}
+                </Link>
                 <div className="flex items-center gap-1.5 mt-0.5">
                   {mr.servings !== 1 && <span className="text-xs text-gray-400">×{mr.servings}</span>}
                   {mr.recipes.calories && (
@@ -53,7 +51,7 @@ export default function MealSlot({ mealType, label, mealRecipes, onAdd, onRemove
               >
                 <X size={10} />
               </button>
-            </Link>
+            </div>
           ))}
         </div>
       ) : (

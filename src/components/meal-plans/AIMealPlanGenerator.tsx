@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Sparkles, ChefHat, ChevronDown, Save, RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createMealPlanFromAI } from "@/app/services/coaches/mealplans/ai-actions";
@@ -77,9 +77,23 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [generatedPlan, setGeneratedPlan] = useState<GeneratedPlan | null>(null);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   const router = useRouter();
   const selectedClient = clients.find((c) => c.id === clientId);
+
+  useEffect(() => {
+    if (!loading) return;
+
+    const timerId = window.setInterval(() => {
+      setElapsedSeconds((prev) => prev + 1);
+    }, 1000);
+
+    return () => window.clearInterval(timerId);
+  }, [loading]);
+
+  const minutes = Math.floor(elapsedSeconds / 60);
+  const seconds = elapsedSeconds % 60;
 
   function handleClientChange(id: string) {
     setClientId(id);
@@ -105,6 +119,7 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
     }
     if (!selectedClient) return;
 
+    setElapsedSeconds(0);
     setLoading(true);
     setError("");
     setGeneratedPlan(null);
@@ -273,6 +288,9 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
               </div>
               <p className="text-sm text-gray-500">AI maakt je weekplan aan...</p>
               <p className="text-xs text-gray-400 mt-1">Dit kan een paar minuten duren</p>
+              <p className="text-xs text-gray-500">
+                Time: {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+              </p>
             </div>
           )}
         </>

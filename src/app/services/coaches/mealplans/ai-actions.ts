@@ -105,13 +105,10 @@ export async function createMealPlanFromAI({
       const { data: existingRecipe } = await supabase
         .from("recipes")
         .select("id")
-        .eq("coach_id", user!.id)
-        .eq("name".toLocaleLowerCase(), meal.name.toLocaleLowerCase())
-        .eq("calories", meal.calories)
-        .eq("protein_g", meal.protein_g)
-        .eq("carbs_g", meal.carbs_g)
-        .eq("fat_g", meal.fat_g)
+        .eq("coach_id", user?.id)
+        .ilike("name", meal.name.trim())
         .maybeSingle();
+
 
       if (existingRecipe) {
         const { error: linkError } = await supabase.from("meal_recipes").insert({
@@ -124,24 +121,26 @@ export async function createMealPlanFromAI({
         continue;
       }
 
-      const { data: recipe, error: recipeError } = await supabase
-        .from("recipes")
-        .insert({
-          coach_id: user!.id,
-          name: meal.name,
-          instructions: meal.instructions,
-          prep_time_min: meal.prep_time_min,
-          meal_type: mealType,
-          calories: meal.calories,
-          protein_g: meal.protein_g,
-          carbs_g: meal.carbs_g,
-          fat_g: meal.fat_g,
-          servings: 1,
-        })
-        .select()
-        .single();
+        const { data: recipe, error: recipeError } = await supabase
+          .from("recipes")
+          .insert({
+            coach_id: user!.id,
+            name: meal.name,
+            instructions: meal.instructions,
+            prep_time_min: meal.prep_time_min,
+            meal_type: mealType,
+            calories: meal.calories,
+            protein_g: meal.protein_g,
+            carbs_g: meal.carbs_g,
+            fat_g: meal.fat_g,
+            servings: 1,
+          })
+          .select()
+          .single();
 
-      console.log(`8. Recipe ${meal.name}:`, recipe?.id, "error:", recipeError);
+        const checkRecipe = existingRecipe ? existingRecipe : recipe;
+
+        console.log(`8. Recipe ${meal.name}:`, checkRecipe?.id, "error:", recipeError);
 
       if (recipeError || !recipe) continue;
 
@@ -160,7 +159,7 @@ export async function createMealPlanFromAI({
 
           let ingredientId: string | null = null;
 
-          const { data: existingIngredient } = await supabase.from("ingredients").select("id").eq("name", normalizedName).maybeSingle();
+          const { data: existingIngredient } = await supabase.from("ingredients").select("id").ilike("name", normalizedName).maybeSingle();
 
           if (existingIngredient) {
             ingredientId = existingIngredient.id;
@@ -186,7 +185,7 @@ export async function createMealPlanFromAI({
           }
 
           const { error: recipeIngredientError } = await supabase.from("recipe_ingredients").insert({
-            recipe_id: recipe.id,
+            recipe_id: checkRecipe.id,
             ingredient_id: ingredientId,
             amount_g: normalizedAmount,
           });
@@ -199,14 +198,13 @@ export async function createMealPlanFromAI({
 
       const { error: linkError } = await supabase.from("meal_recipes").insert({
         meal_id: createdMeal.id,
-        recipe_id: recipe.id,
+        recipe_id: checkRecipe.id,
         servings: 1,
       });
 
       console.log(`9. Link meal-recipe:`, "error:", linkError);
     }
   }
-
 
   revalidatePath("/meal-plans");
   return { planId: plan.id };
