@@ -5,6 +5,8 @@ import { revalidatePath } from "next/cache";
 
 interface GeneratedMeal {
   name: string;
+  instructions?: string;
+  prep_time_min?: number;
   calories: number;
   protein_g: number;
   carbs_g: number;
@@ -99,11 +101,36 @@ export async function createMealPlanFromAI({
 
       if (mealError || !createdMeal) continue;
 
+      //! CHECK FOR DUPLICATE RECIPES BASED ON NAME + MACROS, TO AVOID CREATING TOO MANY SIMILAR RECIPES IN THE DB. THIS IS IMPORTANT BECAUSE THE AI SOMETIMES CREATES SLIGHT VARIATIONS OF THE SAME RECIPE FOR DIFFERENT MEALS.
+      const { data: existingRecipe } = await supabase
+        .from("recipes")
+        .select("id")
+        .eq("coach_id", user!.id)
+        .eq("name".toLocaleLowerCase(), meal.name.toLocaleLowerCase())
+        .eq("calories", meal.calories)
+        .eq("protein_g", meal.protein_g)
+        .eq("carbs_g", meal.carbs_g)
+        .eq("fat_g", meal.fat_g)
+        .maybeSingle();
+
+      if (existingRecipe) {
+        const { error: linkError } = await supabase.from("meal_recipes").insert({
+          meal_id: createdMeal.id,
+          recipe_id: existingRecipe.id,
+          servings: 1,
+        });
+
+        console.log(`8. Bestaand recept linken:`, "error:", linkError);
+        continue;
+      }
+
       const { data: recipe, error: recipeError } = await supabase
         .from("recipes")
         .insert({
           coach_id: user!.id,
           name: meal.name,
+          instructions: meal.instructions,
+          prep_time_min: meal.prep_time_min,
           meal_type: mealType,
           calories: meal.calories,
           protein_g: meal.protein_g,
@@ -133,11 +160,7 @@ export async function createMealPlanFromAI({
 
           let ingredientId: string | null = null;
 
-          const { data: existingIngredient } = await supabase
-            .from("ingredients")
-            .select("id")
-            .eq("name", normalizedName)
-            .maybeSingle();
+          const { data: existingIngredient } = await supabase.from("ingredients").select("id").eq("name", normalizedName).maybeSingle();
 
           if (existingIngredient) {
             ingredientId = existingIngredient.id;

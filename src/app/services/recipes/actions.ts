@@ -29,16 +29,40 @@ function calculateMacros(ingredients: IngredientInput[], servings: number) {
 
 export async function createRecipe(input: RecipeInput) {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
+
+  if (userError || !user) {
+    return { error: "Niet ingelogd" };
+  }
 
   const servings = input.servings ?? 1;
   const macros = calculateMacros(input.ingredients, servings);
+  const normalizedRecipeName = input.name.trim();
+
+  const { data: existingRecipe, error: existsError } = await supabase
+    .from("recipes")
+    .select("id")
+    .eq("coach_id", user.id)
+    .ilike("name", normalizedRecipeName)
+    .maybeSingle();
+
+  if (existsError) {
+    console.error("Recipe exists check error:", existsError);
+    return { error: "Controle op bestaand recept mislukt" };
+  }
+
+  if (existingRecipe) {
+    return { error: "Er bestaat al een recept met deze naam" };
+  }
 
   const { data: recipe, error: recipeError } = await supabase
     .from("recipes")
     .insert({
-      coach_id: user!.id,
-      name: input.name,
+      coach_id: user.id,
+      name: normalizedRecipeName,
       description: input.description,
       instructions: input.instructions,
       prep_time_min: input.prep_time_min,
@@ -46,7 +70,7 @@ export async function createRecipe(input: RecipeInput) {
       servings,
       ...macros,
     })
-    .select()
+    .select("id")
     .single();
 
   if (recipeError || !recipe) {
@@ -55,22 +79,22 @@ export async function createRecipe(input: RecipeInput) {
   }
 
   for (const ing of input.ingredients) {
-
     let ingredientId: string | null = null;
+    const normalizedIngredientName = ing.name.trim();
 
-    const { data: existing } = await supabase
+    const { data: existingIngredient } = await supabase
       .from("ingredients")
       .select("id")
-      .eq("name", ing.name)
+      .ilike("name", normalizedIngredientName)
       .maybeSingle();
 
-    if (existing) {
-      ingredientId = existing.id;
+    if (existingIngredient) {
+      ingredientId = existingIngredient.id;
     } else {
       const { data: newIngredient, error: ingError } = await supabase
         .from("ingredients")
         .insert({
-          name: ing.name,
+          name: normalizedIngredientName,
           calories: ing.calories,
           protein_g: ing.protein_g,
           carbs_g: ing.carbs_g,
@@ -81,19 +105,17 @@ export async function createRecipe(input: RecipeInput) {
 
       if (ingError || !newIngredient) {
         console.error("Ingredient error:", ingError);
-        continue; 
+        continue;
       }
 
       ingredientId = newIngredient.id;
     }
 
-    const { error: linkError } = await supabase
-      .from("recipe_ingredients")
-      .insert({
-        recipe_id: recipe.id,
-        ingredient_id: ingredientId,
-        amount_g: ing.amount_g,
-      });
+    const { error: linkError } = await supabase.from("recipe_ingredients").insert({
+      recipe_id: recipe.id,
+      ingredient_id: ingredientId,
+      amount_g: ing.amount_g,
+    });
 
     if (linkError) {
       console.error("Link error:", linkError);
@@ -106,8 +128,12 @@ export async function createRecipe(input: RecipeInput) {
 
 export async function deleteRecipeAction(id: string) {
   const supabase = await createClient();
+  const { error } = await supabase.from("recipes").delete().eq("id", id);
 
-  await supabase.from("recipes").delete().eq("id", id);
+  if (error) {
+    console.error("Delete error:", error);
+    return { error: "Recept verwijderen mislukt" };
+  }
 
   revalidatePath("/recipes");
 }

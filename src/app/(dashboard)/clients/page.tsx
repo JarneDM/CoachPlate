@@ -17,7 +17,7 @@ async function ClientsPage() {
         </div>
         <div className="flex items-center gap-2">
           <Button href="/meal-plans/new" label="Nieuw weekplan" icon={<CalendarDays size={14} />} />
-          <Button href="/clients/new" label="Nieuwe klant" icon={<Plus size={14} />} />
+          <Button href="/clients/add" label="Nieuwe klant" icon={<Plus size={14} />} />
         </div>
       </div>
 

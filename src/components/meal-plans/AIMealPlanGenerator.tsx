@@ -123,7 +123,7 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
             fat_goal: selectedClient.fat_goal ?? 65,
             allergies: selectedClient.allergies ?? [],
             preferences: extraWishes || selectedClient.preferences || "",
-            goal: selectedClient.goal ?? "gezond eten",
+            goal: selectedClient.goal,
           },
         }),
       });
@@ -178,95 +178,104 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
     <div className="space-y-6">
       {error && <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg p-3">{error}</div>}
 
-      <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-4">
-        <h2 className="font-semibold text-gray-900 text-sm">Instellingen</h2>
+      {!generatedPlan && (
+        <>
+          <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-4">
+            <h2 className="font-semibold text-gray-900 text-sm">Instellingen</h2>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">
-            Klant <span className="text-red-400">*</span>
-          </label>
-          <div className="relative">
-            <select
-              value={clientId}
-              onChange={(e) => handleClientChange(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none bg-white"
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                Klant <span className="text-red-400">*</span>
+              </label>
+              <div className="relative">
+                <select
+                  disabled={loading}
+                  value={clientId}
+                  onChange={(e) => handleClientChange(e.target.value)}
+                  className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none bg-white"
+                >
+                  <option value="">Selecteer een klant</option>
+                  {clients.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.full_name}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown size={14} className="absolute right-3 top-3.5 text-gray-400 pointer-events-none" />
+              </div>
+            </div>
+
+            {selectedClient && (
+              <div className="bg-gray-50 rounded-lg p-4 grid grid-cols-2 gap-3">
+                <div>
+                  <p className="text-xs text-gray-400">Doel</p>
+                  <p className="text-sm font-medium text-gray-700">{selectedClient.goal ?? "—"}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400">Caloriedoel</p>
+                  <p className="text-sm font-medium text-gray-700">
+                    {selectedClient.calories_goal ? `${selectedClient.calories_goal} kcal` : "—"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400">Allergieën</p>
+                  <p className="text-sm font-medium text-gray-700">
+                    {selectedClient.allergies?.length ? selectedClient.allergies.join(", ") : "Geen"}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400">Proteïne doel</p>
+                  <p className="text-sm font-medium text-gray-700">
+                    {selectedClient.protein_goal ? `${selectedClient.protein_goal}g` : "—"}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Plan naam</label>
+              <input
+                disabled={loading}
+                type="text"
+                value={planName}
+                onChange={(e) => setPlanName(e.target.value)}
+                placeholder="bv. Jan — Week 12"
+                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Extra wensen (optioneel)</label>
+              <input
+                disabled={loading}
+                type="text"
+                value={extraWishes}
+                onChange={(e) => setExtraWishes(e.target.value)}
+                placeholder="bv. veel groenten, mediterraans, budget-vriendelijk..."
+                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+
+            <button
+              onClick={handleGenerate}
+              disabled={loading || !clientId}
+              className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white text-sm font-medium py-2.5 rounded-lg transition-colors"
             >
-              <option value="">Selecteer een klant</option>
-              {clients.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.full_name}
-                </option>
-              ))}
-            </select>
-            <ChevronDown size={14} className="absolute right-3 top-3.5 text-gray-400 pointer-events-none" />
+              <Sparkles size={14} />
+              {loading ? "Weekplan genereren..." : "Genereer weekplan"}
+            </button>
           </div>
-        </div>
 
-        {selectedClient && (
-          <div className="bg-gray-50 rounded-lg p-4 grid grid-cols-2 gap-3">
-            <div>
-              <p className="text-xs text-gray-400">Doel</p>
-              <p className="text-sm font-medium text-gray-700">{selectedClient.goal ?? "—"}</p>
+          {loading && (
+            <div className="bg-white rounded-xl border border-gray-100 p-8 text-center">
+              <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-3 animate-pulse">
+                <ChefHat size={20} className="text-green-600" />
+              </div>
+              <p className="text-sm text-gray-500">AI maakt je weekplan aan...</p>
+              <p className="text-xs text-gray-400 mt-1">Dit kan een paar minuten duren</p>
             </div>
-            <div>
-              <p className="text-xs text-gray-400">Caloriedoel</p>
-              <p className="text-sm font-medium text-gray-700">
-                {selectedClient.calories_goal ? `${selectedClient.calories_goal} kcal` : "—"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-400">Allergieën</p>
-              <p className="text-sm font-medium text-gray-700">
-                {selectedClient.allergies?.length ? selectedClient.allergies.join(", ") : "Geen"}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-gray-400">Proteïne doel</p>
-              <p className="text-sm font-medium text-gray-700">{selectedClient.protein_goal ? `${selectedClient.protein_goal}g` : "—"}</p>
-            </div>
-          </div>
-        )}
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">Plan naam</label>
-          <input
-            type="text"
-            value={planName}
-            onChange={(e) => setPlanName(e.target.value)}
-            placeholder="bv. Jan — Week 12"
-            className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1.5">Extra wensen (optioneel)</label>
-          <input
-            type="text"
-            value={extraWishes}
-            onChange={(e) => setExtraWishes(e.target.value)}
-            placeholder="bv. veel groenten, mediterraans, budget-vriendelijk..."
-            className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-
-        <button
-          onClick={handleGenerate}
-          disabled={loading || !clientId}
-          className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white text-sm font-medium py-2.5 rounded-lg transition-colors"
-        >
-          <Sparkles size={14} />
-          {loading ? "Weekplan genereren..." : "Genereer weekplan"}
-        </button>
-      </div>
-
-      {loading && (
-        <div className="bg-white rounded-xl border border-gray-100 p-8 text-center">
-          <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-3 animate-pulse">
-            <ChefHat size={20} className="text-green-600" />
-          </div>
-          <p className="text-sm text-gray-500">AI maakt je weekplan aan...</p>
-          <p className="text-xs text-gray-400 mt-1">Dit duurt ongeveer 10 seconden</p>
-        </div>
+          )}
+        </>
       )}
 
       {generatedPlan && generatedPlan.days.length > 0 && !loading && (
@@ -284,36 +293,37 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
               Opnieuw
             </button>
           </div>
+          <div className="overflow-y-scroll">
+            <div className="grid grid-cols-7 gap-2 w-screen overflow-y-auto">
+              {generatedPlan.days.map((day) => {
+                const dayTotals = Object.values(day.meals).reduce(
+                  (acc, meal) => ({
+                    calories: acc.calories + meal.calories,
+                    protein_g: acc.protein_g + meal.protein_g,
+                  }),
+                  { calories: 0, protein_g: 0 },
+                );
 
-          <div className="grid grid-cols-7 gap-2">
-            {generatedPlan.days.map((day) => {
-              const dayTotals = Object.values(day.meals).reduce(
-                (acc, meal) => ({
-                  calories: acc.calories + meal.calories,
-                  protein_g: acc.protein_g + meal.protein_g,
-                }),
-                { calories: 0, protein_g: 0 },
-              );
-
-              return (
-                <div key={day.day} className="bg-white rounded-xl border border-gray-100 p-3">
-                  <p className="text-xs font-bold text-gray-900 text-center mb-2">{day.day.slice(0, 2)}</p>
-                  <div className="space-y-1.5">
-                    {Object.entries(day.meals).map(([type, meal]) => (
-                      <div key={type} className="bg-gray-50 rounded-lg p-1.5">
-                        <p className={`text-xs font-medium ${MEAL_COLORS[type]}`}>{MEAL_TYPE_LABELS[type]}</p>
-                        <p className="text-xs text-gray-700 leading-tight mt-0.5 line-clamp-2">{meal.name}</p>
-                        <p className="text-xs text-orange-500 mt-0.5">{meal.calories} kcal</p>
-                      </div>
-                    ))}
+                return (
+                  <div key={day.day} className="bg-white rounded-xl border border-gray-100 p-3">
+                    <p className="text-xs font-bold text-gray-900 text-center mb-2">{day.day.slice(0, 2)}</p>
+                    <div className="space-y-1.5">
+                      {Object.entries(day.meals).map(([type, meal]) => (
+                        <div key={type} className="bg-gray-50 rounded-lg p-1.5">
+                          <p className={`text-xs font-medium ${MEAL_COLORS[type]}`}>{MEAL_TYPE_LABELS[type]}</p>
+                          <p className="text-xs text-gray-700 leading-tight mt-0.5 line-clamp-2">{meal.name}</p>
+                          <p className="text-xs text-orange-500 mt-0.5">{meal.calories} kcal</p>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-2 pt-2 border-t border-gray-100 text-center">
+                      <p className="text-xs font-bold text-gray-700">{dayTotals.calories}</p>
+                      <p className="text-xs text-gray-400">kcal</p>
+                    </div>
                   </div>
-                  <div className="mt-2 pt-2 border-t border-gray-100 text-center">
-                    <p className="text-xs font-bold text-gray-700">{dayTotals.calories}</p>
-                    <p className="text-xs text-gray-400">kcal</p>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
 
           <button
