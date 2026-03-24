@@ -19,22 +19,20 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
 
   if (!recipe) notFound();
 
-  const totalCalories: number = recipe.recipe_ingredients.reduce(
-    (total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.calories,
-    0,
-  );
-  const totalProtein: number = recipe.recipe_ingredients.reduce(
-    (total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.protein_g,
-    0,
-  );
-  const totalCarbs: number = recipe.recipe_ingredients.reduce(
-    (total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.carbs_g,
-    0,
-  );
-  const totalFat: number = recipe.recipe_ingredients.reduce(
-    (total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.fat_g,
-    0,
-  );
+  const hasIngredients = recipe.recipe_ingredients.length > 0;
+
+  const totalCalories: number = hasIngredients
+    ? recipe.recipe_ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.calories, 0)
+    : (recipe.calories ?? 0) * (recipe.servings ?? 1);
+  const totalProtein: number = hasIngredients
+    ? recipe.recipe_ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.protein_g, 0)
+    : (recipe.protein_g ?? 0) * (recipe.servings ?? 1);
+  const totalCarbs: number = hasIngredients
+    ? recipe.recipe_ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.carbs_g, 0)
+    : (recipe.carbs_g ?? 0) * (recipe.servings ?? 1);
+  const totalFat: number = hasIngredients
+    ? recipe.recipe_ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.fat_g, 0)
+    : (recipe.fat_g ?? 0) * (recipe.servings ?? 1);
 
   const perServing = {
     calories: totalCalories / (recipe.servings ?? 1),
@@ -148,7 +146,17 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
                 <BookOpen size={16} className="text-green-600" />
                 <h2 className="font-semibold text-gray-900 text-sm">Bereidingswijze</h2>
               </div>
-              <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">{recipe.instructions}</p>
+              <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
+                <ol className="list-decimal">
+                  {recipe.instructions.split(",").map((step: string, index: number) => {
+                    return (
+                      <li key={index} className="mb-2">
+                        {step}
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
             </div>
           )}
         </div>

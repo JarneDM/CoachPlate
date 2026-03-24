@@ -10,6 +10,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [disabled, setDisabled] = useState(false);
 
   const router = useRouter();
   const supabase = createClient();
@@ -17,6 +18,13 @@ export default function LoginPage() {
   async function handleLogin() {
     setLoading(true);
     setError("");
+
+    if (!email || !password) {
+      setError("Vul zowel e-mail als wachtwoord in");
+      setLoading(false);
+      setDisabled(true);
+      return;
+    }
 
     const { error: authError } = await supabase.auth.signInWithPassword({
       email,
@@ -26,9 +34,10 @@ export default function LoginPage() {
     if (authError) {
       setError("E-mail of wachtwoord incorrect");
       setLoading(false);
+      setDisabled(true);
       return;
     }
-
+    setDisabled(false);
     router.push("/dashboard");
     router.refresh();
   }
@@ -70,8 +79,8 @@ export default function LoginPage() {
 
         <button
           onClick={handleLogin}
-          disabled={loading || !email || !password}
-          className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white font-medium rounded-lg py-2.5 text-sm transition-colors"
+          disabled={loading || disabled}
+          className="w-full bg-green-600 hover:bg-green-700 disabled:bg-red-300 text-white font-medium rounded-lg py-2.5 text-sm transition-colors"
         >
           {loading ? "Inloggen..." : "Inloggen"}
         </button>

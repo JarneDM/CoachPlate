@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ensureCoachProfile } from "@/lib/supabase/ensureCoachProfile";
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/LogoutButton";
-import { LayoutDashboard, NotepadText, Settings, Users, CalendarDays } from "lucide-react";
+import { LayoutDashboard, NotepadText, Settings, Users, CalendarDays, Dumbbell } from "lucide-react";
 import { NavItem } from "@/components/NavItem";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -29,6 +29,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <NavItem href="/clients" icon={<Users className="w-5 h-5" />} label="Klanten" />
           <NavItem href="/meal-plans" icon={<CalendarDays className="w-5 h-5" />} label="Weekplannen" />
           <NavItem href="/recipes" icon={<NotepadText className="w-5 h-5" />} label="Recepten" />
+          <NavItem href="/training-plans" icon={<Dumbbell className="w-5 h-5" />} label="Trainingsschema's" />
           <NavItem href="/settings" icon={<Settings className="w-5 h-5" />} label="Instellingen" />
         </nav>
 
