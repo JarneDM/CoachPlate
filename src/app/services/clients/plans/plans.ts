@@ -11,4 +11,21 @@ export const getClientPlans = async (clientId: string) => {
   }
 
   return data;
-}
+};
+
+export const getClientWorkoutPlans = async (clientId: string) => {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("training_plans")
+    .select("*")
+    .eq("client_id", clientId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching client workout plans:", error);
+    return [];
+  }
+
+  return data;
+};
