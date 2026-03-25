@@ -1,7 +1,7 @@
 import { getClientPlans, getClientWorkoutPlans } from "@/app/services/clients/plans/plans";
 import { getClientById } from "@/app/services/clients/clients";
 import Link from "next/link";
-import { CalendarDays, ArrowRight, Plus, Clock } from "lucide-react";
+import { CalendarDays, ArrowRight, Plus, Clock, FileDown } from "lucide-react";
 import Button from "@/components/CTA/Button";
 
 type Plan = {
@@ -46,54 +46,64 @@ async function ClientPlans({ params }: { params: Promise<{ id: string }> }) {
         <div className="flex flex-col gap-3">
           <h2 className="text-lg font-semibold text-gray-900">Weekplannen</h2>
           {plans.map((plan: Plan) => (
-            <Link
+            <div
               key={plan.id}
-              href={`/meal-plans/${plan.id}`}
-              className="group bg-white rounded-xl border border-gray-100 p-5 hover:border-green-200 hover:shadow-sm transition-all flex items-center justify-between"
+              className="group bg-white rounded-xl border border-gray-100 p-5 hover:border-green-200 hover:shadow-sm transition-all flex items-center justify-between gap-3"
             >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-green-50 group-hover:bg-green-100 rounded-xl flex items-center justify-center transition-colors shrink-0">
-                  <CalendarDays size={20} className="text-green-600" />
-                </div>
+              <Link href={`/meal-plans/${plan.id}`} className="flex items-center justify-between flex-1 min-w-0">
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className="w-12 h-12 bg-green-50 group-hover:bg-green-100 rounded-xl flex items-center justify-center transition-colors shrink-0">
+                    <CalendarDays size={20} className="text-green-600" />
+                  </div>
 
-                <div>
-                  <h2 className="font-semibold text-gray-900 group-hover:text-green-700 transition-colors">{plan.name}</h2>
-                  <div className="flex items-center gap-4 mt-1.5 flex-wrap">
-                    {plan.start_date && (
-                      <span className="flex items-center gap-1.5 text-sm text-gray-400">
-                        <Clock size={12} />
-                        {new Date(plan.start_date).toLocaleDateString("nl-BE", {
+                  <div className="min-w-0">
+                    <h2 className="font-semibold text-gray-900 group-hover:text-green-700 transition-colors truncate">{plan.name}</h2>
+                    <div className="flex items-center gap-4 mt-1.5 flex-wrap">
+                      {plan.start_date && (
+                        <span className="flex items-center gap-1.5 text-sm text-gray-400">
+                          <Clock size={12} />
+                          {new Date(plan.start_date).toLocaleDateString("nl-BE", {
+                            day: "numeric",
+                            month: "short",
+                          })}
+                          {plan.end_date && (
+                            <>
+                              {" → "}
+                              {new Date(plan.end_date).toLocaleDateString("nl-BE", {
+                                day: "numeric",
+                                month: "short",
+                              })}
+                            </>
+                          )}
+                        </span>
+                      )}
+                      <span className="text-xs text-gray-400">
+                        Aangemaakt op{" "}
+                        {new Date(plan.created_at).toLocaleDateString("nl-BE", {
                           day: "numeric",
-                          month: "short",
+                          month: "long",
+                          year: "numeric",
                         })}
-                        {plan.end_date && (
-                          <>
-                            {" → "}
-                            {new Date(plan.end_date).toLocaleDateString("nl-BE", {
-                              day: "numeric",
-                              month: "short",
-                            })}
-                          </>
-                        )}
                       </span>
-                    )}
-                    <span className="text-xs text-gray-400">
-                      Aangemaakt op{" "}
-                      {new Date(plan.created_at).toLocaleDateString("nl-BE", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })}
-                    </span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <ArrowRight
-                size={16}
-                className="text-gray-300 group-hover:text-green-500 group-hover:translate-x-1 transition-all shrink-0"
-              />
-            </Link>
+                <ArrowRight
+                  size={16}
+                  className="text-gray-300 group-hover:text-green-500 group-hover:translate-x-1 transition-all shrink-0 ml-3"
+                />
+              </Link>
+
+              <Link
+                href={`/api/export-pdf/meal-plan/${plan.id}`}
+                target="_blank"
+                className="inline-flex items-center gap-1.5 text-sm text-green-700 bg-green-50 hover:bg-green-100 border border-green-100 rounded-lg px-3 py-2 transition-colors shrink-0"
+              >
+                <FileDown size={14} />
+                PDF
+              </Link>
+            </div>
           ))}
         </div>
       ) : (
