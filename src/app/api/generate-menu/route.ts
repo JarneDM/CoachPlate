@@ -174,7 +174,7 @@ RETOURNEER ALLEEN DIT JSON FORMAAT:
 - Macro's accurate: zorg dat sum(alle meals van dag) = doel ±tolerantie.
 - Instructions: 3-4 duidelijke stappen, komma gescheiden.
 - Min 2-3 ingrediënten.
-- wees creatief maar realistisch, geen exotische ingrediënten
+- wees creatief maar realistisch bij de recepten
 - Alle velden verplicht, geen null/undefined.`,
       },
     ],
