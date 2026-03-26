@@ -19,6 +19,7 @@ function sanitizeFileName(input: string) {
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const plan = await getMealPlanById(id);
+  // console.log("Fetched plan for PDF export:\n", JSON.stringify(plan, null, 2));
 
   if (!plan) {
     return NextResponse.json({ error: "Weekplan niet gevonden" }, { status: 404 });
