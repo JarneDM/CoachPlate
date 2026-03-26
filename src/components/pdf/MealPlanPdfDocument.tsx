@@ -4,6 +4,10 @@ import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 type Recipe = {
   id?: string;
   name?: string | null;
+  calories?: number | null;
+  protein_g?: number | null;
+  carbs_g?: number | null;
+  fat_g?: number | null;
 };
 
 type MealRecipe = {
@@ -110,6 +114,13 @@ const styles = StyleSheet.create({
     fontSize: 9,
     color: "#6b7280",
   },
+  MacrosLine: {
+    fontSize: 8,
+    color: "#4b5563",
+    marginLeft: 12,
+    marginBottom: 2,
+    fontWeight: 700,
+  },
 });
 
 function formatDate(date: string | null | undefined) {
@@ -168,10 +179,19 @@ export default function MealPlanPdfDocument({ plan, days }: Props) {
                       <Text style={styles.mealType}>{mealTypeLabel(meal.meal_type)}</Text>
                       {mealRecipes.length > 0 ? (
                         mealRecipes.map((entry) => (
-                          <Text key={entry.id ?? `${meal.id ?? "meal"}-${entry.recipes?.id ?? "recipe"}`} style={styles.recipeLine}>
-                            - {entry.recipes?.name ?? "Onbekend recept"}
-                            {entry.servings ? ` (${entry.servings} portie${entry.servings > 1 ? "s" : ""})` : ""}
-                          </Text>
+                          <View key={entry.id ?? `${meal.id}-${entry.recipes?.id ?? "recipe"}`}>
+                            <Text style={styles.recipeLine}>
+                              - {entry.recipes?.name ?? "Onbekend recept"}
+                              {entry.servings ? ` (${entry.servings} portie${entry.servings > 1 ? "s" : ""})` : ""}
+                            </Text>
+                            <Text style={styles.MacrosLine}>
+                              {entry.recipes
+                                ? `  (Kcal: ${entry.recipes.calories ?? "n.v.t."}, Eiwit: ${entry.recipes.protein_g ?? "n.v.t."}g, Koolhydraten: ${
+                                    entry.recipes.carbs_g ?? "n.v.t."
+                                  }g, Vet: ${entry.recipes.fat_g ?? "n.v.t."}g)`
+                                : ""}
+                            </Text>
+                          </View>
                         ))
                       ) : (
                         <Text style={styles.emptyText}>Geen recepten toegevoegd</Text>
