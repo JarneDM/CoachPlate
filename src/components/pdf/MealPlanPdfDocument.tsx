@@ -39,6 +39,10 @@ type Plan = {
   end_date?: string | null;
   clients?: {
     full_name?: string | null;
+    calories_goal?: number | null;
+    protein_goal?: number | null;
+    carbs_goal?: number | null;
+    fat_goal?: number | null;
   } | null;
 };
 
@@ -435,6 +439,32 @@ export default function MealPlanPdfDocument({ plan, days }: Props) {
           <View style={styles.headerRight}>
             <View style={styles.clientBadge}>
               <Text style={styles.clientName}>{plan.clients?.full_name ?? "Onbekende klant"}</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={{ marginBottom: 16 }}>
+          <Text style={styles.sectionTitle}>Macro doel klant</Text>
+          <View style={{ flexDirection: "row", gap: 5, marginTop: 4 }}>
+            <View style={{ backgroundColor: "#fff7ed", borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 }}>
+              <Text style={{ fontSize: 7, fontWeight: 700, color: ORANGE, paddingHorizontal: 6, paddingVertical: 2 }}>
+                {plan.clients?.calories_goal ? `${plan.clients.calories_goal} kcal` : "kcal doel niet ingesteld"}
+              </Text>
+            </View>
+            <View style={{ backgroundColor: "#eff6ff", borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 }}>
+              <Text style={{ fontSize: 7, fontWeight: 700, color: BLUE, paddingHorizontal: 6, paddingVertical: 2 }}>
+                {plan.clients?.protein_goal ? `${plan.clients.protein_goal}g Proteine` : "eiwit doel niet ingesteld"}
+              </Text>
+            </View>
+            <View style={{ backgroundColor: "#fefce8", borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 }}>
+              <Text style={{ fontSize: 7, fontWeight: 700, color: YELLOW, paddingHorizontal: 6, paddingVertical: 2 }}>
+                {plan.clients?.carbs_goal ? `${plan.clients.carbs_goal}g Koolhydraten` : "koolh doel niet ingesteld"}
+              </Text>
+            </View>
+            <View style={{ backgroundColor: "#fef2f2", borderRadius: 4, paddingHorizontal: 6, paddingVertical: 2 }}>
+              <Text style={{ fontSize: 7, fontWeight: 700, color: RED, paddingHorizontal: 6, paddingVertical: 2 }}>
+                {plan.clients?.fat_goal ? `${plan.clients.fat_goal}g Vetten` : "vet doel niet ingesteld"}
+              </Text>
             </View>
           </View>
         </View>
