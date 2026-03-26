@@ -35,7 +35,15 @@ export async function getMealPlanById(id: string) {
               calories,
               protein_g,
               carbs_g,
-              fat_g
+              fat_g,
+              recipe_ingredients (
+                id,
+                amount_g,
+                ingredients (
+                  id,
+                  name
+                )
+              )
             )
           )
         )
