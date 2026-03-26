@@ -10,6 +10,18 @@ type Recipe = {
   protein_g?: number | null;
   carbs_g?: number | null;
   fat_g?: number | null;
+  recipe_ingredients?: RecipeIngredient[] | null;
+};
+
+type IngredientItem = {
+  id?: string;
+  name?: string | null;
+};
+
+type RecipeIngredient = {
+  id?: string;
+  amount_g?: number | null;
+  ingredients?: IngredientItem | null;
 };
 
 type MealRecipe = {
@@ -316,6 +328,32 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
     letterSpacing: 0.5,
   },
+  recipeBottomSection: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 30,
+    justifyContent: "center",
+  },
+  ingredientsLabel: {
+    fontSize: 9,
+    fontWeight: 700,
+    color: GRAY_600,
+    marginBottom: 4,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  ingredientLine: {
+    fontSize: 9,
+    color: GRAY_800,
+    marginBottom: 2,
+  },
+  ingredientAmount: {
+    color: GRAY_600,
+  },
+  recipeSectionSpacer: {
+    marginTop: 8,
+    width: "40%",
+  },
   recipeInstructions: {
     fontSize: 9,
     color: GRAY_800,
@@ -607,18 +645,32 @@ export default function MealPlanPdfDocument({ plan, days }: Props) {
                     </View>
                   )}
 
-                  {recipe.instructions && (
-                    <>
-                      <Text style={styles.recipeInstructionsLabel}>Bereiding</Text>
-                      <View style={styles.instructionsGrid}>
-                        {getInstructionSteps(recipe.instructions).map((step, idx) => (
-                          <Text key={`${recipe.id ?? "recipe"}-step-${idx}`} style={styles.instructionStep}>
-                            {idx + 1}. {step}
+                  <View style={styles.recipeBottomSection}>
+                    {recipe.instructions && (
+                      <View style={styles.recipeSectionSpacer}>
+                        <Text style={styles.recipeInstructionsLabel}>Bereiding</Text>
+                        <View style={styles.instructionsGrid}>
+                          {getInstructionSteps(recipe.instructions).map((step, idx) => (
+                            <Text key={`${recipe.id ?? "recipe"}-step-${idx}`} style={styles.instructionStep}>
+                              {idx + 1}. {step}
+                            </Text>
+                          ))}
+                        </View>
+                      </View>
+                    )}
+
+                    {(recipe.recipe_ingredients ?? []).length > 0 && (
+                      <View style={styles.recipeSectionSpacer}>
+                        <Text style={styles.ingredientsLabel}>Ingredienten</Text>
+                        {(recipe.recipe_ingredients ?? []).map((ri) => (
+                          <Text key={ri.id ?? `${recipe.id ?? "recipe"}-ingredient`} style={styles.ingredientLine}>
+                            - {ri.ingredients?.name ?? "Onbekend ingrediënt"}
+                            {ri.amount_g ? <Text style={styles.ingredientAmount}> ({ri.amount_g}g)</Text> : ""}
                           </Text>
                         ))}
                       </View>
-                    </>
-                  )}
+                    )}
+                  </View>
                 </View>
               </View>
             ))}
