@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CoachPlate",
+  title: "CoachPlate - v0.1.0",
   description: "Under construction",
 };
 

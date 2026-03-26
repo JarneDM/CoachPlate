@@ -289,7 +289,7 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
               <p className="text-sm text-gray-500">AI maakt je weekplan aan...</p>
               <p className="text-xs text-gray-400 mt-1">Dit kan een paar minuten duren</p>
               <p className="text-xs text-gray-500">
-                Time: {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+                Tijd: {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
               </p>
             </div>
           )}

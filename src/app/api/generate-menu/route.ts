@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
 
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
-    max_tokens: 15000,
+    max_tokens: 20000,
     system: "Antwoord ALLEEN met geldige JSON. Geen tekst voor/na de JSON. Geen markdown code blocks. Start met { en eindig met }.",
     messages: [
       {
@@ -172,7 +172,7 @@ RETOURNEER ALLEEN DIT JSON FORMAAT:
 - Elke dag: Maandag t/m Zondag in volgorde.
 - Elke ingredient: name (max 2 woorden), amount_g (geheel getal), calories, protein_g, carbs_g, fat_g.
 - Macro's accurate: zorg dat sum(alle meals van dag) = doel ±tolerantie.
-- Instructions: 3-4 duidelijke stappen, komma gescheiden.
+- Instructions: gedetaileerde en duidelijke instructies, komma gescheiden.
 - Min 2-3 ingrediënten.
 - wees creatief maar realistisch bij de recepten
 - Alle velden verplicht, geen null/undefined.`,
