@@ -30,6 +30,8 @@ export async function getMealPlanById(id: string) {
             recipes (
               id,
               name,
+              instructions,
+              prep_time_min,
               calories,
               protein_g,
               carbs_g,
@@ -38,6 +40,7 @@ export async function getMealPlanById(id: string) {
           )
         )
       )
+      
     `,
     )
     .eq("id", id)
