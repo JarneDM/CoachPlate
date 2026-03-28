@@ -48,6 +48,7 @@ export async function createClientAction(formData: FormData) {
     weight_kg: normalizeOptionalNumber(formData.get("weight_kg")),
     height_cm: normalizeOptionalNumber(formData.get("height_cm")),
     goal: normalizeOptionalText(formData.get("goal")),
+    active: normalizeOptionalText(formData.get("active")),
     calories_goal: normalizeOptionalNumber(formData.get("calories_goal")),
     protein_goal: normalizeOptionalNumber(formData.get("protein_goal")),
     carbs_goal: normalizeOptionalNumber(formData.get("carbs_goal")),
@@ -59,6 +60,7 @@ export async function createClientAction(formData: FormData) {
 
   const { error } = await supabase.from("clients").insert(payload);
 
+  //! use shadcn toast instead of query params for error handling
   if (error) {
     const message = encodeURIComponent(error.message || "Kon klant niet opslaan");
     redirect(`/clients/add?error=${message}`);
