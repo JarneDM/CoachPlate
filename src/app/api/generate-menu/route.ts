@@ -150,6 +150,7 @@ export async function POST(req: NextRequest) {
         role: "user",
         content: `Genereer een volledig weekmenu in JSON formaat voor:
 Klant: ${client.full_name}
+Doel klant: ${client.goal}
 DAGDOELEN:
 - Totale kcal/dag: ${client.calories_goal}
 - Totale proteïne/dag: ${client.protein_goal}g
