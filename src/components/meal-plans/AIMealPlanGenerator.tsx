@@ -125,6 +125,10 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
     setGeneratedPlan(null);
 
     try {
+      const pref =
+        selectedClient.preferences && extraWishes
+          ? ` Houd rekening met de volgende voorkeuren: ${selectedClient.preferences} en ${extraWishes}.`
+          : "";
       const res = await fetch("/api/generate-menu", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -137,7 +141,7 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
             carbs_goal: selectedClient.carbs_goal ?? 200,
             fat_goal: selectedClient.fat_goal ?? 65,
             allergies: selectedClient.allergies ?? [],
-            preferences: extraWishes || selectedClient.preferences || "",
+            preferences: pref || selectedClient.preferences || extraWishes || "",
             goal: selectedClient.goal,
           },
         }),
@@ -279,6 +283,9 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
               <Sparkles size={14} />
               {loading ? "Weekplan genereren..." : "Genereer weekplan"}
             </button>
+            <p className="text-xs text-gray-400 justify-center items-center mx-auto flex">
+              De AI kan fouten maken, dus controleer het plan voordat je het gebruikt!
+            </p>
           </div>
 
           {loading && (
