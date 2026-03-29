@@ -1,28 +1,69 @@
 "use client";
 
-import { useState } from "react";
-import { createRecipe } from "@/app/services/recipes/actions";
+import { useState, useEffect } from "react";
+import { createRecipe, updateRecipe } from "@/app/services/recipes/actions";
 import { searchIngredients, type FoodFactsResult } from "@/app/services/ingredients/open-food-facts";
 import { MacroTotal } from "@/components/recipes/MacroTotal";
 import { IngredientRow } from "@/types/interfaces";
 import Link from "next/link";
-
+import { Ingredient } from "@/types/index";
 
 const mealTypes = ["ontbijt", "lunch", "avondeten", "snack"];
 
-export default function RecipeForm() {
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [instructions, setInstructions] = useState("");
-  const [mealType, setMealType] = useState("");
-  const [prepTime, setPrepTime] = useState("");
-  const [servings, setServings] = useState("1");
+interface RecipeFormProps {
+  initialRecipe?: {
+    id: string;
+    name: string;
+    description: string | null;
+    instructions: string | null;
+    meal_type: string | null;
+    prep_time_min: number | null;
+    servings: number;
+    recipe_ingredients: Array<{
+      id: string;
+      amount_g: number;
+      ingredients: {
+        id: string;
+        name: string;
+        calories: number;
+        protein_g: number;
+        carbs_g: number;
+        fat_g: number;
+      };
+    }>;
+  };
+}
+
+export default function RecipeForm({ initialRecipe }: RecipeFormProps) {
+  const isEditMode = !!initialRecipe;
+  const [name, setName] = useState(initialRecipe?.name || "");
+  const [description, setDescription] = useState(initialRecipe?.description || "");
+  const [instructions, setInstructions] = useState(initialRecipe?.instructions || "");
+  const [mealType, setMealType] = useState(initialRecipe?.meal_type || "");
+  const [prepTime, setPrepTime] = useState(initialRecipe?.prep_time_min?.toString() || "");
+  const [servings, setServings] = useState(initialRecipe?.servings?.toString() || "1");
   const [ingredients, setIngredients] = useState<IngredientRow[]>([]);
   const [search, setSearch] = useState("");
   const [searchResults, setSearchResults] = useState<FoodFactsResult[]>([]);
   const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Initialize ingredients from recipe if editing
+  useEffect(() => {
+    if (initialRecipe?.recipe_ingredients) {
+      const initialIngredients = initialRecipe.recipe_ingredients.map((ri: any) => ({
+        id: ri.ingredients.id,
+        name: ri.ingredients.name,
+        amount_g: ri.amount_g,
+        calories: ri.ingredients.calories,
+        protein_g: ri.ingredients.protein_g,
+        carbs_g: ri.ingredients.carbs_g,
+        fat_g: ri.ingredients.fat_g,
+      }));
+      setIngredients(initialIngredients);
+    }
+  }, [initialRecipe]);
 
   const macros = ingredients.reduce(
     (acc, ing) => {
@@ -34,7 +75,7 @@ export default function RecipeForm() {
         fat_g: acc.fat_g + ing.fat_g * factor,
       };
     },
-    { calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 }
+    { calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0 },
   );
 
   const perServing = {
@@ -52,45 +93,64 @@ export default function RecipeForm() {
   }
 
   function addIngredient(food: FoodFactsResult) {
-    setIngredients(prev => [...prev, {
-      id: food.id,
-      name: food.name,
-      amount_g: 100,
-      calories: food.calories,
-      protein_g: food.protein_g,
-      carbs_g: food.carbs_g,
-      fat_g: food.fat_g,
-    }]);
+    setIngredients((prev) => [
+      ...prev,
+      {
+        id: food.id,
+        name: food.name,
+        amount_g: 100,
+        calories: food.calories,
+        protein_g: food.protein_g,
+        carbs_g: food.carbs_g,
+        fat_g: food.fat_g,
+      },
+    ]);
     setSearch("");
     setSearchResults([]);
   }
 
   function updateAmount(id: string, amount: number) {
-    setIngredients(prev =>
-      prev.map(ing => ing.id === id ? { ...ing, amount_g: amount } : ing)
-    );
+    setIngredients((prev) => prev.map((ing) => (ing.id === id ? { ...ing, amount_g: amount } : ing)));
   }
 
   function removeIngredient(id: string) {
-    setIngredients(prev => prev.filter(ing => ing.id !== id));
+    setIngredients((prev) => prev.filter((ing) => ing.id !== id));
   }
 
   async function handleSubmit() {
-    if (!name) { setError("Vul een naam in"); return; }
-    if (ingredients.length === 0) { setError("Voeg minstens één ingrediënt toe"); return; }
+    if (!name) {
+      setError("Vul een naam in");
+      return;
+    }
+    if (ingredients.length === 0) {
+      setError("Voeg minstens één ingrediënt toe");
+      return;
+    }
 
     setLoading(true);
     setError("");
 
-    await createRecipe({
-      name,
-      description,
-      instructions,
-      meal_type: mealType,
-      prep_time_min: prepTime ? Number(prepTime) : undefined,
-      servings: Number(servings),
-      ingredients,
-    });
+    if (isEditMode && initialRecipe) {
+      await updateRecipe(initialRecipe.id, {
+        name,
+        description,
+        instructions,
+        meal_type: mealType,
+        prep_time_min: prepTime ? Number(prepTime) : undefined,
+        servings: Number(servings),
+        ingredients,
+      });
+    } else {
+      await createRecipe({
+        name,
+        description,
+        instructions,
+        meal_type: mealType,
+        prep_time_min: prepTime ? Number(prepTime) : undefined,
+        servings: Number(servings),
+        ingredients,
+      });
+    }
   }
 
   return (
@@ -276,7 +336,10 @@ export default function RecipeForm() {
       </div>
 
       <div className="flex items-center justify-end gap-3">
-        <Link href="/recipes" className="text-sm text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+        <Link
+          href={isEditMode ? `/recipes/${initialRecipe?.id}` : "/recipes"}
+          className="text-sm text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+        >
           Annuleer
         </Link>
         <button
@@ -284,7 +347,7 @@ export default function RecipeForm() {
           disabled={loading || !name || ingredients.length === 0}
           className="bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors"
         >
-          {loading ? "Opslaan..." : "Recept opslaan"}
+          {loading ? (isEditMode ? "Bijwerken..." : "Opslaan...") : isEditMode ? "Recept bijwerken" : "Recept opslaan"}
         </button>
       </div>
     </div>

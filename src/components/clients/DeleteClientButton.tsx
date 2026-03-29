@@ -1,13 +1,13 @@
 "use client";
 
+import React, { useEffect, useRef, useState } from "react";
+import { Loader2, Trash, TriangleAlert } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { Loader2, Trash2, TriangleAlert } from "lucide-react";
 
-export default function DeleteWeekPlanButton({ id }: { id: string }) {
+function DeleteClientButton({ clientId }: { clientId: string }) {
+  const router = useRouter();
   const [openConfirm, setOpenConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const router = useRouter();
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,10 +38,10 @@ export default function DeleteWeekPlanButton({ id }: { id: string }) {
   async function handleDelete() {
     try {
       setIsDeleting(true);
-      const response = await fetch(`/api/meal-plans/${id}`, { method: "DELETE" });
+      const response = await fetch(`/api/clients/${clientId}`, { method: "DELETE" });
 
       if (!response.ok) {
-        console.error("Failed to delete week plan", await response.text());
+        console.error("Error deleting client:", await response.text());
         return;
       }
 
@@ -53,23 +53,23 @@ export default function DeleteWeekPlanButton({ id }: { id: string }) {
   }
 
   return (
-    <div ref={wrapperRef} className="relative">
+    <div ref={wrapperRef} className="absolute bottom-2 right-2">
       <button
+        className="cursor-pointer rounded-md p-1.5 text-red-500 hover:bg-red-50 transition-colors"
         onClick={() => setOpenConfirm((prev) => !prev)}
-        className="text-gray-300 hover:text-red-400 p-2 rounded-lg hover:bg-red-50 transition-colors"
-        aria-label="Verwijder weekplan"
+        aria-label="Verwijder klant"
       >
-        <Trash2 size={14} />
+        <Trash width={16} />
       </button>
 
       {openConfirm && (
-        <div className="absolute bottom-9 right-0 w-64 rounded-xl border border-gray-200 bg-white shadow-lg p-3 z-30 animate-in fade-in zoom-in-95 duration-150">
+        <div className="absolute bottom-9 right-0 w-64 rounded-xl border border-gray-200 bg-white shadow-lg p-3 z-20 animate-in fade-in zoom-in-95 duration-150">
           <div className="flex items-start gap-2.5">
             <div className="mt-0.5 rounded-full bg-red-50 p-1.5">
               <TriangleAlert size={14} className="text-red-500" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-gray-900">Weekplan verwijderen?</p>
+              <p className="text-sm font-semibold text-gray-900">Klant verwijderen?</p>
               <p className="text-xs text-gray-500 mt-0.5">Deze actie kan je niet ongedaan maken.</p>
             </div>
           </div>
@@ -98,3 +98,5 @@ export default function DeleteWeekPlanButton({ id }: { id: string }) {
     </div>
   );
 }
+
+export default DeleteClientButton;
