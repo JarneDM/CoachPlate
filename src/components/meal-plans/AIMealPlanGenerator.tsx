@@ -141,7 +141,7 @@ export default function AIMealPlanGenerator({ clients }: { clients: Client[] }) 
             carbs_goal: selectedClient.carbs_goal ?? 200,
             fat_goal: selectedClient.fat_goal ?? 65,
             allergies: selectedClient.allergies ?? [],
-            preferences: pref || selectedClient.preferences || "",
+            preferences: pref || selectedClient.preferences || extraWishes || "",
             goal: selectedClient.goal,
           },
         }),
