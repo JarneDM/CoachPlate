@@ -3,6 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { CalendarDays, User, ArrowRight, Plus, Clock, FileDown } from "lucide-react";
 import Button from "@/components/CTA/Button";
+import DeleteWeekPlanButton from "@/components/meal-plans/DeleteWeekPlanButton";
 
 async function MealPlans() {
   let mealplans: Awaited<ReturnType<typeof getMealPlans>> = [];
@@ -23,22 +24,15 @@ async function MealPlans() {
       {mealplans.length > 0 ? (
         <div className="flex flex-col gap-3">
           {mealplans.map((plan) => (
-            <div
-              key={plan.id}
-              className="group bg-white rounded-xl border border-gray-100 p-5 hover:border-green-200 hover:shadow-sm transition-all flex items-center justify-between"
-            >
-              <Link
-                key={plan.id}
-                href={`/meal-plans/${plan.id}`}
-                className="flex items-center justify-between flex-1 min-w-0 cursor-pointer"
-              >
+            <div key={plan.id} className="group bg-white rounded-xl border border-gray-100 p-5 flex items-center justify-between">
+              <div key={plan.id} className="flex items-center justify-between flex-1 min-w-0">
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-green-50 group-hover:bg-green-100 rounded-xl flex items-center justify-center transition-colors shrink-0">
+                  <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center transition-colors shrink-0">
                     <CalendarDays size={20} className="text-green-600" />
                   </div>
 
                   <div>
-                    <h2 className="font-semibold text-gray-900 group-hover:text-green-700 transition-colors">{plan.name}</h2>
+                    <h2 className="font-semibold text-gray-900 transition-colors">{plan.name}</h2>
                     <div className="flex items-center gap-4 mt-1.5 flex-wrap">
                       <span className="flex items-center gap-1.5 text-sm text-gray-400">
                         <User size={12} />
@@ -72,15 +66,25 @@ async function MealPlans() {
                     </div>
                   </div>
                 </div>
-              </Link>
-              <Link
-                href={`/api/export-pdf/meal-plan/${plan.id}`}
-                target="_blank"
-                className="inline-flex items-center gap-1.5 text-sm text-green-700 bg-green-50 hover:bg-green-100 border border-green-100 rounded-lg px-3 py-2 transition-colors shrink-0"
-              >
-                <FileDown size={14} />
-                PDF
-              </Link>
+              </div>
+              <div className="flex items-center gap-2 ml-4 shrink-0">
+                <Link
+                  href={`/api/export-pdf/meal-plan/${plan.id}`}
+                  target="_blank"
+                  className="inline-flex items-center gap-1.5 text-sm text-green-700 bg-green-50 hover:bg-green-100 border border-green-100 rounded-lg px-3 py-2 transition-colors"
+                >
+                  <FileDown size={14} />
+                  PDF
+                </Link>
+                <Link
+                  href={`/meal-plans/${plan.id}`}
+                  className="flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                >
+                  Openen
+                  <ArrowRight size={14} />
+                </Link>
+                <DeleteWeekPlanButton id={plan.id} />
+              </div>
             </div>
           ))}
         </div>

@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Trash2 } from "lucide-react";
 
-export default function DeleteTrainingPlanButton({ id }: { id: string }) {
+export default function DeleteWeekPlanButton({ id }: { id: string }) {
   const [confirming, setConfirming] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
@@ -12,10 +12,10 @@ export default function DeleteTrainingPlanButton({ id }: { id: string }) {
   async function handleDelete() {
     try {
       setIsDeleting(true);
-      const response = await fetch(`/api/training-plans/${id}`, { method: "DELETE" });
+      const response = await fetch(`/api/meal-plans/${id}`, { method: "DELETE" });
 
       if (!response.ok) {
-        console.error("Failed to delete training plan", await response.text());
+        console.error("Failed to delete week plan", await response.text());
         return;
       }
 
