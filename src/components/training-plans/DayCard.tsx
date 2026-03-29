@@ -95,8 +95,7 @@ function ExerciseRow({ etp, planId, onRemove }: { etp: ExerciseTrainingPlan; pla
   const [expanded, setExpanded] = useState(false);
   const [sets, setSets] = useState(etp.sets ?? 3);
   const [reps, setReps] = useState(etp.reps ?? 10);
-  const [weight, setWeight] = useState(etp.weight_kg ?? 0);
-  const [rest, setRest] = useState(etp.rest_seconds ?? 60);
+  const [rest, setRest] = useState(etp.rest_seconds ?? 0);
   const [isPending, startTransition] = useTransition();
 
   const muscleColor = MUSCLE_GROUP_COLORS[etp.exercises.muscle_group?.toLowerCase() ?? ""] ?? "bg-gray-50 text-gray-600";
@@ -119,7 +118,6 @@ function ExerciseRow({ etp, planId, onRemove }: { etp: ExerciseTrainingPlan; pla
               )}
               <span className="text-xs text-gray-400">
                 {sets}×{reps}
-                {weight > 0 && ` @ ${weight}kg`}
               </span>
             </div>
           </div>
@@ -154,16 +152,6 @@ function ExerciseRow({ etp, planId, onRemove }: { etp: ExerciseTrainingPlan; pla
                 handleUpdate("reps", v);
               }}
               min={1}
-            />
-            <NumberInput
-              label="Gewicht (kg)"
-              value={weight}
-              onChange={(v) => {
-                setWeight(v);
-                handleUpdate("weight_kg", v);
-              }}
-              min={0}
-              step={2.5}
             />
             <NumberInput
               label="Rust (sec)"

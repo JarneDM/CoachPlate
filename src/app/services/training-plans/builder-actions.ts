@@ -3,6 +3,10 @@
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
+function normalizeExerciseName(name: string) {
+  return name.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
 export async function addExerciseToDay({
   trainingPlanDayId,
   exerciseId,
@@ -105,9 +109,29 @@ export async function createExercise(data: {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const normalizedName = normalizeExerciseName(data.name);
+  if (!normalizedName) {
+    return { error: "Naam van oefening ontbreekt" };
+  }
+
+  const { data: existingExercises, error: existingExercisesError } = await supabase
+    .from("exercises")
+    .select("id, name, muscle_group, category, equipment, difficulty, instructions")
+    .or(`coach_id.eq.${user!.id},coach_id.is.null`);
+
+  if (existingExercisesError) {
+    console.error("Error checking existing exercises:", existingExercisesError);
+    return { error: "Bestaande oefeningen controleren mislukt" };
+  }
+
+  const existing = (existingExercises ?? []).find((exercise) => normalizeExerciseName(exercise.name) === normalizedName);
+  if (existing) {
+    return { exercise: existing };
+  }
+
   const { data: exercise, error } = await supabase
     .from("exercises")
-    .insert({ ...data, coach_id: user!.id })
+    .insert({ ...data, name: data.name.trim(), coach_id: user!.id })
     .select()
     .single();
 

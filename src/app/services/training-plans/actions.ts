@@ -10,7 +10,6 @@ export async function createTrainingPlan(formData: { name: string; client_id: st
     data: { user },
   } = await supabase.auth.getUser();
 
-  // 1. Plan aanmaken
   const { data: plan, error: planError } = await supabase
     .from("training_plans")
     .insert({
@@ -26,7 +25,6 @@ export async function createTrainingPlan(formData: { name: string; client_id: st
     return { error: "Schema aanmaken mislukt" };
   }
 
-  // 2. Dagen aanmaken
   if (formData.days.length > 0) {
     const { error: daysError } = await supabase.from("training_plan_days").insert(
       formData.days.map((day) => ({
