@@ -12,6 +12,25 @@ export async function GET(req: NextRequest) {
 
     if (data.user) {
       await ensureCoachProfile(supabase, data.user);
+
+      const hasAcceptedTerms = data.user.user_metadata?.terms_accepted === true;
+
+      if (hasAcceptedTerms) {
+        const { data: existingAcceptance } = await supabase
+          .from("coach_acceptance")
+          .select("id")
+          .eq("coach_id", data.user.id)
+          .maybeSingle();
+
+        if (existingAcceptance) {
+          await supabase.from("coach_acceptance").update({ accepted: true }).eq("coach_id", data.user.id);
+        } else {
+          await supabase.from("coach_acceptance").insert({
+            coach_id: data.user.id,
+            accepted: true,
+          });
+        }
+      }
     }
   }
 
