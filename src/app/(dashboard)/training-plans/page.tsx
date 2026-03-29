@@ -1,6 +1,6 @@
 import { getTrainingPlans } from "@/app/services/training-plans/training-plans";
 import Link from "next/link";
-import { Dumbbell, Plus, User, CalendarDays, ArrowRight, Layers } from "lucide-react";
+import { Dumbbell, Plus, User, CalendarDays, ArrowRight, Layers, FileDown } from "lucide-react";
 import DeleteTrainingPlanButton from "@/components/training-plans/DeleteTrainingPlanButton";
 
 export default async function TrainingPlansPage() {
@@ -64,6 +64,14 @@ export default async function TrainingPlansPage() {
               </Link>
 
               <div className="flex items-center gap-2 ml-4 shrink-0">
+                <Link
+                  href={`/api/export-pdf/training-plan/${plan.id}`}
+                  target="_blank"
+                  className="inline-flex items-center gap-1.5 text-sm text-green-700 bg-green-50 hover:bg-green-100 border border-green-100 rounded-lg px-3 py-2 transition-colors"
+                >
+                  <FileDown size={14} />
+                  PDF
+                </Link>
                 <Link
                   href={`/training-plans/${plan.id}/edit`}
                   className="text-sm text-gray-400 hover:text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
