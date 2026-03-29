@@ -40,3 +40,11 @@ export async function getClientById(id: string): Promise<Client | null> {
   return data;
 }
 
+export const deleteClientById = async (id: string) => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  return supabase.from("clients").delete().eq("id", id).eq("coach_id", user?.id);
+};

@@ -2,6 +2,7 @@ import { getClients } from "@/app/services/clients/clients";
 import Link from "next/link";
 import { Users, Plus, CalendarDays, ArrowRight, Mail, Calendar } from "lucide-react";
 import Button from "@/components/CTA/Button";
+import DeleteClientButton from "@/components/clients/DeleteClientButton";
 
 async function ClientsPage() {
   const clients = await getClients();
@@ -24,49 +25,54 @@ async function ClientsPage() {
       {clients.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {clients.map((client) => (
-            <Link
-              key={client.id}
-              href={`/clients/${client.id}`}
-              className="group bg-white rounded-xl border border-gray-100 p-5 hover:border-green-200 hover:shadow-sm transition-all flex items-center justify-between"
-            >
-              <div className="flex items-center gap-4 min-w-0">
-                <div className="w-12 h-12 bg-green-100 group-hover:bg-green-200 rounded-xl flex items-center justify-center text-green-700 font-bold text-lg shrink-0 transition-colors">
-                  {client.full_name.charAt(0).toUpperCase()}
-                </div>
+            <div key={client.id} className="relative">
+              <Link
+                key={client.id}
+                href={`/clients/${client.id}`}
+                className="relative group bg-white rounded-xl border border-gray-100 p-5 hover:border-green-200 hover:shadow-sm transition-all flex items-center justify-between"
+              >
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className="w-12 h-12 bg-green-100 group-hover:bg-green-200 rounded-xl flex items-center justify-center text-green-700 font-bold text-lg shrink-0 transition-colors">
+                    {client.full_name.charAt(0).toUpperCase()}
+                  </div>
 
-                <div className="min-w-0">
-                  <h2 className="font-semibold text-gray-900 group-hover:text-green-700 transition-colors truncate">{client.full_name}</h2>
-                  <div className="flex flex-col gap-0.5 mt-1">
-                    {client.email && (
-                      <span className="flex items-center gap-1.5 text-xs text-gray-400 truncate">
-                        <Mail size={10} />
-                        {client.email}
-                      </span>
-                    )}
-                    {client.birth_date && (
-                      <span className="flex items-center gap-1.5 text-xs text-gray-400">
-                        <Calendar size={10} />
-                        {new Date(client.birth_date).toLocaleDateString("nl-BE", {
-                          day: "numeric",
-                          month: "long",
-                          year: "numeric",
-                        })}
-                      </span>
-                    )}
-                    {client.goal && (
-                      <span className="inline-flex mt-1 bg-green-50 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full w-fit">
-                        {client.goal}
-                      </span>
-                    )}
+                  <div className="min-w-0">
+                    <h2 className="font-semibold text-gray-900 group-hover:text-green-700 transition-colors truncate">
+                      {client.full_name}
+                    </h2>
+                    <div className="flex flex-col gap-0.5 mt-1">
+                      {client.email && (
+                        <span className="flex items-center gap-1.5 text-xs text-gray-400 truncate">
+                          <Mail size={10} />
+                          {client.email}
+                        </span>
+                      )}
+                      {client.birth_date && (
+                        <span className="flex items-center gap-1.5 text-xs text-gray-400">
+                          <Calendar size={10} />
+                          {new Date(client.birth_date).toLocaleDateString("nl-BE", {
+                            day: "numeric",
+                            month: "long",
+                            year: "numeric",
+                          })}
+                        </span>
+                      )}
+                      {client.goal && (
+                        <span className="inline-flex mt-1 bg-green-50 text-green-700 text-xs font-medium px-2 py-0.5 rounded-full w-fit">
+                          {client.goal}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <ArrowRight
-                size={16}
-                className="text-gray-300 group-hover:text-green-500 group-hover:translate-x-1 transition-all shrink-0 ml-2"
-              />
-            </Link>
+                <ArrowRight
+                  size={16}
+                  className="text-gray-300 group-hover:text-green-500 group-hover:translate-x-1 transition-all shrink-0 ml-2"
+                />
+              </Link>
+              <DeleteClientButton clientId={client.id} />
+            </div>
           ))}
         </div>
       ) : (
