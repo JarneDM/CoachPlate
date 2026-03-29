@@ -9,6 +9,7 @@ export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -28,6 +29,14 @@ export default function RegisterPage() {
       return;
     }
 
+    if (!acceptedTerms) {
+      setError("Je moet de algemene voorwaarden accepteren om te registreren");
+      setLoading(false);
+      return;
+    }
+
+    const acceptedAt = new Date().toISOString();
+
     const { error: authError } = await supabase.auth.signUp({
       email: normalizedEmail,
       password,
@@ -35,6 +44,9 @@ export default function RegisterPage() {
         emailRedirectTo: `${window.location.origin}/auth/callback`,
         data: {
           full_name: normalizedName,
+          terms_accepted: true,
+          terms_accepted_at: acceptedAt,
+          terms_version: "2026-03-29",
         },
       },
     });
@@ -89,9 +101,29 @@ export default function RegisterPage() {
           <p className="text-xs text-gray-400 mt-1">Minstens 8 tekens</p>
         </div>
 
+        <label className="flex items-start gap-2.5 text-sm text-gray-600">
+          <input
+            type="checkbox"
+            checked={acceptedTerms}
+            onChange={(e) => setAcceptedTerms(e.target.checked)}
+            className="mt-1 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
+          />
+          <span>
+            Ik ga akkoord met de{" "}
+            <Link href="/terms" className="underline hover:text-gray-800">
+              algemene voorwaarden
+            </Link>{" "}
+            en het{" "}
+            <Link href="/privacy" className="underline hover:text-gray-800">
+              privacybeleid
+            </Link>
+            .
+          </span>
+        </label>
+
         <button
           onClick={handleRegister}
-          disabled={loading || !fullName.trim() || !email.trim() || !password}
+          disabled={loading || !fullName.trim() || !email.trim() || !password || !acceptedTerms}
           className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white font-medium rounded-lg py-2.5 text-sm transition-colors"
         >
           {loading ? "Account aanmaken..." : "Gratis starten"}
@@ -106,6 +138,14 @@ export default function RegisterPage() {
         en{" "}
         <Link href="/terms" className="underline">
           gebruiksvoorwaarden
+        </Link>
+        ,{" "}
+        <Link href="/cookies" className="underline">
+          cookiebeleid
+        </Link>{" "}
+        en{" "}
+        <Link href="/verwerkersovereenkomst" className="underline">
+          verwerkersovereenkomst
         </Link>
         .
       </p>
