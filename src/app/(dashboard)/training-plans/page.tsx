@@ -73,12 +73,6 @@ export default async function TrainingPlansPage() {
                   PDF
                 </Link>
                 <Link
-                  href={`/training-plans/${plan.id}/edit`}
-                  className="text-sm text-gray-400 hover:text-gray-600 px-3 py-2 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  Bewerken
-                </Link>
-                <Link
                   href={`/training-plans/${plan.id}`}
                   className="flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
                 >

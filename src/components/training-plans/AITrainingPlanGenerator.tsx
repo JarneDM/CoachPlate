@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sparkles, Dumbbell, RotateCcw, Save, ChevronDown } from "lucide-react";
 import { createTrainingPlanFromAI } from "@/app/services/training-plans/ai-actions";
@@ -47,15 +47,32 @@ export default function AITrainingPlanGenerator({ clients }: { clients: Client[]
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [generatedPlan, setGeneratedPlan] = useState<GeneratedTrainingPlan | null>(null);
+  const [split, setSplit] = useState("");
+  const [days, setDays] = useState<number>(4);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  
 
   const router = useRouter();
   const selectedClient = clients.find((c) => c.id === clientId);
+
+  useEffect(() => {
+    if (!loading) return;
+
+    const timerId = window.setInterval(() => {
+      setElapsedSeconds((prev) => prev + 1);
+    }, 1000);
+
+    return () => window.clearInterval(timerId);
+  }, [loading]);
+
+  const minutes = Math.floor(elapsedSeconds / 60);
+  const seconds = elapsedSeconds % 60;
 
   function handleClientChange(id: string) {
     setClientId(id);
     const client = clients.find((c) => c.id === id);
     if (client) {
-      setPlanName(`${client.full_name} - AI trainingsschema`);
+      setPlanName(`${client.full_name} - trainingsschema`);
     }
   }
 
@@ -83,6 +100,8 @@ export default function AITrainingPlanGenerator({ clients }: { clients: Client[]
             full_name: selectedClient.full_name,
             goal: selectedClient.goal ?? "",
             preferences: selectedClient.preferences ?? "",
+            split: split,
+            days: days,
             notes: selectedClient.notes ?? "",
           },
           extraWishes,
@@ -194,6 +213,36 @@ export default function AITrainingPlanGenerator({ clients }: { clients: Client[]
             </div>
 
             <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Split</label>
+              <select
+                disabled={loading}
+                value={split}
+                onChange={(e) => setSplit(e.target.value)}
+                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="">Geen voorkeur</option>
+                <option value="full body">Full body</option>
+                <option value="upper lower">Upper/lower</option>
+                <option value="push pull legs">Push/pull/legs</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Aantal trainingsdagen per week</label>
+              <input
+                disabled={loading}
+                type="text"
+                value={days}
+                onChange={(e) => setDays(Number(e.target.value))}
+                placeholder="Bijv. 4"
+                pattern="[1-9]\d*"
+                className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                min={1}
+                max={7}
+              />
+            </div>
+
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Extra wensen (optioneel)</label>
               <input
                 disabled={loading}
@@ -225,6 +274,9 @@ export default function AITrainingPlanGenerator({ clients }: { clients: Client[]
                 <Dumbbell size={20} className="text-green-600" />
               </div>
               <p className="text-sm text-gray-500">AI maakt je trainingsschema aan...</p>
+              <p className="text-xs text-gray-500">
+                Tijd: {String(minutes).padStart(2, "0")}:{String(seconds).padStart(2, "0")}
+              </p>
             </div>
           )}
         </>
@@ -237,7 +289,10 @@ export default function AITrainingPlanGenerator({ clients }: { clients: Client[]
               <span className="bg-green-50 text-green-700 text-xs font-medium px-2.5 py-1 rounded-full">✨ AI gegenereerd</span>
               <h2 className="font-semibold text-gray-900">{planName}</h2>
             </div>
-            <button onClick={handleGenerate} className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 transition-colors">
+            <button
+              onClick={handleGenerate}
+              className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 transition-colors"
+            >
               <RotateCcw size={13} />
               Opnieuw
             </button>
@@ -261,9 +316,7 @@ export default function AITrainingPlanGenerator({ clients }: { clients: Client[]
                       </div>
                     ))}
 
-                    {day.exercises.length > 5 && (
-                      <p className="text-xs text-gray-400 text-center">+{day.exercises.length - 5} meer</p>
-                    )}
+                    {day.exercises.length > 5 && <p className="text-xs text-gray-400 text-center">+{day.exercises.length - 5} meer</p>}
                   </div>
 
                   <div className="mt-2 pt-2 border-t border-gray-100 text-center">

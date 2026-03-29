@@ -117,12 +117,23 @@ export async function POST(req: NextRequest) {
 
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
-    max_tokens: 4000,
+    max_tokens: 5000,
     system: "Antwoord ALLEEN met geldige JSON. Geen tekst voor/na de JSON. Geen markdown code blocks. Start met { en eindig met }.",
     messages: [
       {
         role: "user",
-        content: `Genereer een trainingsschema in JSON voor deze klant:\nNaam: ${client.full_name}\nDoel: ${client.goal || "niet opgegeven"}\nVoorkeuren: ${client.preferences || "geen"}\nNotities: ${client.notes || "geen"}\nExtra wensen coach: ${extraWishes || "geen"}\n\nEisen:\n- Maak 3 tot 6 trainingsdagen.\n- day_number moet oplopen vanaf 1 zonder gaten.\n- Elke dag bevat 4 tot 8 oefeningen.\n- Geef realistische sets/reps/rust volgens het doel van de klant.\n- Wissel spiergroepen logisch af over de week.\n- Notes kort en praktisch (1 zin).\n\nRetourneer ALLEEN dit JSON formaat:\n{\n  "days": [\n    {\n      "day_number": 1,\n      "name": "Upper Body",\n      "exercises": [\n        {\n          "name": "Bench Press",\n          "muscle_group": "Chest",\n          "sets": 4,\n          "reps": 8,\n          "rest_seconds": 90,\n          "notes": "Houd schouders laag en span core aan."\n        }\n      ]\n    }\n  ]\n}\n\nGeen extra velden, geen null, geen markdown, geen uitleg.`,
+        content: `Genereer een trainingsschema in JSON voor deze klant:
+        \nNaam: ${client.full_name}
+        \nDoel: ${client.goal || "niet opgegeven"}\nVoorkeuren: ${client.preferences || "geen"}
+        \nNotities: ${client.notes || "geen"}\nExtra wensen coach: ${extraWishes || "geen"}
+        \nSplit: ${client.split || "geen"}\n
+        \nEisen:\n- Maak ${client.days || "3 tot 6"} trainingsdagen. (afhankelijk van de split en voorkeuren), als het doel iets met afvallen of vetverlies te maken heeft. voeg ook 1 cardio oefening toe per dag.\n
+        \n- day_number moet oplopen vanaf 1 zonder gaten.
+        \n- Elke dag bevat 4 tot 8 oefeningen.
+        \n- Geef realistische sets/reps/rust volgens het doel van de klant.
+        \n- Wissel spiergroepen logisch af over de week.\n- Notes kort en praktisch (1 zin).\n
+        \nRetourneer ALLEEN dit JSON formaat:\n
+        {\n  "days": [\n    {\n      "day_number": 1,\n      "name": "Upper Body",\n      "exercises": [\n        {\n          "name": "Bench Press",\n          "muscle_group": "Chest",\n          "sets": 4,\n          "reps": 8,\n          "rest_seconds": 90,\n          "notes": "Houd schouders laag en span core aan."\n        }\n      ]\n    }\n  ]\n}\n\nGeen extra velden, geen null, geen markdown, geen uitleg.`,
       },
     ],
   });
