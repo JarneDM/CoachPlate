@@ -9,7 +9,7 @@ export default async function AIMealPlanPage() {
   return (
     <div className="max-w-3xl mx-auto">
       <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
-        <Link href="/dashboard/meal-plans/new" className="flex items-center gap-1.5 hover:text-gray-600 transition-colors">
+        <Link href="/meal-plans/new" className="flex items-center gap-1.5 hover:text-gray-600 transition-colors">
           <ArrowLeft size={14} />
           Nieuw weekplan
         </Link>
@@ -32,7 +32,7 @@ export default async function AIMealPlanPage() {
           <h3 className="font-semibold text-gray-900 mb-2">Geen klanten gevonden</h3>
           <p className="text-gray-400 text-sm mb-6">Voeg eerst een klant toe voor je een weekplan genereert.</p>
           <Link
-            href="/dashboard/clients/add"
+            href="/clients/add"
             className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors"
           >
             Klant toevoegen

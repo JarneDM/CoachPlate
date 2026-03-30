@@ -41,7 +41,7 @@ export async function addRecipeToMeal({
 
   if (recipeError) return { error: "Recept toevoegen mislukt" };
 
-  revalidatePath(`/dashboard/meal-plans/${planId}`);
+  revalidatePath(`/meal-plans/${planId}`);
   return { success: true };
 }
 
@@ -54,6 +54,6 @@ export async function removeRecipeFromMeal(mealRecipeId: string, planId: string)
     return { error: "Recept verwijderen mislukt" };
   }
 
-  revalidatePath(`/dashboard/meal-plans/${planId}`);
+  revalidatePath(`/meal-plans/${planId}`);
   return { success: true };
 }
