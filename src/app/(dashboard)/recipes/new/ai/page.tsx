@@ -6,7 +6,7 @@ export default function AIRecipePage() {
   return (
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
-        <Link href="/dashboard/recipes/new" className="flex items-center gap-1.5 hover:text-gray-600 transition-colors">
+        <Link href="/recipes/new" className="flex items-center gap-1.5 hover:text-gray-600 transition-colors">
           <ArrowLeft size={14} />
           Terug
         </Link>
