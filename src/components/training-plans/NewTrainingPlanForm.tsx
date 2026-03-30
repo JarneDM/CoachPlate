@@ -87,12 +87,7 @@ export default function NewTrainingPlanForm({ clients }: { clients: Client[] }) 
 
   return (
     <div className="space-y-6">
-
-      {error && (
-        <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg p-3">
-          {error}
-        </div>
-      )}
+      {error && <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg p-3">{error}</div>}
 
       <div className="bg-white rounded-xl border border-gray-100 p-6 space-y-4">
         <h2 className="font-semibold text-gray-900 text-sm">Basisinformatie</h2>
@@ -105,12 +100,14 @@ export default function NewTrainingPlanForm({ clients }: { clients: Client[] }) 
           <div className="relative">
             <select
               value={clientId}
-              onChange={e => handleClientChange(e.target.value)}
+              onChange={(e) => handleClientChange(e.target.value)}
               className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 appearance-none bg-white"
             >
               <option value="">Selecteer een klant</option>
-              {clients.map(c => (
-                <option key={c.id} value={c.id}>{c.full_name}</option>
+              {clients.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.full_name}
+                </option>
               ))}
             </select>
             <ChevronDown size={14} className="absolute right-3 top-3.5 text-gray-400 pointer-events-none" />
@@ -125,7 +122,7 @@ export default function NewTrainingPlanForm({ clients }: { clients: Client[] }) 
           <input
             type="text"
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={(e) => setName(e.target.value)}
             placeholder="bv. Jan — Push Pull Legs"
             className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
           />
@@ -141,7 +138,7 @@ export default function NewTrainingPlanForm({ clients }: { clients: Client[] }) 
         <div>
           <p className="text-xs text-gray-400 mb-2">Snel instellen via preset:</p>
           <div className="flex flex-wrap gap-2">
-            {DAY_PRESETS.map(preset => (
+            {DAY_PRESETS.map((preset) => (
               <button
                 key={preset.label}
                 onClick={() => applyPreset(preset)}
@@ -155,19 +152,14 @@ export default function NewTrainingPlanForm({ clients }: { clients: Client[] }) 
 
         <div className="space-y-2">
           {days.map((day, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-3 bg-gray-50 rounded-lg px-3 py-2.5"
-            >
+            <div key={index} className="flex items-center gap-3 bg-gray-50 rounded-lg px-3 py-2.5">
               <div className="w-7 h-7 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
-                <span className="text-xs font-bold text-green-700">
-                  {day.day_number}
-                </span>
+                <span className="text-xs font-bold text-green-700">{day.day_number}</span>
               </div>
               <input
                 type="text"
                 value={day.name}
-                onChange={e => updateDayName(index, e.target.value)}
+                onChange={(e) => updateDayName(index, e.target.value)}
                 className="flex-1 bg-transparent text-sm text-gray-700 focus:outline-none"
                 placeholder={`Dag ${day.day_number}`}
               />
@@ -193,7 +185,7 @@ export default function NewTrainingPlanForm({ clients }: { clients: Client[] }) 
 
       <div className="flex items-center justify-end gap-3 pb-8">
         <Link
-          href="/dashboard/training-plans"
+          href="/training-plans"
           className="text-sm text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
         >
           Annuleer
