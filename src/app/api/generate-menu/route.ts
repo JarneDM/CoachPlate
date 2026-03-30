@@ -1,5 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { canGenerateMealPlan } from "@/lib/supabase/subscriptionHelpers";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -135,6 +137,22 @@ function isGeneratedPlan(value: unknown): value is GeneratedPlan {
 }
 
 export async function POST(req: NextRequest) {
+  // Check authentication
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Niet geauthenticeerd" }, { status: 401 });
+  }
+
+  // Check Pro plan requirement for meal plan generation
+  const canGenerate = await canGenerateMealPlan(user.id);
+  if (!canGenerate) {
+    return NextResponse.json({ error: "Weekmenu's genereren met AI is alleen beschikbaar bij het Pro plan" }, { status: 403 });
+  }
+
   const { client } = await req.json();
 
   if (!client) {

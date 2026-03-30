@@ -11,10 +11,45 @@ export const PRICE_IDS = {
 export type PlanKey = keyof typeof PRICE_IDS;
 
 export const PLAN_LIMITS = {
-  starter: { maxClients: 10, aiAccess: false },
-  pro: { maxClients: Infinity, aiAccess: true },
-  studio: { maxClients: Infinity, aiAccess: true },
+  free: {
+    maxClients: 5,
+    aiRecipeGenerations: 5,
+    aiMealPlanGeneration: false,
+    aiTrainingPlanGeneration: false,
+    pdfExport: false,
+    publicRecipeDatabase: true,
+    aiAccess: false,
+  },
+  starter: {
+    maxClients: 10,
+    aiRecipeGenerations: 15,
+    aiMealPlanGeneration: false,
+    aiTrainingPlanGeneration: false,
+    pdfExport: true,
+    publicRecipeDatabase: true,
+    aiAccess: true,
+  },
+  pro: {
+    maxClients: Infinity,
+    aiRecipeGenerations: Infinity,
+    aiMealPlanGeneration: true,
+    aiTrainingPlanGeneration: true,
+    pdfExport: true,
+    publicRecipeDatabase: true,
+    aiAccess: true,
+  },
+  studio: {
+    maxClients: Infinity,
+    aiRecipeGenerations: Infinity,
+    aiMealPlanGeneration: true,
+    aiTrainingPlanGeneration: true,
+    pdfExport: true,
+    publicRecipeDatabase: true,
+    aiAccess: true,
+  },
 };
+
+export type PlanLimits = (typeof PLAN_LIMITS)["starter"];
 
 export function getPlanFromPriceId(priceId?: string | null): PlanKey {
   if (!priceId) {

@@ -1,5 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { canGenerateTrainingPlan } from "@/lib/supabase/subscriptionHelpers";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -109,6 +111,22 @@ function tryParsePlan(rawText: string): GeneratedTrainingPlan | null {
 }
 
 export async function POST(req: NextRequest) {
+  // Check authentication
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Niet geauthenticeerd" }, { status: 401 });
+  }
+
+  // Check Pro plan requirement for training plan generation
+  const canGenerate = await canGenerateTrainingPlan(user.id);
+  if (!canGenerate) {
+    return NextResponse.json({ error: "Trainingsschema's genereren met AI is alleen beschikbaar bij het Pro plan" }, { status: 403 });
+  }
+
   const { client, extraWishes } = await req.json();
 
   if (!client) {

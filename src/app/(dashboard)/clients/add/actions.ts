@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { canAddClient } from "@/lib/supabase/subscriptionHelpers";
 
 function normalizeOptionalText(value: FormDataEntryValue | null) {
   const text = String(value ?? "").trim();
@@ -24,6 +25,13 @@ export async function createClientAction(formData: FormData) {
   } = await supabase.auth.getUser();
 
   if (!user) redirect("/login");
+
+  // Check if user can add more clients
+  const canAdd = await canAddClient(user.id);
+  if (!canAdd) {
+    const message = encodeURIComponent("Je hebt het maximum aantal klanten bereikt. Upgrade naar een hoger plan.");
+    redirect(`/clients?error=${message}`);
+  }
 
   const fullName = String(formData.get("full_name") ?? "").trim();
 

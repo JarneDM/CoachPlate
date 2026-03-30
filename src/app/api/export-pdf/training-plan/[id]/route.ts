@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { getTrainingPlanById } from "@/app/services/training-plans/training-plans";
 import TrainingPlanPdfDocument from "@/components/pdf/TrainingPlanPdfDocument";
+import { createClient } from "@/lib/supabase/server";
+import { canExportPdf } from "@/lib/supabase/subscriptionHelpers";
 
 export const runtime = "nodejs";
 
@@ -17,11 +19,32 @@ function sanitizeFileName(input: string) {
 }
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  // Check authentication
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Niet geauthenticeerd" }, { status: 401 });
+  }
+
+  // Check PDF export permission
+  const canExport = await canExportPdf(user.id);
+  if (!canExport) {
+    return NextResponse.json({ error: "PDF export is alleen beschikbaar bij het Starter plan of hoger" }, { status: 403 });
+  }
+
   const { id } = await params;
   const plan = await getTrainingPlanById(id);
 
   if (!plan) {
     return NextResponse.json({ error: "Trainingsschema niet gevonden" }, { status: 404 });
+  }
+
+  // Verify ownership
+  if (plan.coach_id !== user.id) {
+    return NextResponse.json({ error: "Geen toegang tot dit plan" }, { status: 403 });
   }
 
   const sortedDays = [...(plan.training_plan_days ?? [])].sort((a, b) => a.day_number - b.day_number);

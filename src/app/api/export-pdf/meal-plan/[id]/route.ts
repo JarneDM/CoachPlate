@@ -3,6 +3,8 @@ import { NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { getMealPlanById } from "@/app/services/coaches/mealplans/meal-plans";
 import MealPlanPdfDocument from "@/components/pdf/MealPlanPdfDocument";
+import { createClient } from "@/lib/supabase/server";
+import { canExportPdf } from "@/lib/supabase/subscriptionHelpers";
 
 export const runtime = "nodejs";
 
@@ -17,12 +19,32 @@ function sanitizeFileName(input: string) {
 }
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
+  // Check authentication
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Niet geauthenticeerd" }, { status: 401 });
+  }
+
+  // Check PDF export permission
+  const canExport = await canExportPdf(user.id);
+  if (!canExport) {
+    return NextResponse.json({ error: "PDF export is alleen beschikbaar bij het Starter plan of hoger" }, { status: 403 });
+  }
+
   const { id } = await params;
   const plan = await getMealPlanById(id);
-  // console.log("Fetched plan for PDF export:\n", JSON.stringify(plan, null, 2));
 
   if (!plan) {
     return NextResponse.json({ error: "Weekplan niet gevonden" }, { status: 404 });
+  }
+
+  // Verify ownership
+  if (plan.coach_id !== user.id) {
+    return NextResponse.json({ error: "Geen toegang tot dit plan" }, { status: 403 });
   }
 
   const sortedDays = [...(plan.meal_plan_days ?? [])].sort((a, b) => a.day_number - b.day_number);
@@ -30,7 +52,6 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   const pdfBuffer = await renderToBuffer(document);
 
   const planName = sanitizeFileName(plan.name || "weekplan");
-  // const clientName = sanitizeFileName(plan.clients?.full_name || "klant");
   const fileName = `${planName}.pdf`;
 
   return new NextResponse(pdfBuffer as unknown as BodyInit, {

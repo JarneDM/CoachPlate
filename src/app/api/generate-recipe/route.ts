@@ -1,11 +1,37 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { canGenerateRecipe } from "@/lib/supabase/subscriptionHelpers";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
 export async function POST(req: NextRequest) {
+  // Check authentication
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return NextResponse.json({ error: "Niet geauthenticeerd" }, { status: 401 });
+  }
+
+  // Check AI recipe generation limit
+  const { canGenerate, used, limit } = await canGenerateRecipe(user.id);
+
+  if (!canGenerate) {
+    return NextResponse.json(
+      {
+        error: `Je hebt je limit van ${limit} AI recepten per maand bereikt. Je hebt ${used} gegenereerd.`,
+        used,
+        limit,
+      },
+      { status: 429 },
+    );
+  }
+
   const { name, wishes, mealType } = await req.json();
 
   const message = await anthropic.messages.create({
