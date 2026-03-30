@@ -36,11 +36,15 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   }
 
   const { id } = await params;
-  const supabase = await createClient();
   const plan = await getMealPlanById(id);
 
   if (!plan) {
     return NextResponse.json({ error: "Weekplan niet gevonden" }, { status: 404 });
+  }
+
+  // Verify ownership
+  if (plan.coach_id !== user.id) {
+    return NextResponse.json({ error: "Geen toegang tot dit plan" }, { status: 403 });
   }
 
   // Verify ownership
