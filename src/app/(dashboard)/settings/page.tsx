@@ -11,6 +11,7 @@ import { Toaster } from "@/components/ui/sonner";
 type SearchParams = {
   saved?: string;
   error?: string;
+  billing?: string;
 };
 
 function capitalize(value: string) {
@@ -66,8 +67,18 @@ export default async function SettingsPage({
       )}
 
       {params.error && (
-        <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-          {safeDecode(params.error)}
+        <div className="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">{safeDecode(params.error)}</div>
+      )}
+
+      {params.billing === "success" && (
+        <div className="mb-5 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+          Checkout voltooid. Je abonnement wordt binnen enkele seconden bijgewerkt.
+        </div>
+      )}
+
+      {params.billing === "cancelled" && (
+        <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+          Checkout geannuleerd. Er zijn geen wijzigingen doorgevoerd.
         </div>
       )}
 
@@ -180,7 +191,18 @@ export default async function SettingsPage({
 
       <section id="pricing" className="mt-8 bg-white border border-gray-100 rounded-xl p-6">
         <h2 className="font-semibold text-gray-900 mb-1">Abonnementen</h2>
-        <p className="text-sm text-gray-500 mb-5">Upgrade-opties worden binnenkort beschikbaar via Stripe checkout.</p>
+        <p className="text-sm text-gray-500 mb-5">Kies een plan en start Stripe checkout om direct te testen.</p>
+
+        {subscription?.stripe_customer_id && (
+          <form action="/api/stripe/portal" method="post" className="mb-5">
+            <button
+              type="submit"
+              className="inline-flex items-center justify-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-50 transition-colors"
+            >
+              Beheer facturatie
+            </button>
+          </form>
+        )}
 
         <div className="grid grid-cols-3 gap-4">
           {[
@@ -213,7 +235,20 @@ export default async function SettingsPage({
                 <p className="text-sm font-semibold text-gray-900">{plan.title}</p>
                 <p className="text-sm text-gray-500 mt-2">{plan.clients}</p>
                 <p className="text-sm text-gray-500">{plan.ai}</p>
-                <p className="text-xs mt-3 font-medium text-green-700">{isActive ? "Huidig plan" : "Binnenkort beschikbaar"}</p>
+
+                {isActive ? (
+                  <p className="text-xs mt-3 font-medium text-green-700">Huidig plan</p>
+                ) : (
+                  <form action="/api/stripe/checkout" method="post" className="mt-3">
+                    <input type="hidden" name="plan" value={plan.key} />
+                    <button
+                      type="submit"
+                      className="w-full inline-flex items-center justify-center rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors"
+                    >
+                      Kies {plan.title}
+                    </button>
+                  </form>
+                )}
               </div>
             );
           })}
