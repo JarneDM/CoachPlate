@@ -27,7 +27,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="min-h-screen flex flex-col">
-          <div className="flex-1">{children}</div>
+          <div className="flex-1 z-50">{children}</div>
 
           <footer className="border-t border-gray-200 bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/80 z-40">
             <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between text-sm text-gray-500">
