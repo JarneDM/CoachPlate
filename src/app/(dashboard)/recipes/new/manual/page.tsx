@@ -1,11 +1,11 @@
-import RecipeForm from "@/components/recipes/RecipeForm";
+import RecipeForm from "../../../../../components/recipes/RecipeForm";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export default function ManualRecipePage() {
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
+    <div className="mx-auto max-w-4xl">
+      <div className="mb-6 flex flex-wrap items-center gap-2 text-sm text-gray-400">
         <Link href="/recipes/new" className="flex items-center gap-1.5 hover:text-gray-600 transition-colors">
           <ArrowLeft size={14} />
           Terug

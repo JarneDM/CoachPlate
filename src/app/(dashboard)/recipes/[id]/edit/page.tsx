@@ -1,7 +1,7 @@
 import { getRecipeById } from "@/app/services/recipes/recipes";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import RecipeForm from "@/components/recipes/RecipeForm";
+import RecipeForm from "../../../../../components/recipes/RecipeForm";
 import { ArrowLeft } from "lucide-react";
 
 async function EditRecipePage({ params }: { params: { id: string } }) {
@@ -18,8 +18,8 @@ async function EditRecipePage({ params }: { params: { id: string } }) {
   if (!recipe) notFound();
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
+    <div className="mx-auto max-w-4xl">
+      <div className="mb-6 flex flex-wrap items-center gap-2 text-sm text-gray-400">
         <Link href="/recipes" className="flex items-center gap-1.5 hover:text-gray-600 transition-colors">
           <ArrowLeft size={14} />
           Recepten

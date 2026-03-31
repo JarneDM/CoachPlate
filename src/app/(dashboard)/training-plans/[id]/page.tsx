@@ -16,16 +16,16 @@ export default async function TrainingPlanBuilderPage({ params }: { params: Prom
 
   return (
     <div className="max-w-full">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-3">
+      <div className="mb-6 flex flex-col items-start justify-between gap-3 md:flex-row md:items-center">
+        <div className="flex flex-wrap items-center gap-2 text-sm md:gap-3">
           <Link href="/training-plans" className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-600 transition-colors">
             <ArrowLeft size={14} />
             Schema{"'"}s
           </Link>
           <span className="text-gray-300">/</span>
-          <h1 className="text-lg font-bold text-gray-900">{plan.name}</h1>
+          <h1 className="text-base font-bold text-gray-900 md:text-lg">{plan.name}</h1>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-2 md:gap-3">
           <Link
             href={`/api/export-pdf/training-plan/${plan.id}`}
             target="_blank"

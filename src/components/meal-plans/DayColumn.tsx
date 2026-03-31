@@ -32,7 +32,7 @@ export default function DayColumn({ day, dayName, mealTypes, client, onAddRecipe
   const calorieProgress = client?.calories_goal ? Math.min((totals.calories / client.calories_goal) * 100, 100) : null;
 
   return (
-    <div className="flex flex-col gap-2 min-w-0">
+    <div className="flex min-w-[16rem] snap-start flex-col gap-2 xl:min-w-0">
       <div className="bg-white rounded-xl border border-gray-100 p-3 text-center">
         <p className="font-semibold text-gray-900 text-sm">{dayName}</p>
         {day.date && (

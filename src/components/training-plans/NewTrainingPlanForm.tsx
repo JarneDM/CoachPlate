@@ -152,7 +152,7 @@ export default function NewTrainingPlanForm({ clients }: { clients: Client[] }) 
 
         <div className="space-y-2">
           {days.map((day, index) => (
-            <div key={index} className="flex items-center gap-3 bg-gray-50 rounded-lg px-3 py-2.5">
+            <div key={index} className="flex items-center gap-2 rounded-lg bg-gray-50 px-3 py-2.5 sm:gap-3">
               <div className="w-7 h-7 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
                 <span className="text-xs font-bold text-green-700">{day.day_number}</span>
               </div>
@@ -183,10 +183,10 @@ export default function NewTrainingPlanForm({ clients }: { clients: Client[] }) 
         </button>
       </div>
 
-      <div className="flex items-center justify-end gap-3 pb-8">
+      <div className="flex flex-col-reverse gap-2 pb-8 sm:flex-row sm:items-center sm:justify-end sm:gap-3">
         <Link
           href="/training-plans"
-          className="text-sm text-gray-500 hover:text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors"
+          className="rounded-lg px-4 py-2 text-center text-sm text-gray-500 transition-colors hover:bg-gray-50 hover:text-gray-700"
         >
           Annuleer
         </Link>

@@ -1,7 +1,7 @@
 import { getClients } from "@/app/services/clients/clients";
 import NewMealPlanForm from "@/components/meal-plans/NewMealPlanForm";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Users } from "lucide-react";
 
 export default async function NewMealPlanPage() {
   const clients = await getClients();
@@ -26,7 +26,7 @@ export default async function NewMealPlanPage() {
         <div className="text-center py-16 bg-white rounded-xl border border-gray-100">
           <div className="flex justify-center mb-4">
             <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center">
-              <span className="text-2xl">👥</span>
+              <Users className="h-7 w-7 text-gray-500" />
             </div>
           </div>
           <h3 className="font-semibold text-gray-900 mb-2">Geen klanten gevonden</h3>

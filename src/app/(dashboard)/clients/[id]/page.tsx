@@ -8,6 +8,20 @@ import { Section } from "@/components/Section";
 import { InfoRow } from "@/components/InfoRow";
 import { Empty } from "@/components/Empty";
 import {ActionButton} from "@/components/QuickAction";
+import {
+  CalendarDays,
+  ClipboardList,
+  Gauge,
+  Ruler,
+  Scale,
+  Target,
+  TriangleAlert,
+  User,
+  UserRound,
+  Bot,
+  NotebookPen,
+  Cake,
+} from "lucide-react";
 
 async function ClientDetailPage({ params }: { params: { id: string } }) {
   const { id } = await params;
@@ -37,7 +51,7 @@ async function ClientDetailPage({ params }: { params: { id: string } }) {
     : null;
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="mx-auto max-w-5xl">
       <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
         <Link href="/clients" className="hover:text-gray-600 transition-colors">
           Klanten
@@ -46,7 +60,7 @@ async function ClientDetailPage({ params }: { params: { id: string } }) {
         <span className="text-gray-700 font-medium">{client.full_name}</span>
       </div>
 
-      <div className="flex items-start justify-between mb-8">
+      <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-start">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center text-green-600 font-bold text-2xl">
             {(client.full_name?.charAt(0) ?? "?").toUpperCase()}
@@ -69,16 +83,16 @@ async function ClientDetailPage({ params }: { params: { id: string } }) {
         </Link>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 mb-8">
-        <ClientStatCard label="Gewicht" value={client.weight_kg ? `${client.weight_kg} kg` : "—"} icon="⚖️" />
-        <ClientStatCard label="Lengte" value={client.height_cm ? `${client.height_cm} cm` : "—"} icon="📏" />
-        <ClientStatCard label="BMI" value={bmi ?? "—"} icon="📊" />
-        <ClientStatCard label="Leeftijd" value={age !== null ? `${age} jaar` : "—"} icon="🎂" />
+      <div className="mb-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <ClientStatCard label="Gewicht" value={client.weight_kg ? `${client.weight_kg} kg` : "—"} icon={<Scale size={18} />} />
+        <ClientStatCard label="Lengte" value={client.height_cm ? `${client.height_cm} cm` : "—"} icon={<Ruler size={18} />} />
+        <ClientStatCard label="BMI" value={bmi ?? "—"} icon={<Gauge size={18} />} />
+        <ClientStatCard label="Leeftijd" value={age !== null ? `${age} jaar` : "—"} icon={<Cake size={18} />} />
       </div>
 
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="col-span-2 space-y-6">
-          <Section title="Macro doelen" icon="🎯">
+          <Section title="Macro doelen" icon={<Target size={16} />}>
             {client.calories_goal || client.protein_goal || client.carbs_goal || client.fat_goal ? (
               <div className="grid grid-cols-2 gap-4">
                 <MacroCard label="Calorieën" value={client.calories_goal} unit="kcal" color="orange" />
@@ -91,7 +105,7 @@ async function ClientDetailPage({ params }: { params: { id: string } }) {
             )}
           </Section>
 
-          <Section title="Allergieën & intoleranties" icon="⚠️">
+          <Section title="Allergieën & intoleranties" icon={<TriangleAlert size={16} />}>
             {client.allergies && client.allergies.length > 0 ? (
               <div className="flex flex-wrap gap-2">
                 {client.allergies.map((allergy: string) => (
@@ -105,7 +119,7 @@ async function ClientDetailPage({ params }: { params: { id: string } }) {
             )}
           </Section>
 
-          <Section title="Voorkeuren & notities" icon="📝">
+          <Section title="Voorkeuren & notities" icon={<NotebookPen size={16} />}>
             {client.preferences || client.notes ? (
               <div className="space-y-3">
                 {client.preferences && (
@@ -128,7 +142,7 @@ async function ClientDetailPage({ params }: { params: { id: string } }) {
         </div>
 
         <div className="space-y-6">
-          <Section title="Persoonlijke info" icon="👤">
+          <Section title="Persoonlijke info" icon={<UserRound size={16} />}>
             <div className="space-y-3">
               <InfoRow label="Geslacht" value={client.gender ?? "—"} />
               <InfoRow
@@ -154,11 +168,11 @@ async function ClientDetailPage({ params }: { params: { id: string } }) {
             </div>
           </Section>
 
-          <Section title="Acties" icon="⚡">
+          <Section title="Acties" icon={<User size={16} />}>
             <div className="space-y-2">
-              <ActionButton href={`/meal-plans/new?client=${id}`} icon="🗓️" label="Nieuw weekplan" />
-              <ActionButton href={`/meal-plans/new?client=${id}&ai=true`} icon="🤖" label="AI weekplan genereren" />
-              <ActionButton href={`/clients/${id}/plans`} icon="📋" label="Alle plannen bekijken" />
+              <ActionButton href={`/meal-plans/new?client=${id}`} icon={<CalendarDays size={16} />} label="Nieuw weekplan" />
+              <ActionButton href={`/meal-plans/new?client=${id}&ai=true`} icon={<Bot size={16} />} label="AI weekplan genereren" />
+              <ActionButton href={`/clients/${id}/plans`} icon={<ClipboardList size={16} />} label="Alle plannen bekijken" />
             </div>
           </Section>
         </div>

@@ -86,7 +86,7 @@ export default function TrainingPlanBuilder({ plan, days, exercises }: Props) {
         </div>
       )}
 
-      <div className="grid gap-4" style={{ gridTemplateColumns: `repeat(${Math.min(days.length, 4)}, minmax(0, 1fr))` }}>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-4">
         {days.map((day) => (
           <DayCard
             key={day.id}

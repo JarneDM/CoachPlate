@@ -97,7 +97,7 @@ export default function AIRecipeGenerator() {
           />
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Maaltijdtype</label>
             <select
@@ -147,10 +147,13 @@ export default function AIRecipeGenerator() {
       {recipe && !loading && (
         <div className="space-y-4">
           <div className="bg-white rounded-xl border border-green-200 p-6">
-            <div className="flex items-start justify-between mb-3">
+            <div className="mb-3 flex flex-col items-start gap-2 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="bg-green-50 text-green-700 text-xs font-medium px-2.5 py-1 rounded-full">✨ AI gegenereerd</span>
+                <div className="mb-1 flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-1 text-xs font-medium text-green-700">
+                    <Sparkles size={12} />
+                    AI gegenereerd
+                  </span>
                   {recipe.meal_type && (
                     <span className="bg-gray-50 text-gray-600 text-xs font-medium px-2.5 py-1 rounded-full capitalize">
                       {recipe.meal_type}
@@ -163,11 +166,31 @@ export default function AIRecipeGenerator() {
             </div>
 
             {totals && (
-              <div className="grid grid-cols-4 gap-3 mt-4">
-                <MacroCard label="Calorieën" value={Math.round(totals.calories / recipe.servings).toString()} unit="kcal" colorClass="bg-orange-500/50" />
-                <MacroCard label="Eiwitten" value={Math.round(totals.protein_g / recipe.servings).toString()} unit="g" colorClass="bg-blue-500/50" />
-                <MacroCard label="Koolhydraten" value={Math.round(totals.carbs_g / recipe.servings).toString()} unit="g" colorClass="bg-yellow-500/50" />
-                <MacroCard label="Vetten" value={Math.round(totals.fat_g / recipe.servings).toString()} unit="g" colorClass="bg-red-500/50" />
+              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
+                <MacroCard
+                  label="Calorieën"
+                  value={Math.round(totals.calories / recipe.servings).toString()}
+                  unit="kcal"
+                  colorClass="bg-orange-500/50"
+                />
+                <MacroCard
+                  label="Eiwitten"
+                  value={Math.round(totals.protein_g / recipe.servings).toString()}
+                  unit="g"
+                  colorClass="bg-blue-500/50"
+                />
+                <MacroCard
+                  label="Koolhydraten"
+                  value={Math.round(totals.carbs_g / recipe.servings).toString()}
+                  unit="g"
+                  colorClass="bg-yellow-500/50"
+                />
+                <MacroCard
+                  label="Vetten"
+                  value={Math.round(totals.fat_g / recipe.servings).toString()}
+                  unit="g"
+                  colorClass="bg-red-500/50"
+                />
               </div>
             )}
           </div>
@@ -176,9 +199,9 @@ export default function AIRecipeGenerator() {
             <h3 className="font-semibold text-gray-900 text-sm mb-3">Ingrediënten</h3>
             <div className="space-y-2">
               {recipe.ingredients.map((ing, i) => (
-                <div key={i} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
-                  <span className="text-sm text-gray-700">{ing.name}</span>
-                  <div className="flex items-center gap-3">
+                <div key={i} className="flex items-center justify-between gap-2 border-b border-gray-50 py-2 last:border-0">
+                  <span className="min-w-0 flex-1 text-sm text-gray-700">{ing.name}</span>
+                  <div className="flex shrink-0 items-center gap-3">
                     <span className="text-xs text-gray-400">{ing.amount_g}g</span>
                     <span className="text-xs text-orange-500">{Math.round((ing.calories * ing.amount_g) / 100)} kcal</span>
                   </div>
@@ -194,10 +217,10 @@ export default function AIRecipeGenerator() {
             </div>
           )}
 
-          <div className="flex gap-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
             <button
               onClick={handleGenerate}
-              className="flex items-center gap-2 border border-gray-200 hover:border-gray-300 text-gray-600 text-sm font-medium px-4 py-2.5 rounded-lg transition-colors"
+              className="flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-600 transition-colors hover:border-gray-300"
             >
               <RotateCcw size={14} />
               Opnieuw genereren
@@ -205,7 +228,7 @@ export default function AIRecipeGenerator() {
             <button
               onClick={handleSave}
               disabled={saving}
-              className="flex-1 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white text-sm font-medium py-2.5 rounded-lg transition-colors"
+              className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-green-600 py-2.5 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:bg-green-300"
             >
               <Save size={14} />
               {saving ? "Opslaan..." : "Recept opslaan"}
