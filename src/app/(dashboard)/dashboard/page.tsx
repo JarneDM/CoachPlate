@@ -17,6 +17,7 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+
   if (!user) redirect("/login");
 
   const [{ data: coach }, { count: clientCount }, mealPlans] = await Promise.all([
