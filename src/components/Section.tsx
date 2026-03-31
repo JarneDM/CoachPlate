@@ -1,8 +1,8 @@
-export function Section({ title, icon, children }: { title: string; icon: string; children: React.ReactNode }) {
+export function Section({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-6">
-      <div className="flex items-center gap-2 mb-4">
-        <span>{icon}</span>
+    <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
+      <div className="mb-4 flex items-center gap-2">
+        <span className="inline-flex rounded-lg bg-green-50 p-1.5 text-green-700">{icon}</span>
         <h2 className="font-semibold text-gray-900 text-sm">{title}</h2>
       </div>
       {children}

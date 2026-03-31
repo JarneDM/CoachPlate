@@ -51,7 +51,7 @@ export default async function SettingsPage({
   const limits = PLAN_LIMITS[activePlan as keyof typeof PLAN_LIMITS] ?? PLAN_LIMITS.starter;
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="mx-auto max-w-5xl">
       <Toaster position="top-center" richColors closeButton />
       <SettingsPasswordToast saved={params.saved} error={params.error ? safeDecode(params.error) : undefined} />
 
@@ -82,7 +82,7 @@ export default async function SettingsPage({
         </div>
       )}
 
-      <div className="grid grid-cols-3 gap-6 mb-6">
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <div className="bg-white border border-gray-100 rounded-xl p-5">
           <div className="flex items-center gap-2 text-gray-500 mb-2">
             <CircleDollarSign size={16} />
@@ -111,7 +111,7 @@ export default async function SettingsPage({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <section className="bg-white border border-gray-100 rounded-xl p-6">
           <div className="flex items-center gap-2 mb-4">
             <UserRound size={16} className="text-green-600" />
@@ -204,7 +204,7 @@ export default async function SettingsPage({
           </form>
         )}
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           {[
             {
               key: "starter",

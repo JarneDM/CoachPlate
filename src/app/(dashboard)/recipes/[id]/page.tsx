@@ -49,7 +49,7 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="mx-auto max-w-5xl">
       <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
         <Link href="/recipes" className="flex items-center gap-1.5 hover:text-gray-600 transition-colors">
           <ArrowLeft size={14} />
@@ -59,7 +59,7 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
         <span className="text-gray-700 font-medium">{recipe.name}</span>
       </div>
 
-      <div className="flex items-start justify-between mb-8">
+      <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-start">
         <div className="flex items-center gap-4">
           <div className="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center">
             <ChefHat size={28} className="text-green-600" />
@@ -101,7 +101,7 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
         <p className="text-gray-500 text-sm leading-relaxed mb-8 bg-white border border-gray-100 rounded-xl p-5">{recipe.description}</p>
       )}
 
-      <div className="grid grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="col-span-2 space-y-6">
           <div className="bg-white rounded-xl border border-gray-100 p-6">
             <div className="flex items-center gap-2 mb-4">

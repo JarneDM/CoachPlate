@@ -8,17 +8,17 @@ async function ClientsPage() {
   const clients = await getClients();
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
+    <div className="mx-auto max-w-5xl">
+      <div className="mb-8 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Klanten</h1>
           <p className="text-gray-400 text-sm mt-1">
             {clients.length} {clients.length === 1 ? "klant" : "klanten"} in je lijst
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <Button href="/meal-plans/new" label="Nieuw weekplan" icon={<CalendarDays size={14} />} />
-          <Button href="/clients/add" label="Nieuwe klant" icon={<Plus size={14} />} />
+        <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
+          <Button href="/meal-plans/new" label="Nieuw weekplan" icon={<CalendarDays size={14} />} width="w-auto" />
+          <Button href="/clients/add" label="Nieuwe klant" icon={<Plus size={14} />} width="w-auto" />
         </div>
       </div>
 
@@ -29,7 +29,7 @@ async function ClientsPage() {
               <Link
                 key={client.id}
                 href={`/clients/${client.id}`}
-                className="relative group bg-white rounded-xl border border-gray-100 p-5 hover:border-green-200 hover:shadow-sm transition-all flex items-center justify-between"
+                className="group relative flex items-center justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:border-green-200 hover:shadow-md"
               >
                 <div className="flex items-center gap-4 min-w-0">
                   <div className="w-12 h-12 bg-green-100 group-hover:bg-green-200 rounded-xl flex items-center justify-center text-green-700 font-bold text-lg shrink-0 transition-colors">
@@ -76,7 +76,7 @@ async function ClientsPage() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-24 bg-white rounded-xl border border-gray-100">
+        <div className="rounded-2xl border border-gray-100 bg-white py-20 text-center shadow-sm">
           <div className="w-16 h-16 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Users size={28} className="text-green-500" />
           </div>

@@ -48,8 +48,8 @@ export default async function TrainingPlansPage({ searchParams }: { searchParams
   const getPageHref = (page: number) => (page <= 1 ? "/training-plans" : `/training-plans?page=${page}`);
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
+    <div className="mx-auto max-w-5xl">
+      <div className="mb-8 flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Trainingsschema{"'"}s</h1>
           <p className="text-gray-400 text-sm mt-1">
@@ -71,9 +71,9 @@ export default async function TrainingPlansPage({ searchParams }: { searchParams
             {plans.map((plan) => (
               <div
                 key={plan.id}
-                className="group bg-white rounded-xl border border-gray-100 p-5 hover:border-green-200 hover:shadow-sm transition-all flex items-center justify-between"
+                className="group flex flex-col gap-4 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:border-green-200 hover:shadow-md md:flex-row md:items-center md:justify-between"
               >
-                <Link href={`/training-plans/${plan.id}`} className="flex items-center gap-4 flex-1 min-w-0">
+                <Link href={`/training-plans/${plan.id}`} className="flex min-w-0 flex-1 items-center gap-4">
                   <div className="w-12 h-12 bg-green-50 group-hover:bg-green-100 rounded-xl flex items-center justify-center transition-colors shrink-0">
                     <Dumbbell size={20} className="text-green-600" />
                   </div>
@@ -105,18 +105,18 @@ export default async function TrainingPlansPage({ searchParams }: { searchParams
                   </div>
                 </Link>
 
-                <div className="flex items-center gap-2 ml-4 shrink-0">
+                <div className="flex w-full flex-wrap items-center gap-2 md:ml-4 md:w-auto md:shrink-0 md:justify-end">
                   <Link
                     href={`/api/export-pdf/training-plan/${plan.id}`}
                     target="_blank"
-                    className="inline-flex items-center gap-1.5 text-sm text-green-700 bg-green-50 hover:bg-green-100 border border-green-100 rounded-lg px-3 py-2 transition-colors"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-green-100 bg-green-50 px-3 py-2 text-sm text-green-700 transition-colors hover:bg-green-100"
                   >
                     <FileDown size={14} />
                     PDF
                   </Link>
                   <Link
                     href={`/training-plans/${plan.id}`}
-                    className="flex items-center gap-1.5 bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+                    className="flex items-center gap-1.5 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700"
                   >
                     Openen
                     <ArrowRight size={14} />
@@ -128,7 +128,7 @@ export default async function TrainingPlansPage({ searchParams }: { searchParams
           </div>
 
           {totalPages > 1 && (
-            <div className="mt-6 flex items-center justify-between rounded-xl border border-gray-100 bg-white p-4">
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-gray-100 bg-white p-4">
               <Link
                 href={getPageHref(currentPage - 1)}
                 aria-disabled={!hasPrevious}

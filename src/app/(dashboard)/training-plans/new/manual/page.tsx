@@ -1,7 +1,7 @@
 import { getClients } from "@/app/services/clients/clients";
 import NewTrainingPlanForm from "@/components/training-plans/NewTrainingPlanForm";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Users } from "lucide-react";
 
 export default async function ManualTrainingPlanPage() {
   const clients = await getClients();
@@ -25,7 +25,7 @@ export default async function ManualTrainingPlanPage() {
       {clients.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-xl border border-gray-100">
           <div className="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl">👥</span>
+            <Users className="h-7 w-7 text-gray-500" />
           </div>
           <h3 className="font-semibold text-gray-900 mb-2">Geen klanten gevonden</h3>
           <p className="text-gray-400 text-sm mb-6">Voeg eerst een klant toe voor je een schema aanmaakt.</p>

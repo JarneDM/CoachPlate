@@ -54,7 +54,7 @@ export default function WeekBuilder({ plan, days, recipes, client }: Props) {
         </div>
       )}
 
-      <div className="grid grid-cols-7 gap-3 overflow-x-auto pb-4">
+      <div className="grid grid-flow-col auto-cols-[minmax(16rem,1fr)] gap-3 overflow-x-auto pb-4 snap-x snap-mandatory xl:grid-flow-row xl:auto-cols-auto xl:grid-cols-7 xl:overflow-visible">
         {days.map((day) => (
           <DayColumn
             key={day.id}
