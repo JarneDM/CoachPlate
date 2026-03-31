@@ -29,7 +29,7 @@ export async function proxy(request: NextRequest) {
     !request.nextUrl.pathname.startsWith("/plan") &&
     !request.nextUrl.pathname.startsWith("/auth")
   ) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/", request.url));
   }
 
   return supabaseResponse;
