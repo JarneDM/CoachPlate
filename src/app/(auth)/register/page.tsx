@@ -56,7 +56,7 @@ export default function RegisterPage() {
       email: normalizedEmail,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `https://www.coachplate.com/auth/callback`,
         data: {
           full_name: normalizedName,
           terms_accepted: true,
