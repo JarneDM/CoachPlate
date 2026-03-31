@@ -72,7 +72,7 @@ export default function RegisterPage() {
       return;
     }
 
-    router.push("/register/verify-email");
+    router.push("/login");
   }
 
   return (
