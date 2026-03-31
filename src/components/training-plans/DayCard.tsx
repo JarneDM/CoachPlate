@@ -50,8 +50,8 @@ export default function DayCard({ day, planId, onAddExercise, onRemoveExercise }
   const sortedExercises = [...day.exercises_trainingplans].sort((a, b) => (a.order_index ?? 0) - (b.order_index ?? 0));
 
   return (
-    <div className="bg-white rounded-xl border border-gray-100 flex flex-col">
-      <div className="p-4 border-b border-gray-50">
+    <div className="flex flex-col rounded-2xl border border-gray-100 bg-white shadow-sm">
+      <div className="border-b border-gray-50 p-4">
         <div className="flex items-center justify-between">
           <div>
             <span className="text-xs font-bold text-gray-400 uppercase tracking-wide">Dag {day.day_number}</span>
@@ -61,7 +61,7 @@ export default function DayCard({ day, planId, onAddExercise, onRemoveExercise }
         </div>
       </div>
 
-      <div className="flex-1 p-3 space-y-2">
+      <div className="flex-1 space-y-2 p-3">
         {sortedExercises.map((etp) => (
           <ExerciseRow key={etp.id} etp={etp} planId={planId} onRemove={() => onRemoveExercise(etp.id)} />
         ))}
@@ -69,7 +69,7 @@ export default function DayCard({ day, planId, onAddExercise, onRemoveExercise }
         {sortedExercises.length === 0 && (
           <button
             onClick={onAddExercise}
-            className="w-full text-xs text-gray-300 hover:text-green-400 text-center py-6 border border-dashed border-gray-200 rounded-lg hover:border-green-300 transition-colors"
+            className="w-full rounded-lg border border-dashed border-gray-200 py-6 text-center text-xs text-gray-300 transition-colors hover:border-green-300 hover:text-green-400"
           >
             + oefening toevoegen
           </button>
@@ -77,10 +77,10 @@ export default function DayCard({ day, planId, onAddExercise, onRemoveExercise }
       </div>
 
       {sortedExercises.length > 0 && (
-        <div className="p-3 border-t border-gray-50">
+        <div className="border-t border-gray-50 p-3">
           <button
             onClick={onAddExercise}
-            className="w-full flex items-center justify-center gap-1.5 text-xs text-gray-400 hover:text-green-600 hover:bg-green-50 py-2 rounded-lg transition-colors"
+            className="flex w-full items-center justify-center gap-1.5 rounded-lg py-2.5 text-xs text-gray-400 transition-colors hover:bg-green-50 hover:text-green-600"
           >
             <Plus size={12} />
             Oefening toevoegen
@@ -134,7 +134,7 @@ function ExerciseRow({ etp, planId, onRemove }: { etp: ExerciseTrainingPlan; pla
 
       {expanded && (
         <div className="px-2.5 pb-2.5 space-y-2">
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
             <NumberInput
               label="Sets"
               value={sets}
@@ -191,14 +191,14 @@ function NumberInput({
       <div className="flex items-center gap-1">
         <button
           onClick={() => onChange(Math.max(min, value - step))}
-          className="w-6 h-6 rounded bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 text-xs transition-colors"
+          className="flex h-7 w-7 items-center justify-center rounded bg-gray-100 text-xs text-gray-600 transition-colors hover:bg-gray-200"
         >
           −
         </button>
         <span className="flex-1 text-center text-sm font-semibold text-gray-800">{value}</span>
         <button
           onClick={() => onChange(value + step)}
-          className="w-6 h-6 rounded bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600 text-xs transition-colors"
+          className="flex h-7 w-7 items-center justify-center rounded bg-gray-100 text-xs text-gray-600 transition-colors hover:bg-gray-200"
         >
           +
         </button>

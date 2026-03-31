@@ -47,7 +47,7 @@ export default function MealSlot({ mealType, label, mealRecipes, onAdd, onRemove
               </div>
               <button
                 onClick={() => onRemove(mr.id)}
-                className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-400 transition-all shrink-0 mt-0.5"
+                className="shrink-0 text-gray-300 transition-all hover:text-red-400 sm:mt-0.5 sm:opacity-0 sm:group-hover:opacity-100"
               >
                 <X size={10} />
               </button>
@@ -57,7 +57,7 @@ export default function MealSlot({ mealType, label, mealRecipes, onAdd, onRemove
       ) : (
         <button
           onClick={onAdd}
-          className="w-full text-xs text-gray-300 hover:text-gray-400 text-center py-2 border border-dashed border-gray-200 rounded-lg hover:border-green-300 hover:text-green-400 transition-colors"
+          className="w-full text-xs text-gray-400 text-center py-2 border border-dashed border-gray-200 rounded-lg hover:border-green-300 transition-colors"
         >
           + recept
         </button>

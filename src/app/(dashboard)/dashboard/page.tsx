@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Users, CalendarDays, NotepadText, Sparkles, CircleDollarSign } from "lucide-react";
+import { Users, CalendarDays, NotepadText, Sparkles, CircleDollarSign, Hand } from "lucide-react";
 import { StatCard } from "@/components/ui/StatsCard";
 import { QuickAction } from "@/components/QuickAction";
 import { getCoach } from "@/app/services/coaches/getCoach";
@@ -33,13 +33,16 @@ export default async function DashboardPage() {
   const { data: subscription } = await getSubscription(user);
 
   return (
-    <div>
+    <div className="space-y-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Welkom terug, {coach?.full_name?.split(" ")[0]}! 👋</h1>
+        <h1 className="flex items-center gap-2 text-2xl font-bold text-gray-900">
+          Welkom terug, {coach?.full_name?.split(" ")[0]}!
+          <Hand className="h-5 w-5 text-green-600" />
+        </h1>
         <p className="text-gray-500 mt-1">Hier is een overzicht van je CoachPlate activiteit.</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <StatCard label="Actieve klanten" value={clientCount ?? 0} icon={<Users className="w-5 h-5 text-black" />} href="/clients" />
         <StatCard label="Weekplannen" value={planCount ?? 0} icon={<CalendarDays className="w-5 h-5 text-black" />} href="/meal-plans" />
         <StatCard
@@ -52,7 +55,7 @@ export default async function DashboardPage() {
       </div>
 
       {!subscription && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-6 mb-8 flex items-center justify-between">
+        <div className="flex flex-col items-start justify-between gap-4 rounded-2xl border border-green-200 bg-green-50 p-6 sm:flex-row sm:items-center">
           <div>
             <h3 className="font-semibold text-green-900">Upgrade naar Pro voor AI features</h3>
             <p className="text-green-700 text-sm mt-1">Genereer weekplannen met AI, onbeperkt klanten en meer.</p>
@@ -66,7 +69,7 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-100 p-6">
+      <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-gray-900">Recente klanten</h2>
           <Link href="/clients" className="text-sm text-green-600 hover:underline">
@@ -107,7 +110,7 @@ export default async function DashboardPage() {
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mt-6">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <QuickAction
           href="/clients/add"
           icon={<Users className="w-5 h-5 text-black" />}
