@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
-import { CalendarDays, Dumbbell, LayoutDashboard, Menu, NotepadText, Settings, Users, X } from "lucide-react";
+import { CalendarDays, ChefHat, Dumbbell, LayoutDashboard, Menu, NotepadText, Settings, Users, X } from "lucide-react";
 import LogoutButton from "@/components/LogoutButton";
 
 type MobileDashboardMenuProps = {
@@ -17,6 +17,7 @@ const navItems = [
   { href: "/clients", label: "Klanten", icon: Users },
   { href: "/meal-plans", label: "Weekplannen", icon: CalendarDays },
   { href: "/recipes", label: "Recepten", icon: NotepadText },
+  { href: "/public-recipes", label: "Publieke recepten", icon: ChefHat },
   { href: "/training-plans", label: "Schema's", icon: Dumbbell },
   { href: "/settings", label: "Instellingen", icon: Settings },
 ];
