@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import LogoutButton from "@/components/LogoutButton";
 import { LayoutDashboard, NotepadText, Settings, Users, CalendarDays, Dumbbell } from "lucide-react";
 import { NavItem } from "@/components/NavItem";
+import Link from "next/link";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -20,7 +21,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
     <div className="min-h-screen bg-gray-50 flex z-50">
       <aside className="w-64 bg-white border-r border-gray-100 flex flex-col fixed h-full">
         <div className="p-6 border-b border-gray-100">
-          <h1 className="text-xl font-bold text-green-600">CoachPlate</h1>
+          <Link href={"/"}>
+            <h1 className="text-xl font-bold text-green-600">CoachPlate</h1>
+          </Link>
           <p className="text-xs text-gray-400 mt-0.5">Voor voedingscoaches</p>
         </div>
 
