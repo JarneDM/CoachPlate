@@ -29,13 +29,14 @@ const faqItems = [
 const plans = [
   {
     name: "Starter",
-    price: "€19",
+    price: "€11.99",
     period: "/month",
     description: "For solo coaches getting started with digital planning.",
     features: [
       "Up to 20 active clients",
       "Meal plan builder",
       "Recipe library",
+      "Training plan builder",
       // "Basic progress tracking",
     ],
     cta: "Start Starter",
@@ -43,13 +44,14 @@ const plans = [
   },
   {
     name: "Pro",
-    price: "€49",
+    price: "€34.99",
     period: "/month",
     description: "For growing coaching businesses that need speed and scale.",
     features: [
       "Unlimited active clients",
       "AI meal + training plan generation",
       "Priority PDF exports",
+      "Starter features included",
       // "Client analytics dashboard",
     ],
     cta: "Start Pro",
@@ -60,12 +62,7 @@ const plans = [
     price: "Custom",
     period: "",
     description: "For multi-coach teams with shared workflows and support.",
-    features: [
-      "Multi-coach workspace",
-      "Role-based permissions",
-      "Team reporting",
-      "Dedicated onboarding",
-    ],
+    features: ["Multi-coach workspace", "Role-based permissions", "Team reporting", "Dedicated onboarding"],
     cta: "Contact Sales",
     highlighted: false,
   },
@@ -107,12 +104,12 @@ export default async function PricingPage() {
             <article
               key={plan.name}
               className={[
-                "rounded-3xl border p-6 shadow-sm transition duration-200 hover:-translate-y-1",
+                "rounded-3xl border p-6 shadow-sm transition duration-200 hover:-translate-y-1 relative",
                 plan.highlighted ? "border-cyan-300 bg-white shadow-cyan-100" : "border-slate-200 bg-white/90 backdrop-blur",
               ].join(" ")}
             >
               {plan.highlighted ? (
-                <p className="mb-4 inline-flex rounded-full bg-linear-to-r from-cyan-600 to-emerald-600 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-white">
+                <p className=" absolute top-[-11] mb-4 inline-flex rounded-full bg-linear-to-r from-cyan-600 to-emerald-600 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-white">
                   Most Popular
                 </p>
               ) : null}
@@ -133,11 +130,11 @@ export default async function PricingPage() {
                 ))}
               </ul>
 
-              <div className="mt-7">
+              <div className="mt-10">
                 <Link
                   href={plan.name === "Team" ? "/services/coaches" : primaryCtaHref}
                   className={[
-                    "inline-flex w-full items-center justify-center rounded-full px-4 py-2.5 text-sm font-semibold transition",
+                    "inline-flex w-[90%] items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold transition absolute bottom-2 left-1/2 -translate-x-1/2",
                     plan.highlighted
                       ? "bg-linear-to-r from-cyan-600 to-emerald-600 text-white hover:from-cyan-700 hover:to-emerald-700"
                       : "bg-slate-900 text-white hover:bg-slate-700",
@@ -156,18 +153,21 @@ export default async function PricingPage() {
             We can tailor onboarding, imports, and coaching workflows for your practice.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Link
-              href={primaryCtaHref}
-              className="rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-700"
-            >
-              {user ? "Go to Dashboard" : "Create Account"}
-            </Link>
-            <Link
-              href="/login"
-              className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-            >
-              Log in
-            </Link>
+            {user ? (
+              <Link
+                href={primaryCtaHref}
+                className="rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-700"
+              >
+                {user ? "Go to Dashboard" : "Create Account"}
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+              >
+                Log in
+              </Link>
+            )}
           </div>
         </section>
 
