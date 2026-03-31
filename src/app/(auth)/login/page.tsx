@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -14,6 +14,21 @@ export default function LoginPage() {
 
   const router = useRouter();
   const supabase = createClient();
+
+  useEffect(() => {
+    async function redirectIfLoggedIn() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (user) {
+        router.replace("/dashboard");
+        router.refresh();
+      }
+    }
+
+    void redirectIfLoggedIn();
+  }, [router, supabase]);
 
   async function handleLogin() {
     setLoading(true);
@@ -44,26 +59,30 @@ export default function LoginPage() {
 
   return (
     <>
-      <h2 className="text-xl font-bold text-gray-900 mb-6">Inloggen</h2>
+      <div className="mb-7">
+        <h2 className="text-2xl font-bold tracking-tight text-slate-900">Welkom terug</h2>
+        <p className="mt-1 text-sm text-slate-500">Log in om je dashboard en cliënten te beheren.</p>
+      </div>
 
-      {error && <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg p-3 mb-4">{error}</div>}
+      {error && <div className="mb-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700">{error}</div>}
 
-      <div className="space-y-4">
+      <div className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">E-mailadres</label>
+          <label className="mb-1.5 block text-sm font-semibold text-slate-700">E-mailadres</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="jouw@email.com"
-            className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-green-500 focus:ring-4 focus:ring-green-500/15"
+            autoComplete="email"
           />
         </div>
 
         <div>
-          <div className="flex justify-between items-center mb-1">
-            <label className="block text-sm font-medium text-gray-700">Wachtwoord</label>
-            <Link href="/reset-password" className="text-xs text-green-600 hover:underline">
+          <div className="mb-1.5 flex items-center justify-between">
+            <label className="block text-sm font-semibold text-slate-700">Wachtwoord</label>
+            <Link href="/reset-password" className="text-xs font-semibold text-green-700 transition hover:text-green-600 hover:underline">
               Vergeten?
             </Link>
           </div>
@@ -72,23 +91,24 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="••••••••"
-            className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+            className="w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition focus:border-green-500 focus:ring-4 focus:ring-green-500/15"
             onKeyDown={(e) => e.key === "Enter" && handleLogin()}
+            autoComplete="current-password"
           />
         </div>
 
         <button
           onClick={handleLogin}
           disabled={loading || disabled}
-          className="w-full bg-green-600 hover:bg-green-700 disabled:bg-red-300 text-white font-medium rounded-lg py-2.5 text-sm transition-colors"
+          className="w-full rounded-xl bg-linear-to-r from-green-600 to-green-500 py-3 text-sm font-semibold text-white shadow-lg shadow-green-200 transition hover:-translate-y-0.5 hover:from-green-700 hover:to-green-600 disabled:translate-y-0 disabled:cursor-not-allowed disabled:from-green-300 disabled:to-green-300 disabled:shadow-none"
         >
           {loading ? "Inloggen..." : "Inloggen"}
         </button>
       </div>
 
-      <p className="text-center text-sm text-gray-500 mt-6">
+      <p className="mt-6 text-center text-sm text-slate-500">
         Nog geen account?{" "}
-        <Link href="/register" className="text-green-600 font-medium hover:underline">
+        <Link href="/register" className="font-semibold text-green-700 transition hover:text-green-600 hover:underline">
           Registreer gratis
         </Link>
       </p>

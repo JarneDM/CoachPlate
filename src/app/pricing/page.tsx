@@ -8,7 +8,7 @@ const comparisonRows = [
   { feature: "Training plan builder", starter: "Included", pro: "Included", team: "Included" },
   { feature: "AI generation", starter: "Basic", pro: "Advanced", team: "Advanced + templates" },
   { feature: "Exports", starter: "Standard", pro: "Priority", team: "Priority + branding" },
-  { feature: "Support", starter: "Email", pro: "Priority email", team: "Dedicated manager" },
+  // { feature: "Support", starter: "Email", pro: "Priority email", team: "Dedicated manager" },
 ];
 
 const faqItems = [
