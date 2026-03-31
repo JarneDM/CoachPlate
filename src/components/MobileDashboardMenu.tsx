@@ -111,7 +111,7 @@ export default function MobileDashboardMenu({ coachName, coachEmail }: MobileDas
         Menu
       </button>
 
-      {typeof window !== "undefined" ? createPortal(overlay, document.body) : null}
+      {open ? createPortal(overlay, document.body) : null}
     </>
   );
 }
