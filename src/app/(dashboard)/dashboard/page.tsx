@@ -31,6 +31,13 @@ export default async function DashboardPage() {
 
   const { data: subscription } = await getSubscription(user);
 
+  const isOnTrial = subscription?.status === "trialing";
+  const sub = isOnTrial
+    ? "Pro (proefperiode)"
+    : subscription?.plan
+      ? subscription.plan.charAt(0).toUpperCase() + subscription.plan.slice(1)
+      : "Gratis";
+
   return (
     <div>
       <div className="mb-8">
@@ -41,13 +48,7 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-3 gap-6 mb-8">
         <StatCard label="Actieve klanten" value={clientCount ?? 0} icon={<Users className="w-5 h-5 text-black" />} href="/clients" />
         <StatCard label="Weekplannen" value={planCount ?? 0} icon={<CalendarDays className="w-5 h-5 text-black" />} href="/meal-plans" />
-        <StatCard
-          label="Huidig plan"
-          value={subscription?.plan ?? "Gratis"}
-          icon={<CircleDollarSign className="w-5 h-5 text-black" />}
-          href="/settings"
-          capitalize
-        />
+        <StatCard label="Huidig plan" value={sub} icon={<CircleDollarSign className="w-5 h-5 text-black" />} href="/settings" capitalize />
       </div>
 
       {!subscription && (

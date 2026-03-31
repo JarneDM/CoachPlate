@@ -10,6 +10,8 @@ function isValidPriceId(value?: string) {
   return Boolean(value && value.startsWith("price_"));
 }
 
+const FREE_TRIAL_DAYS = 7;
+
 export async function POST(request: NextRequest) {
   const formData = await request.formData();
   const rawPlan = String(formData.get("plan") ?? "").toLowerCase();
@@ -35,13 +37,14 @@ export async function POST(request: NextRequest) {
 
   const { data: existingSubscription } = await supabase
     .from("subscriptions")
-    .select("stripe_customer_id")
+    .select("id, stripe_customer_id")
     .eq("coach_id", user.id)
     .maybeSingle();
 
   const customerEmail = user.email ?? undefined;
 
   let session;
+  const isFirstCheckout = !existingSubscription?.id;
 
   try {
     if (existingSubscription?.stripe_customer_id) {
@@ -113,6 +116,7 @@ export async function POST(request: NextRequest) {
           coach_id: user.id,
           plan: rawPlan,
         },
+        ...(isFirstCheckout ? { trial_period_days: FREE_TRIAL_DAYS } : {}),
       },
     });
   } catch (error) {

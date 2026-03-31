@@ -16,7 +16,7 @@ export async function getSubscriptionInfo(coachId: string): Promise<Subscription
     .from("subscriptions")
     .select("plan, status")
     .eq("coach_id", coachId)
-    .eq("status", "active")
+    .in("status", ["active", "trialing"])
     .maybeSingle();
 
   const plan = (subscription?.plan as PlanKey) || "free";
