@@ -41,6 +41,7 @@ const plans = [
     ],
     cta: "Start Starter",
     highlighted: false,
+    working: true,
   },
   {
     name: "Pro",
@@ -56,15 +57,17 @@ const plans = [
     ],
     cta: "Start Pro",
     highlighted: true,
+    working: true,
   },
   {
-    name: "Team",
+    name: "Studio",
     price: "Custom",
     period: "",
     description: "For multi-coach teams with shared workflows and support.",
     features: ["Multi-coach workspace", "Role-based permissions", "Team reporting", "Dedicated onboarding"],
     cta: "Contact Sales",
     highlighted: false,
+    working: false,
   },
 ];
 
@@ -113,6 +116,11 @@ export default async function PricingPage() {
                   Most Popular
                 </p>
               ) : null}
+              {plan.working === false && (
+                <p className="absolute top-[-11] mb-4 inline-flex rounded-full bg-blue-500 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-white">
+                  Coming Soon
+                </p>
+              )}
 
               <h2 className="text-xl font-bold text-slate-900">{plan.name}</h2>
               <p className="mt-2 text-sm text-slate-600">{plan.description}</p>
@@ -132,7 +140,7 @@ export default async function PricingPage() {
 
               <div className="mt-10">
                 <Link
-                  href={plan.name === "Team" ? "/services/coaches" : primaryCtaHref}
+                  href={plan.name === "Team" ? "/register" : primaryCtaHref}
                   className={[
                     "inline-flex w-[90%] items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold transition absolute bottom-2 left-1/2 -translate-x-1/2",
                     plan.highlighted
