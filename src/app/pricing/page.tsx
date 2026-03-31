@@ -35,8 +35,8 @@ const plans = [
     features: [
       "Up to 20 active clients",
       "Meal plan builder",
-      "Recipe library",
       "Training plan builder",
+      "Recipe library",
       // "Basic progress tracking",
     ],
     cta: "Start Starter",
@@ -77,12 +77,12 @@ export default async function PricingPage() {
   const primaryCtaHref = user ? "/settings#pricing" : "/register";
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_10%_5%,#cffafe_0%,#ecfeff_25%,#f8fafc_50%,#ffffff_70%)]">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_10%_5%,#dcfce7_0%,#f0fdf4_25%,#f8fafc_50%,#ffffff_70%)]">
       <NavBar user={user} />
 
       <main className="mx-auto w-full max-w-6xl px-4 pb-24 pt-14 sm:px-6 md:pt-20">
         <section className="mx-auto max-w-3xl text-center">
-          <p className="inline-flex rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-cyan-800">
+          <p className="inline-flex rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-green-800">
             Simple Pricing
           </p>
           <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
@@ -105,11 +105,11 @@ export default async function PricingPage() {
               key={plan.name}
               className={[
                 "rounded-3xl border p-6 shadow-sm transition duration-200 hover:-translate-y-1 relative",
-                plan.highlighted ? "border-cyan-300 bg-white shadow-cyan-100" : "border-slate-200 bg-white/90 backdrop-blur",
+                plan.highlighted ? "border-green-300 bg-white shadow-green-100" : "border-slate-200 bg-white/90 backdrop-blur",
               ].join(" ")}
             >
               {plan.highlighted ? (
-                <p className=" absolute top-[-11] mb-4 inline-flex rounded-full bg-linear-to-r from-cyan-600 to-emerald-600 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-white">
+                <p className=" absolute top-[-11] mb-4 inline-flex rounded-full bg-linear-to-r from-green-600 to-green-500 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-white">
                   Most Popular
                 </p>
               ) : null}
@@ -136,7 +136,7 @@ export default async function PricingPage() {
                   className={[
                     "inline-flex w-[90%] items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold transition absolute bottom-2 left-1/2 -translate-x-1/2",
                     plan.highlighted
-                      ? "bg-linear-to-r from-cyan-600 to-emerald-600 text-white hover:from-cyan-700 hover:to-emerald-700"
+                      ? "bg-linear-to-r from-green-600 to-green-500 text-white hover:from-green-700 hover:to-green-600"
                       : "bg-slate-900 text-white hover:bg-slate-700",
                   ].join(" ")}
                 >
@@ -185,7 +185,7 @@ export default async function PricingPage() {
                   <th className="border-b border-slate-200 px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
                     Starter
                   </th>
-                  <th className="border-b border-slate-200 px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.12em] text-cyan-700">
+                  <th className="border-b border-slate-200 px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.12em] text-green-700">
                     Pro
                   </th>
                   <th className="border-b border-slate-200 px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
@@ -198,7 +198,7 @@ export default async function PricingPage() {
                   <tr key={row.feature}>
                     <td className="border-b border-slate-100 px-4 py-3 text-sm font-medium text-slate-900">{row.feature}</td>
                     <td className="border-b border-slate-100 px-4 py-3 text-sm text-slate-700">{row.starter}</td>
-                    <td className="border-b border-slate-100 px-4 py-3 text-sm font-semibold text-cyan-800">{row.pro}</td>
+                    <td className="border-b border-slate-100 px-4 py-3 text-sm font-semibold text-green-800">{row.pro}</td>
                     <td className="border-b border-slate-100 px-4 py-3 text-sm text-slate-700">{row.team}</td>
                   </tr>
                 ))}
@@ -216,7 +216,7 @@ export default async function PricingPage() {
           ))}
         </section>
 
-        <section className="mt-14 rounded-3xl border border-cyan-200 bg-cyan-50/70 p-7 text-center sm:p-10">
+        <section className="mt-14 rounded-3xl border border-green-200 bg-green-50/70 p-7 text-center sm:p-10">
           <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Ready to simplify your weekly coaching ops?</h2>
           <p className="mt-3 text-sm text-slate-700 sm:text-base">
             Set up your account, import your first client, and ship your first plan today.
