@@ -22,7 +22,7 @@ const faqItems = [
   },
   {
     question: "Is there a trial?",
-    answer: "Yes, new accounts can test the platform before choosing a paid plan.",
+    answer: "Yes, new accounts have a 7-day free trial of the Pro plan features. No credit card required.",
   },
 ];
 
