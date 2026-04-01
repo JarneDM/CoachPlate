@@ -18,7 +18,7 @@ function NavBar({user}: {user: User | null}) {
               href="/pricing"
               className="rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-green-50 hover:text-green-900"
             >
-              Pricing
+              Prijzen
             </Link>
           </li>
 
@@ -38,7 +38,7 @@ function NavBar({user}: {user: User | null}) {
                   href="/login"
                   className="rounded-full px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-green-50"
                 >
-                  Log in
+                  Inloggen
                 </Link>
               </li>
               <li>
@@ -46,7 +46,7 @@ function NavBar({user}: {user: User | null}) {
                   href="/register"
                   className="rounded-full bg-slate-900 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-700"
                 >
-                  Start free
+                  Start gratis
                 </Link>
               </li>
             </>
