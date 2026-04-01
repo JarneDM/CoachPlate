@@ -3,26 +3,26 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 
 const comparisonRows = [
-  { feature: "Client limit", starter: "Up to 20", pro: "Unlimited", team: "Unlimited + team pool" },
-  { feature: "Meal plan builder", starter: "Included", pro: "Included", team: "Included" },
-  { feature: "Training plan builder", starter: "Included", pro: "Included", team: "Included" },
-  { feature: "AI generation", starter: "Basic", pro: "Advanced", team: "Advanced + templates" },
-  { feature: "Exports", starter: "Standard", pro: "Priority", team: "Priority + branding" },
+  { feature: "Klanten limiet", starter: "Tot 20", pro: "Onbeperkt", team: "Onbeperkt + teampool" },
+  { feature: "Maaltijdschema-bouwer", starter: "Inbegrepen", pro: "Inbegrepen", team: "Inbegrepen" },
+  { feature: "Trainingsschema-bouwer", starter: "Inbegrepen", pro: "Inbegrepen", team: "Inbegrepen" },
+  { feature: "AI-generatie", starter: "Basis", pro: "Geavanceerd", team: "Geavanceerd + templates" },
+  { feature: "Exports", starter: "Standaard", pro: "Prioriteit", team: "Prioriteit + branding" },
   // { feature: "Support", starter: "Email", pro: "Priority email", team: "Dedicated manager" },
 ];
 
 const faqItems = [
   {
-    question: "Can I switch plans anytime?",
-    answer: "Yes. Upgrade or downgrade at any time, and we prorate your billing automatically.",
+    question: "Kan ik op elk moment van pakket wisselen?",
+    answer: "Ja. Je kunt altijd upgraden of downgraden en we verrekenen je facturatie automatisch naar rato.",
   },
   {
-    question: "Do all plans include meal and training modules?",
-    answer: "Yes. The core planning modules are included in every plan.",
+    question: "Zitten maaltijd- en trainingsmodules in alle pakketten?",
+    answer: "Ja. De kernmodules voor planning zitten in elk pakket inbegrepen.",
   },
   {
-    question: "Is there a trial?",
-    answer: "Yes, new accounts have a 7-day free trial of the Pro plan features. No credit card required.",
+    question: "Is er een proefperiode?",
+    answer: "Ja, nieuwe accounts krijgen 7 dagen gratis toegang tot de Pro-functies. Geen creditcard vereist.",
   },
 ];
 
@@ -30,13 +30,13 @@ const plans = [
   {
     name: "Starter",
     price: "€11.99",
-    period: "/month",
-    description: "For solo coaches getting started with digital planning.",
+    period: "/maand",
+    description: "Voor solo coaches die starten met digitale planning.",
     features: [
-      "Up to 20 active clients",
-      "Meal plan builder",
-      "Training plan builder",
-      "Recipe library",
+      "Tot 20 actieve clienten",
+      "Maaltijdschema-bouwer",
+      "Trainingsschema-bouwer",
+      "Receptenbibliotheek",
       // "Basic progress tracking",
     ],
     cta: "Start Starter",
@@ -46,13 +46,13 @@ const plans = [
   {
     name: "Pro",
     price: "€34.99",
-    period: "/month",
-    description: "For growing coaching businesses that need speed and scale.",
+    period: "/maand",
+    description: "Voor groeiende coachpraktijken die snelheid en schaal nodig hebben.",
     features: [
-      "Unlimited active clients",
-      "AI meal + training plan generation",
-      "Priority PDF exports",
-      "Starter features included",
+      "Onbeperkt actieve clienten",
+      "AI-generatie van maaltijd- en trainingsschema",
+      "Prioritaire PDF-exports",
+      "Inclusief alle Starter-functies",
       // "Client analytics dashboard",
     ],
     cta: "Start Pro",
@@ -61,11 +61,11 @@ const plans = [
   },
   {
     name: "Studio",
-    price: "Custom",
+    price: "Op maat",
     period: "",
-    description: "For multi-coach teams with shared workflows and support.",
-    features: ["Multi-coach workspace", "Role-based permissions", "Team reporting", "Dedicated onboarding"],
-    cta: "Contact Sales",
+    description: "Voor teams met meerdere coaches en gedeelde workflows met ondersteuning.",
+    features: ["Werkruimte voor meerdere coaches", "Rolgebaseerde rechten", "Teamrapportages", "Persoonlijke onboarding"],
+    cta: "Neem contact op",
     highlighted: false,
     working: false,
   },
@@ -86,20 +86,21 @@ export default async function PricingPage() {
       <main className="mx-auto w-full max-w-6xl px-4 pb-24 pt-14 sm:px-6 md:pt-20">
         <section className="mx-auto max-w-3xl text-center">
           <p className="inline-flex rounded-full border border-green-200 bg-green-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-green-800">
-            Simple Pricing
+            Eenvoudige prijzen
           </p>
           <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl">
-            Pick a plan that fits your coaching flow.
+            Kies een pakket dat past bij jouw coachingflow.
           </h1>
           <p className="mt-4 text-base leading-7 text-slate-600 sm:text-lg">
-            Every plan includes the core CoachPlate workflow: meal planning, client management, and export-ready coaching docs.
+            Elk pakket bevat de kernworkflow van CoachPlate: maaltijdplanning, clientbeheer en coachingdocumenten die klaar zijn voor
+            export.
           </p>
         </section>
 
         <section className="mt-8 grid gap-3 rounded-2xl border border-slate-200 bg-white/90 p-4 text-center shadow-sm sm:grid-cols-3 sm:p-5">
-          <p className="text-sm font-semibold text-slate-700">No setup fees</p>
-          <p className="text-sm font-semibold text-slate-700">Cancel anytime</p>
-          <p className="text-sm font-semibold text-slate-700">EU-hosted data</p>
+          <p className="text-sm font-semibold text-slate-700">Geen opstartkosten</p>
+          <p className="text-sm font-semibold text-slate-700">Opzegbaar wanneer je wil</p>
+          <p className="text-sm font-semibold text-slate-700">Data gehost in de EU</p>
         </section>
 
         <section className="mt-12 grid gap-5 lg:grid-cols-3">
@@ -113,12 +114,12 @@ export default async function PricingPage() {
             >
               {plan.highlighted ? (
                 <p className=" absolute top-[-11] mb-4 inline-flex rounded-full bg-linear-to-r from-green-600 to-green-500 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-white">
-                  Most Popular
+                  Meest gekozen
                 </p>
               ) : null}
               {plan.working === false && (
                 <p className="absolute top-[-11] mb-4 inline-flex rounded-full bg-blue-500 px-3 py-1 text-xs font-semibold uppercase tracking-[0.12em] text-white">
-                  Coming Soon
+                  Binnenkort beschikbaar
                 </p>
               )}
 
@@ -140,7 +141,7 @@ export default async function PricingPage() {
 
               <div className="mt-10">
                 <Link
-                  href={plan.name === "Team" ? "/register" : primaryCtaHref}
+                  href={plan.name === "Studio" ? "mailto:info@coachplate.com" : primaryCtaHref}
                   className={[
                     "inline-flex w-[90%] items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold transition absolute bottom-2 left-1/2 -translate-x-1/2",
                     plan.highlighted
@@ -156,9 +157,9 @@ export default async function PricingPage() {
         </section>
 
         <section className="mt-14 rounded-3xl border border-slate-200 bg-white/90 p-6 text-center shadow-sm">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900">Need a custom setup?</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900">Nood aan een setup op maat?</h2>
           <p className="mt-3 text-sm text-slate-600 sm:text-base">
-            We can tailor onboarding, imports, and coaching workflows for your practice.
+            We kunnen onboarding, imports en coachingworkflows afstemmen op jouw praktijk.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             {user ? (
@@ -166,29 +167,29 @@ export default async function PricingPage() {
                 href={primaryCtaHref}
                 className="rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-700"
               >
-                {user ? "Go to Dashboard" : "Create Account"}
+                {user ? "Ga naar dashboard" : "Account aanmaken"}
               </Link>
             ) : (
               <Link
                 href="/login"
                 className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
               >
-                Log in
+                Inloggen
               </Link>
             )}
           </div>
         </section>
 
         <section className="mt-14 rounded-3xl border border-slate-200 bg-white/95 p-6 shadow-sm sm:p-8">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900">Feature Comparison</h2>
-          <p className="mt-2 text-sm text-slate-600">Everything you need to compare plans quickly.</p>
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900">Vergelijking van functies</h2>
+          <p className="mt-2 text-sm text-slate-600">Alles wat je nodig hebt om pakketten snel te vergelijken.</p>
 
           <div className="mt-6 overflow-x-auto">
             <table className="w-full min-w-170 border-separate border-spacing-0">
               <thead>
                 <tr>
                   <th className="border-b border-slate-200 px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-                    Feature
+                    Functie
                   </th>
                   <th className="border-b border-slate-200 px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
                     Starter
@@ -225,22 +226,24 @@ export default async function PricingPage() {
         </section>
 
         <section className="mt-14 rounded-3xl border border-green-200 bg-green-50/70 p-7 text-center sm:p-10">
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Ready to simplify your weekly coaching ops?</h2>
+          <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+            Klaar om je wekelijkse coachingwerk te vereenvoudigen?
+          </h2>
           <p className="mt-3 text-sm text-slate-700 sm:text-base">
-            Set up your account, import your first client, and ship your first plan today.
+            Maak je account aan, importeer je eerste client en lever vandaag nog je eerste plan op.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <Link
               href={primaryCtaHref}
               className="rounded-full bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-700"
             >
-              {user ? "Manage Plan" : "Start Free"}
+              {user ? "Beheer pakket" : "Start gratis"}
             </Link>
             <Link
               href="/"
               className="rounded-full border border-slate-300 bg-white px-6 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
             >
-              Back to Home
+              Terug naar home
             </Link>
           </div>
         </section>
