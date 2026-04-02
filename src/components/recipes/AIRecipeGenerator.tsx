@@ -16,6 +16,7 @@ export default function AIRecipeGenerator() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [recipe, setRecipe] = useState<GeneratedRecipe | null>(null);
+  const [isPublic, setIsPublic] = useState(false);
 
   async function handleGenerate() {
     if (!name) {
@@ -61,6 +62,7 @@ export default function AIRecipeGenerator() {
       meal_type: recipe.meal_type,
       servings: recipe.servings,
       ingredients: recipe.ingredients,
+      public: isPublic,
     });
   }
 
@@ -122,6 +124,18 @@ export default function AIRecipeGenerator() {
               placeholder="bv. glutenvrij, geen vlees..."
               className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
             />
+          </div>
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="isPublic"
+              checked={isPublic}
+              onChange={(e) => setIsPublic(e.target.checked)}
+              className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+            />
+            <label htmlFor="isPublic" className="text-sm font-medium text-gray-700">
+              Maak recept publiek
+            </label>
           </div>
         </div>
 
