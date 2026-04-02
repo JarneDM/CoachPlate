@@ -4,6 +4,7 @@ import DeleteRecipeButton from "@/components/recipes/DeleteRecipeButton";
 import { Timer, ChefHat, Plus } from "lucide-react";
 import { MacroBadge } from "@/components/recipes/MacroBadge";
 import Button from "@/components/CTA/Button";
+import FilterRecipes from "@/components/recipes/FilterRecipes";
 
 const mealTypeLabels: Record<string, string> = {
   ontbijt: "Ontbijt",
@@ -16,6 +17,7 @@ const PAGE_SIZE = 12;
 
 type SearchParams = {
   page?: string;
+  mealtype?: string;
 };
 
 function getVisiblePageItems(currentPage: number, totalPages: number) {
@@ -48,7 +50,7 @@ export default async function RecipesPage({ searchParams }: { searchParams?: Sea
   const rawPage = Number(params.page);
   const currentPage = Number.isFinite(rawPage) && rawPage > 0 ? Math.floor(rawPage) : 1;
 
-  const { data: recipes, totalCount } = await getRecipesPaginated(currentPage, PAGE_SIZE);
+  const { data: recipes, totalCount } = await getRecipesPaginated(currentPage, PAGE_SIZE, params.mealtype);
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const hasPrevious = currentPage > 1;
   const hasNext = currentPage < totalPages;
@@ -65,7 +67,10 @@ export default async function RecipesPage({ searchParams }: { searchParams?: Sea
             {totalCount} {totalCount === 1 ? "recept" : "recepten"} in je bibliotheek
           </p>
         </div>
-        <Button href="/recipes/new" label="Nieuw recept" icon={<Plus size={14} />} />
+        <div className="items-center flex gap-4 justify-end">
+          <FilterRecipes />
+          <Button href="/recipes/new" label="Nieuw recept" icon={<Plus size={14} />} width="w-36 h-8" />
+        </div>
       </div>
 
       {recipes.length > 0 ? (

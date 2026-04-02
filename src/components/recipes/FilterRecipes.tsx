@@ -23,13 +23,13 @@ function FilterRecipes() {
       
   }
   return (
-    <div className='w-full'>
-      <Select name="meal-type" value={mealType} onValueChange={handleChange} >
-        <SelectTrigger className='w-36'>
+    <div className="w-full">
+      <Select name="meal-type" value={mealType} onValueChange={handleChange}>
+        <SelectTrigger className="w-36">
           <SelectValue placeholder="Filter op maaltijdtype" />
         </SelectTrigger>
-        <SelectContent position='popper'>
-          <SelectGroup className='w-full'>
+        <SelectContent position="popper">
+          <SelectGroup className="w-full">
             <SelectLabel>Maaltijdtype</SelectLabel>
             <SelectItem value="all">Alle</SelectItem>
             <SelectItem value="ontbijt">Ontbijt</SelectItem>
