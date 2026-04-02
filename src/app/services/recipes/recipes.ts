@@ -29,7 +29,7 @@ export async function GetPublicRecipes() {
   return data;
 }
 
-export async function getRecipesPaginated(page: number, pageSize: number) {
+export async function getRecipesPaginated(page: number, pageSize: number, mealtype?: string) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -44,6 +44,7 @@ export async function getRecipesPaginated(page: number, pageSize: number) {
     .from("recipes")
     .select("*", { count: "exact" })
     .eq("coach_id", user!.id)
+    .eq(mealtype ? "meal_type" : "", mealtype)
     .order("created_at", { ascending: false })
     .range(from, to);
 
@@ -55,7 +56,7 @@ export async function getRecipesPaginated(page: number, pageSize: number) {
   return { data: data ?? [], totalCount: count ?? 0 };
 }
 
-export async function getPublicRecipePaginated(page: number, pageSize: number) {
+export async function getPublicRecipePaginated(page: number, pageSize: number, mealType?: string) {
   const supabase = await createClient();
 
   const safePage = Math.max(1, page);
@@ -67,6 +68,7 @@ export async function getPublicRecipePaginated(page: number, pageSize: number) {
     .from("recipes")
     .select("*", { count: "exact" })
     .eq("public", true)
+    .eq(mealType ? "meal_type" : "", mealType)
     .order("created_at", { ascending: false })
     .range(from, to);
 
