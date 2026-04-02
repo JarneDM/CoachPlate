@@ -1,5 +1,5 @@
 import { getMealPlanById } from "@/app/services/coaches/mealplans/meal-plans";
-import { getRecipes } from "@/app/services/recipes/recipes";
+import { getBuilderRecipes, GetPublicRecipes, getRecipes } from "@/app/services/recipes/recipes";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, User } from "lucide-react";
@@ -8,7 +8,7 @@ import WeekBuilder from "@/components/meal-plans/WeekBuilder";
 export default async function MealPlanBuilderPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
 
-  const [plan, recipes] = await Promise.all([getMealPlanById(id), getRecipes()]);
+  const [plan, recipes] = await Promise.all([getMealPlanById(id), getBuilderRecipes()]);
 
   if (!plan) notFound();
 

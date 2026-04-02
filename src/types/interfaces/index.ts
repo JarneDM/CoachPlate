@@ -36,10 +36,13 @@ export interface ClientOption {
 export interface Recipe {
   id: string;
   name: string;
+  meal_type: string;
   calories: number | null;
   protein_g: number | null;
   carbs_g: number | null;
   fat_g: number | null;
+  public: boolean;
+  coach_id: string;
 }
 
 export interface MealRecipe {
