@@ -150,6 +150,7 @@ export async function updateRecipe(id: string, input: RecipeInput) {
       prep_time_min: input.prep_time_min,
       meal_type: input.meal_type,
       servings,
+      public: input.public,
       ...macros,
     })
     .eq("id", id)

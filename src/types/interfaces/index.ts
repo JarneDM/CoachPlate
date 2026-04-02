@@ -25,6 +25,7 @@ export interface RecipeInput {
   meal_type?: string;
   servings?: number;
   ingredients: IngredientInput[];
+  public: boolean;
 }
 
 export interface ClientOption {
