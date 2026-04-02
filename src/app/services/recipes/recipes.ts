@@ -29,6 +29,27 @@ export async function GetPublicRecipes() {
   return data;
 }
 
+// getting the recipes for the meal plan builder, which includes both the coach's own recipes and the public recipes
+export async function getBuilderRecipes() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data, error } = await supabase
+    .from("recipes")
+    .select("*")
+    .or(`coach_id.eq.${user!.id},public.eq.true`)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching builder recipes:", error);
+    return [];
+  }
+
+  return data;
+}
+
 export async function getRecipesPaginated(page: number, pageSize: number, mealtype?: string) {
   const supabase = await createClient();
   const {
