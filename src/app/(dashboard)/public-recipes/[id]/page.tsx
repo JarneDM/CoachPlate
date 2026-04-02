@@ -7,7 +7,7 @@ import { MacroCard } from "@/components/recipes/MacroCard";
 import { Ingredient } from "@/types/index";
 import { createClient } from "@/lib/supabase/server";
 
-async function RecipeDetail({ params }: { params: { id: string } }) {
+async function PublicRecipeDetail({ params }: { params: { id: string } }) {
   const { id } = await params;
   const supabase = await createClient();
   const {
@@ -93,15 +93,7 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
             </div>
           </div>
         </div>
-        {recipe.coach_id === user?.id && (
-          <Link
-            href={`/recipes/${recipe.id}/edit`}
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-          >
-            <Pencil size={14} />
-            Bewerken
-          </Link>
-        )}
+        
       </div>
 
       {recipe.description && (
@@ -206,6 +198,4 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
   );
 }
 
-
-
-export default RecipeDetail;
+export default PublicRecipeDetail;

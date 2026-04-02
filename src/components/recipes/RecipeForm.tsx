@@ -19,6 +19,7 @@ interface RecipeFormProps {
     meal_type: string | null;
     prep_time_min: number | null;
     servings: number;
+    public: boolean;
     recipe_ingredients: Array<{
       id: string;
       amount_g: number;
@@ -60,6 +61,7 @@ export default function RecipeForm({ initialRecipe }: RecipeFormProps) {
   const [searching, setSearching] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isPublic, setIsPublic] = useState(initialRecipe?.public || false);
 
   const macros = ingredients.reduce(
     (acc, ing) => {
@@ -135,6 +137,7 @@ export default function RecipeForm({ initialRecipe }: RecipeFormProps) {
       prep_time_min: prepTime ? Number(prepTime) : undefined,
       servings: Number(servings || 1),
       ingredients,
+      public: isPublic,
     };
 
     if (isEditMode && initialRecipe) {
@@ -225,6 +228,19 @@ export default function RecipeForm({ initialRecipe }: RecipeFormProps) {
             rows={4}
             className="w-full resize-none rounded-lg border border-gray-200 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
           />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            id="isPublic"
+            checked={isPublic}
+            onChange={(e) => setIsPublic(e.target.checked)}
+            className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+          />
+          <label htmlFor="isPublic" className="text-sm font-medium text-gray-700">
+            Maak recept publiek
+          </label>
         </div>
       </div>
 

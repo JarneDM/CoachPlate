@@ -16,6 +16,19 @@ export async function getRecipes() {
   return data;
 }
 
+export async function GetPublicRecipes() {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.from("recipes").select("*").eq("public", true).order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Error fetching public recipes:", error);
+    return [];
+  }
+
+  return data;
+}
+
 export async function getRecipesPaginated(page: number, pageSize: number) {
   const supabase = await createClient();
   const {
@@ -36,6 +49,29 @@ export async function getRecipesPaginated(page: number, pageSize: number) {
 
   if (error) {
     console.error("Error fetching paginated recipes:", error);
+    return { data: [], totalCount: 0 };
+  }
+
+  return { data: data ?? [], totalCount: count ?? 0 };
+}
+
+export async function getPublicRecipePaginated(page: number, pageSize: number) {
+  const supabase = await createClient();
+
+  const safePage = Math.max(1, page);
+  const safePageSize = Math.max(1, pageSize);
+  const from = (safePage - 1) * safePageSize;
+  const to = from + safePageSize - 1;
+
+  const { data, error, count } = await supabase
+    .from("recipes")
+    .select("*", { count: "exact" })
+    .eq("public", true)
+    .order("created_at", { ascending: false })
+    .range(from, to);
+
+  if (error) {
+    console.error("Error fetching paginated public recipes:", error);
     return { data: [], totalCount: 0 };
   }
 
