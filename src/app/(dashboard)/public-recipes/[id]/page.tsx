@@ -93,7 +93,6 @@ async function PublicRecipeDetail({ params }: { params: { id: string } }) {
             </div>
           </div>
         </div>
-        
       </div>
 
       {recipe.description && (
