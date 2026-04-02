@@ -2,7 +2,7 @@ import React from "react";
 import { getRecipeById } from "@/app/services/recipes/recipes";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ChefHat, Clock, Flame, Dumbbell, Wheat, Droplets, UtensilsCrossed, ArrowLeft, Scale, BookOpen, Pencil } from "lucide-react";
+import { ChefHat, Clock, Flame, Dumbbell, Wheat, Droplets, UtensilsCrossed, ArrowLeft, Scale, BookOpen } from "lucide-react";
 import { MacroCard } from "@/components/recipes/MacroCard";
 import { Ingredient } from "@/types/index";
 import { createClient } from "@/lib/supabase/server";
