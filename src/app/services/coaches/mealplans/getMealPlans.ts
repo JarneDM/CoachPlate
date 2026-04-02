@@ -26,7 +26,7 @@ export const getMealPlans = async () => {
   return data;
 };
 
-export const getMealPlansPaginated = async (page: number, pageSize: number) => {
+export const getMealPlansPaginated = async (page: number, pageSize: number, clientId?: string) => {
   const supabase = await createClient();
   const {
     data: { user },
@@ -50,6 +50,7 @@ export const getMealPlansPaginated = async (page: number, pageSize: number) => {
       { count: "exact" },
     )
     .eq("coach_id", user!.id)
+    .eq(clientId ? "client_id" : "", clientId)
     .order("created_at", { ascending: false })
     .range(from, to);
 

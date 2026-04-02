@@ -33,7 +33,7 @@ export async function getTrainingPlans() {
   return data;
 }
 
-export async function getTrainingPlansPaginated(page: number, pageSize: number) {
+export async function getTrainingPlansPaginated(page: number, pageSize: number, clientId?: string) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -62,6 +62,7 @@ export async function getTrainingPlansPaginated(page: number, pageSize: number) 
       { count: "exact" },
     )
     .eq("coach_id", user!.id)
+    .eq(clientId ? "client_id" : "", clientId)
     .order("created_at", { ascending: false })
     .range(from, to);
 
