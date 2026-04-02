@@ -2,11 +2,15 @@ import { getTrainingPlansPaginated } from "@/app/services/training-plans/trainin
 import Link from "next/link";
 import { Dumbbell, Plus, User, CalendarDays, ArrowRight, Layers, FileDown } from "lucide-react";
 import DeleteTrainingPlanButton from "@/components/training-plans/DeleteTrainingPlanButton";
+import { getClients } from "@/app/services/clients/clients";
+import Filter from "@/components/clients/Filter";
+import Button from "@/components/CTA/Button";
 
 const PAGE_SIZE = 10;
 
 type SearchParams = {
   page?: string;
+  client?: string;
 };
 
 function getVisiblePageItems(currentPage: number, totalPages: number) {
@@ -39,13 +43,15 @@ export default async function TrainingPlansPage({ searchParams }: { searchParams
   const rawPage = Number(params.page);
   const currentPage = Number.isFinite(rawPage) && rawPage > 0 ? Math.floor(rawPage) : 1;
 
-  const { data: plans, totalCount } = await getTrainingPlansPaginated(currentPage, PAGE_SIZE);
+  const { data: plans, totalCount } = await getTrainingPlansPaginated(currentPage, PAGE_SIZE, params.client);
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const hasPrevious = currentPage > 1;
   const hasNext = currentPage < totalPages;
   const pageItems = getVisiblePageItems(currentPage, totalPages);
 
   const getPageHref = (page: number) => (page <= 1 ? "/training-plans" : `/training-plans?page=${page}`);
+
+  const clients = await getClients();
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -56,13 +62,10 @@ export default async function TrainingPlansPage({ searchParams }: { searchParams
             {totalCount} {totalCount === 1 ? "schema" : "schema's"} aangemaakt
           </p>
         </div>
-        <Link
-          href="/training-plans/new"
-          className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-        >
-          <Plus size={14} />
-          Nieuw schema
-        </Link>
+        <div className="items-center flex gap-4 justify-end">
+          <Filter clients={clients} />
+          <Button href="/training-plans/new" label="Nieuw schema" icon={<Plus size={14} />} width="w-40 h-8" />
+        </div>
       </div>
 
       {plans.length > 0 ? (
