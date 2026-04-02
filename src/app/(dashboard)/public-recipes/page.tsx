@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Timer, ChefHat, Plus } from "lucide-react";
 import { MacroBadge } from "@/components/recipes/MacroBadge";
 import Button from "@/components/CTA/Button";
+import FilterRecipe from "@/components/recipes/FilterRecipes";
 
 const mealTypeLabels: Record<string, string> = {
   ontbijt: "Ontbijt",
@@ -15,6 +16,7 @@ const PAGE_SIZE = 12;
 
 type SearchParams = {
   page?: string;
+  mealtype?: string;
 };
 
 function getVisiblePageItems(currentPage: number, totalPages: number) {
@@ -47,7 +49,7 @@ export default async function PublicRecipesPage({ searchParams }: { searchParams
   const rawPage = Number(params.page);
   const currentPage = Number.isFinite(rawPage) && rawPage > 0 ? Math.floor(rawPage) : 1;
 
-  const { data: recipes, totalCount } = await getPublicRecipePaginated(currentPage, PAGE_SIZE);
+  const { data: recipes, totalCount } = await getPublicRecipePaginated(currentPage, PAGE_SIZE, params.mealtype);
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const hasPrevious = currentPage > 1;
   const hasNext = currentPage < totalPages;
@@ -63,6 +65,9 @@ export default async function PublicRecipesPage({ searchParams }: { searchParams
           <p className="text-gray-400 text-sm mt-1">
             {totalCount} {totalCount === 1 ? "recept" : "recepten"} in de publieke bibliotheek
           </p>
+        </div>
+        <div>
+          <FilterRecipe />
         </div>
       </div>
 
@@ -158,7 +163,7 @@ export default async function PublicRecipesPage({ searchParams }: { searchParams
             <ChefHat className="w-12 h-12 text-gray-300" />
           </div>
           <h3 className="font-semibold text-gray-900 mb-2">Nog geen recepten</h3>
-          <p className="text-gray-400 text-sm mb-6">Maak je eerste recept aan om te gebruiken in weekplannen.</p>
+          <p className="text-gray-400 text-sm mb-6">Maak een recept aan!</p>
           <div className="items-center justify-center flex">
             <Button href="/recipes/new" label="Eerste recept aanmaken" icon={<Plus size={14} />} width="max-w-[300px] w-auto" />
           </div>
