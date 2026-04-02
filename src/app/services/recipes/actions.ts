@@ -68,6 +68,7 @@ export async function createRecipe(input: RecipeInput) {
       prep_time_min: input.prep_time_min,
       meal_type: input.meal_type,
       servings,
+      public: input.public,
       ...macros,
     })
     .select("id")
