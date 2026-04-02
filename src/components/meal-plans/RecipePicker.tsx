@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
-import { Search, X, ChefHat } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Search, X, ChefHat, NotepadText } from "lucide-react";
 import { Recipe } from "@/types/interfaces";
+import { createClient } from "@/lib/supabase/client";
+import { User } from "@supabase/supabase-js";
 
 interface Props {
   recipes: Recipe[];
@@ -22,10 +24,43 @@ export default function RecipePicker({ recipes, mealType, onSelect, onClose }: P
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Recipe | null>(null);
   const [servings, setServings] = useState(1);
+  const [user, setUser] = useState<User | null>(null);
 
-  const filtered = recipes.filter(r =>
-    r.name.toLowerCase().includes(search.toLowerCase())
-  );
+  useEffect(() => {
+    let isActive = true;
+    let unsubscribe: (() => void) | undefined;
+
+    void (async () => {
+      const supabase = await createClient();
+
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (isActive) {
+          setUser(session?.user ?? null);
+        }
+      });
+
+      unsubscribe = () => subscription.unsubscribe();
+
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (isActive) {
+        setUser(session?.user ?? null);
+      }
+    })();
+
+    return () => {
+      isActive = false;
+      unsubscribe?.();
+    };
+  }, []);
+
+  const mealtypeRecipes = recipes.filter((r) => r.meal_type === mealType);
+
+  const filtered = mealtypeRecipes.filter((r) => r.name.toLowerCase().includes(search.toLowerCase()));
 
   function handleConfirm() {
     if (!selected) return;
@@ -64,34 +99,40 @@ export default function RecipePicker({ recipes, mealType, onSelect, onClose }: P
 
         <div className="max-h-64 overflow-y-auto p-2">
           {filtered.length > 0 ? (
-            filtered.map((recipe) => (
-              <button
-                key={recipe.id}
-                onClick={() => setSelected(recipe)}
-                className={`w-full text-left px-3 py-2.5 rounded-lg transition-colors flex items-center gap-3 ${
-                  selected?.id === recipe.id ? "bg-green-50 border border-green-200" : "hover:bg-gray-50"
-                }`}
-              >
-                <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center shrink-0">
-                  <ChefHat size={14} className="text-green-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">{recipe.name}</p>
-                  {recipe.calories && (
-                    <p className="text-xs text-gray-400 mt-0.5">
-                      {recipe.calories} kcal · {recipe.protein_g}g eiw · {recipe.carbs_g}g koolh · {recipe.fat_g}g vet
-                    </p>
-                  )}
-                </div>
-                {selected?.id === recipe.id && (
-                  <div className="w-4 h-4 bg-green-500 rounded-full shrink-0 flex items-center justify-center">
-                    <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-                      <path d="M1 4L3 6L7 2" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
+            filtered.map((recipe) => {
+              const isCoachRecipe = recipe.coach_id === user?.id;
+
+              return (
+                <button
+                  key={recipe.id}
+                  onClick={() => setSelected(recipe)}
+                  className={`w-full text-left px-3 py-2.5 rounded-lg transition-colors flex items-center gap-3 ${
+                    selected?.id === recipe.id ? "bg-green-50 border border-green-200" : "hover:bg-gray-50"
+                  }`}
+                >
+                  <div
+                    className={`w-8 h-8 ${isCoachRecipe ? "bg-gray-200" : "bg-green-100"} rounded-lg flex items-center justify-center shrink-0`}
+                  >
+                    {isCoachRecipe ? <NotepadText size={14} /> : <ChefHat size={14} className="text-green-500" />}
                   </div>
-                )}
-              </button>
-            ))
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">{recipe.name}</p>
+                    {recipe.calories && (
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        {recipe.calories} kcal · {recipe.protein_g}g eiw · {recipe.carbs_g}g koolh · {recipe.fat_g}g vet
+                      </p>
+                    )}
+                  </div>
+                  {selected?.id === recipe.id && (
+                    <div className="w-4 h-4 bg-green-500 rounded-full shrink-0 flex items-center justify-center">
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+                        <path d="M1 4L3 6L7 2" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+              );
+            })
           ) : (
             <div className="text-center py-8">
               <p className="text-sm text-gray-400">
