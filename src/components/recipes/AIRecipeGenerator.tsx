@@ -131,6 +131,7 @@ export default function AIRecipeGenerator() {
               id="isPublic"
               checked={isPublic}
               onChange={(e) => setIsPublic(e.target.checked)}
+              disabled={loading}
               className="rounded border-gray-300 text-green-600 focus:ring-green-500"
             />
             <label htmlFor="isPublic" className="text-sm font-medium text-gray-700">
