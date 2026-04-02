@@ -4,11 +4,14 @@ import Link from "next/link";
 import { CalendarDays, User, ArrowRight, Plus, Clock, FileDown } from "lucide-react";
 import Button from "@/components/CTA/Button";
 import DeleteWeekPlanButton from "@/components/meal-plans/DeleteWeekPlanButton";
+import { getClients } from "@/app/services/clients/clients";
+import Filter from "@/components/clients/Filter";
 
 const PAGE_SIZE = 12;
 
 type SearchParams = {
   page?: string;
+  client?: string;
 };
 
 function getVisiblePageItems(currentPage: number, totalPages: number) {
@@ -41,13 +44,15 @@ async function MealPlans({ searchParams }: { searchParams?: SearchParams | Promi
   const rawPage = Number(params.page);
   const currentPage = Number.isFinite(rawPage) && rawPage > 0 ? Math.floor(rawPage) : 1;
 
-  const { data: mealplans, totalCount } = await getMealPlansPaginated(currentPage, PAGE_SIZE);
+  const { data: mealplans, totalCount } = await getMealPlansPaginated(currentPage, PAGE_SIZE, params.client);
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
   const hasPrevious = currentPage > 1;
   const hasNext = currentPage < totalPages;
   const pageItems = getVisiblePageItems(currentPage, totalPages);
 
   const getPageHref = (page: number) => (page <= 1 ? "/meal-plans" : `/meal-plans?page=${page}`);
+
+  const clients = await getClients();
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -58,7 +63,10 @@ async function MealPlans({ searchParams }: { searchParams?: SearchParams | Promi
             {totalCount} {totalCount === 1 ? "plan" : "plannen"} aangemaakt
           </p>
         </div>
-        <Button href="/meal-plans/new" label="Nieuw weekplan" icon={<Plus size={14} />} />
+        <div className="items-center flex gap-4 justify-end">
+          <Filter clients={clients} />
+          <Button href="/meal-plans/new" label="Nieuw weekplan" icon={<Plus size={14} />} width="w-42 h-8" />
+        </div>
       </div>
 
       {mealplans.length > 0 ? (
