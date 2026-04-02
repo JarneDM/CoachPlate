@@ -22,7 +22,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     { href: "/dashboard", label: "Dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
     { href: "/clients", label: "Klanten", icon: <Users className="h-5 w-5" /> },
     { href: "/meal-plans", label: "Weekplannen", icon: <CalendarDays className="h-5 w-5" /> },
-    { href: "/recipes", label: "Uw recepten", icon: <NotepadText className="h-5 w-5" /> },
+    { href: "/recipes", label: "Je recepten", icon: <NotepadText className="h-5 w-5" /> },
     { href: "/public-recipes", label: "Publieke recepten", icon: <ChefHat className="h-5 w-5" /> },
     { href: "/training-plans", label: "Schema's", icon: <Dumbbell className="h-5 w-5" /> },
     { href: "/settings", label: "Instellingen", icon: <Settings className="h-5 w-5" /> },

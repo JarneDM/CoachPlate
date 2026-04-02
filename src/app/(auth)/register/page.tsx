@@ -72,7 +72,7 @@ export default function RegisterPage() {
       return;
     }
 
-    router.push("/login");
+    router.push("/dashboard");
   }
 
   return (
