@@ -36,6 +36,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   }
 
   const { id } = await params;
+  const supabase = await createClient();
   const plan = await getMealPlanById(id);
 
   if (!plan) {
@@ -48,7 +49,11 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   }
 
   const sortedDays = [...(plan.meal_plan_days ?? [])].sort((a, b) => a.day_number - b.day_number);
-  const document = React.createElement(MealPlanPdfDocument, { plan, days: sortedDays }) as Parameters<typeof renderToBuffer>[0];
+  const document = React.createElement(MealPlanPdfDocument, {
+    plan,
+    days: sortedDays,
+    coachLogoUrl,
+  }) as Parameters<typeof renderToBuffer>[0];
   const pdfBuffer = await renderToBuffer(document);
 
   const planName = sanitizeFileName(plan.name || "weekplan");
