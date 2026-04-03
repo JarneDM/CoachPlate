@@ -19,7 +19,7 @@ export default function DataProcessingAgreementPage() {
               <strong>Verwerkingsverantwoordelijke:</strong> de coach of professional die CoachPlate gebruikt
             </li>
             <li>
-              <strong>Verwerker:</strong> Jarne De Meyer, Sint-Niklaas, België, jarnedm@outlook.com, handelend onder de naam CoachPlate
+              <strong>Verwerker:</strong> Jarne De Meyer, Sint-Niklaas, België, info@coachplate.com, handelend onder de naam CoachPlate
             </li>
           </ul>
           <p>Door gebruik te maken van CoachPlate gaat de verwerkingsverantwoordelijke akkoord met deze overeenkomst.</p>
@@ -100,7 +100,7 @@ export default function DataProcessingAgreementPage() {
           <h2>Artikel 7 — Rechten van betrokkenen</h2>
           <p>
             De verwerkingsverantwoordelijke is primair verantwoordelijk voor het behandelen van verzoeken van betrokkenen. De verwerker
-            biedt technische ondersteuning via jarnedm@outlook.com voor inzage-, correctie-, verwijderings- en overdraagbaarheidsverzoeken.
+            biedt technische ondersteuning via info@coachplate.com voor inzage-, correctie-, verwijderings- en overdraagbaarheidsverzoeken.
           </p>
 
           <h2>Artikel 8 — Internationale doorgifte</h2>
@@ -123,7 +123,7 @@ export default function DataProcessingAgreementPage() {
           <h2>Contactgegevens verwerker</h2>
           <ul>
             <li>Naam: Jarne De Meyer</li>
-            <li>E-mail: jarnedm@outlook.com</li>
+            <li>E-mail: info@coachplate.com</li>
             <li>Locatie: Sint-Niklaas, België</li>
             <li>Website: coachplate.com</li>
           </ul>
