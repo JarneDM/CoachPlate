@@ -1,4 +1,4 @@
-import { CircleDollarSign, Lock, Palette, Sparkles, UserRound, Users } from "lucide-react";
+import { CircleDollarSign, Lock, Sparkles, UserRound, Users } from "lucide-react";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getSubscription } from "@/app/services/coaches/subscription/getSubscription";
@@ -25,11 +25,7 @@ function safeDecode(value: string) {
   }
 }
 
-export default async function SettingsPage({
-  searchParams,
-}: {
-  searchParams?: SearchParams | Promise<SearchParams>;
-}) {
+export default async function SettingsPage({ searchParams }: { searchParams?: SearchParams | Promise<SearchParams> }) {
   const params = (await Promise.resolve(searchParams)) ?? {};
 
   const supabase = await createClient();
@@ -41,10 +37,7 @@ export default async function SettingsPage({
     redirect("/login");
   }
 
-  const [{ data: coach }, { data: subscription }] = await Promise.all([
-    getCoachData(user.id),
-    getSubscription(user),
-  ]);
+  const [{ data: coach }, { data: subscription }] = await Promise.all([getCoachData(user.id), getSubscription(user)]);
 
   const activePlan = subscription?.plan ?? "starter";
   const limits = PLAN_LIMITS[activePlan as keyof typeof PLAN_LIMITS] ?? PLAN_LIMITS.starter;
@@ -105,7 +98,7 @@ export default async function SettingsPage({
             <h2 className="font-semibold text-gray-900">Profiel</h2>
           </div>
 
-          <form action={updateCoachProfile} className="space-y-4">
+          <form action={updateCoachProfile} encType="multipart/form-data" className="space-y-4">
             <div>
               <label htmlFor="full_name" className="block text-sm text-gray-600 mb-1">
                 Volledige naam
@@ -129,6 +122,28 @@ export default async function SettingsPage({
                 className="w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-500"
                 readOnly
               />
+            </div>
+
+            <div>
+              <label htmlFor="logo" className="block text-sm text-gray-600 mb-1">
+                Logo voor PDF
+              </label>
+              <input
+                id="logo"
+                name="logo"
+                type="file"
+                accept="image/png,image/jpeg"
+                className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm text-gray-900 file:mr-3 file:rounded-md file:border-0 file:bg-green-50 file:px-3 file:py-1.5 file:text-green-700"
+              />
+              <p className="text-xs text-gray-400 mt-1">Gebruik PNG of JPG (max. 2MB). Dit logo verschijnt in je PDF exports.</p>
+              {coach?.logo_url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={coach.logo_url}
+                  alt="Huidig coachlogo"
+                  className="mt-3 h-14 w-auto rounded-md border border-gray-200 bg-white p-2"
+                />
+              ) : null}
             </div>
 
             {/* <div>
@@ -224,5 +239,5 @@ export default async function SettingsPage({
 async function getCoachData(userId: string) {
   const supabase = await createClient();
 
-  return supabase.from("coaches").select("full_name, email, brand_color").eq("id", userId).single();
+  return supabase.from("coaches").select("full_name, email, brand_color, logo_url").eq("id", userId).single();
 }

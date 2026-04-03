@@ -2,7 +2,17 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/server";
+
+const COACH_LOGO_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_COACH_LOGOS_BUCKET ?? "coach-logos";
+const MAX_LOGO_SIZE_BYTES = 2 * 1024 * 1024;
+
+function getLogoExtension(contentType: string) {
+  if (contentType === "image/png") return "png";
+  if (contentType === "image/jpeg") return "jpg";
+  return null;
+}
 
 function sanitizeHexColor(input: string) {
   const trimmed = input.trim();
@@ -26,6 +36,9 @@ export async function updateCoachProfile(formData: FormData) {
   const fullName = String(formData.get("full_name") ?? "").trim();
   const brandColorRaw = String(formData.get("brand_color") ?? "");
   const brandColor = sanitizeHexColor(brandColorRaw);
+  const logoFile = formData.get("logo");
+
+  let logoUrl: string | undefined;
 
   if (fullName.length < 2) {
     redirect("/settings?error=Naam+is+te+kort");
@@ -35,11 +48,51 @@ export async function updateCoachProfile(formData: FormData) {
     redirect("/settings?error=Ongeldige+merkkleur");
   }
 
+  if (logoFile instanceof File && logoFile.size > 0) {
+    if (!logoFile.type || !["image/png", "image/jpeg"].includes(logoFile.type)) {
+      redirect("/settings?error=Gebruik+een+PNG+of+JPG+logo");
+    }
+
+    if (logoFile.size > MAX_LOGO_SIZE_BYTES) {
+      redirect("/settings?error=Logo+mag+maximaal+2MB+zijn");
+    }
+
+    const extension = getLogoExtension(logoFile.type);
+    if (!extension) {
+      redirect("/settings?error=Ongeldig+logo+formaat");
+    }
+
+    const filePath = `${user.id}/logo.${extension}`;
+    const fileBuffer = Buffer.from(await logoFile.arrayBuffer());
+
+    const hasServiceRole = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
+    const storageClient = hasServiceRole
+      ? createSupabaseClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+      : supabase;
+
+    const { error: uploadError } = await storageClient.storage.from(COACH_LOGO_BUCKET).upload(filePath, fileBuffer, {
+      contentType: logoFile.type,
+      upsert: true,
+    });
+
+    if (uploadError) {
+      console.error("Error uploading coach logo:", uploadError);
+      if (!hasServiceRole && (uploadError.message.toLowerCase().includes("row-level security") || uploadError.statusCode === 403)) {
+        redirect("/settings?error=Logo+upload+geblokkeerd+door+storage+policy");
+      }
+      redirect("/settings?error=Logo+upload+mislukt");
+    }
+
+    const { data: publicUrlData } = storageClient.storage.from(COACH_LOGO_BUCKET).getPublicUrl(filePath);
+    logoUrl = publicUrlData.publicUrl;
+  }
+
   const { error } = await supabase
     .from("coaches")
     .update({
       full_name: fullName,
       brand_color: brandColor,
+      ...(logoUrl ? { logo_url: logoUrl } : {}),
     })
     .eq("id", user.id);
 
