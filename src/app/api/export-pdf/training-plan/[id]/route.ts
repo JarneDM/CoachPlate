@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
 import { getTrainingPlanById } from "@/app/services/training-plans/training-plans";
 import TrainingPlanPdfDocument from "@/components/pdf/TrainingPlanPdfDocument";
+import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
@@ -18,14 +19,25 @@ function sanitizeFileName(input: string) {
 
 export async function GET(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const supabase = await createClient();
   const plan = await getTrainingPlanById(id);
 
   if (!plan) {
     return NextResponse.json({ error: "Trainingsschema niet gevonden" }, { status: 404 });
   }
 
+  let coachLogoUrl: string | null = null;
+  if (plan.coach_id) {
+    const { data: coach } = await supabase.from("coaches").select("logo_url").eq("id", plan.coach_id).maybeSingle();
+    coachLogoUrl = coach?.logo_url ?? null;
+  }
+
   const sortedDays = [...(plan.training_plan_days ?? [])].sort((a, b) => a.day_number - b.day_number);
-  const document = React.createElement(TrainingPlanPdfDocument, { plan, days: sortedDays }) as Parameters<typeof renderToBuffer>[0];
+  const document = React.createElement(TrainingPlanPdfDocument, {
+    plan,
+    days: sortedDays,
+    coachLogoUrl,
+  }) as Parameters<typeof renderToBuffer>[0];
   const pdfBuffer = await renderToBuffer(document);
 
   const planName = sanitizeFileName(plan.name || "trainingsschema");

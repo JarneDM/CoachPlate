@@ -1,5 +1,6 @@
 import React from "react";
 import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import Image from "next/image";
 
 type Exercise = {
   id?: string;
@@ -38,6 +39,7 @@ type Plan = {
 type Props = {
   plan: Plan;
   days: Day[];
+  coachLogoUrl?: string | null;
 };
 
 const GREEN = "#16a34a";
@@ -89,6 +91,12 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     marginBottom: 6,
     letterSpacing: 1,
+  },
+  brandLogo: {
+    width: 120,
+    height: 36,
+    objectFit: "contain",
+    marginBottom: 6,
   },
   planTitle: {
     fontSize: 20,
@@ -225,6 +233,11 @@ const styles = StyleSheet.create({
     fontSize: 8,
     color: GRAY_400,
   },
+  footerLogo: {
+    width: 60,
+    height: 16,
+    objectFit: "contain",
+  },
 });
 
 function formatDate(value?: string | null) {
@@ -239,7 +252,7 @@ function getGroupColor(muscleGroup?: string | null) {
   return MUSCLE_GROUP_COLORS[key] ?? "#6b7280";
 }
 
-export default function TrainingPlanPdfDocument({ plan, days }: Props) {
+export default function TrainingPlanPdfDocument({ plan, days, coachLogoUrl }: Props) {
   const sortedDays = [...days].sort((a, b) => a.day_number - b.day_number);
 
   return (
@@ -247,10 +260,12 @@ export default function TrainingPlanPdfDocument({ plan, days }: Props) {
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <Text style={styles.brandName}>COACHPLATE</Text>
+            {coachLogoUrl ? <Image src={coachLogoUrl} alt="Coach Logo" /> : <Text style={styles.brandName}>COACHPLATE</Text>}
             <Text style={styles.planTitle}>{plan.name || "Trainingsschema"}</Text>
             <Text style={styles.planMeta}>Aangemaakt op {formatDate(plan.created_at)}</Text>
-            <Text style={styles.planMeta}>{sortedDays.length} {sortedDays.length === 1 ? "dag" : "dagen"} in schema</Text>
+            <Text style={styles.planMeta}>
+              {sortedDays.length} {sortedDays.length === 1 ? "dag" : "dagen"} in schema
+            </Text>
           </View>
           {plan.clients?.full_name ? (
             <View style={styles.clientBadge}>
@@ -328,7 +343,11 @@ export default function TrainingPlanPdfDocument({ plan, days }: Props) {
         )}
 
         <View style={styles.footer} fixed>
-          <Text style={styles.footerText}>CoachPlate - Trainingsschema export</Text>
+          {coachLogoUrl ? (
+            <Image src={coachLogoUrl} alt="coach logo" />
+          ) : (
+            <Text style={styles.footerText}>CoachPlate - Trainingsschema export</Text>
+          )}
           <Text style={styles.footerText} render={({ pageNumber, totalPages }) => `Pagina ${pageNumber}/${totalPages}`} />
         </View>
       </Page>

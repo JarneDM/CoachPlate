@@ -1,5 +1,5 @@
 import React from "react";
-import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
+import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 
 type Recipe = {
   id?: string;
@@ -61,6 +61,7 @@ type Plan = {
 type Props = {
   plan: Plan;
   days: Day[];
+  coachLogoUrl?: string | null;
 };
 
 const GREEN = "#16a34a";
@@ -114,6 +115,12 @@ const styles = StyleSheet.create({
     fontWeight: 700,
     marginBottom: 6,
     letterSpacing: 1,
+  },
+  brandLogo: {
+    width: 120,
+    height: 36,
+    objectFit: "contain",
+    marginBottom: 6,
   },
   planTitle: {
     fontSize: 20,
@@ -391,6 +398,11 @@ const styles = StyleSheet.create({
     color: GREEN,
     fontWeight: 700,
   },
+  footerLogo: {
+    width: 60,
+    height: 16,
+    objectFit: "contain",
+  },
 });
 
 function formatDate(date: string | null | undefined) {
@@ -457,7 +469,7 @@ function getInstructionSteps(instructions: string): string[] {
     .filter(Boolean);
 }
 
-export default function MealPlanPdfDocument({ plan, days }: Props) {
+export default function MealPlanPdfDocument({ plan, days, coachLogoUrl }: Props) {
   const uniqueRecipes = getUniqueRecipes(days);
 
   return (
@@ -465,7 +477,7 @@ export default function MealPlanPdfDocument({ plan, days }: Props) {
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <Text style={styles.brandName}>COACHPLATE</Text>
+            {coachLogoUrl ? <Image src={coachLogoUrl} style={styles.brandLogo} /> : <Text style={styles.brandName}>COACHPLATE</Text>}
             <Text style={styles.planTitle}>{plan.name}</Text>
             {plan.start_date && plan.end_date && (
               <Text style={styles.planMeta}>
@@ -607,7 +619,7 @@ export default function MealPlanPdfDocument({ plan, days }: Props) {
           <Text style={styles.footerText}>
             {plan.clients?.full_name ?? ""} — {plan.name}
           </Text>
-          <Text style={styles.footerBrand}>CoachPlate</Text>
+          {coachLogoUrl ? <Image src={coachLogoUrl} style={styles.footerLogo} /> : <Text style={styles.footerBrand}>CoachPlate</Text>}
           <Text style={styles.footerText} render={({ pageNumber, totalPages }) => `Pagina ${pageNumber} van ${totalPages}`} />
         </View>
       </Page>
@@ -680,7 +692,7 @@ export default function MealPlanPdfDocument({ plan, days }: Props) {
             <Text style={styles.footerText}>
               {plan.clients?.full_name ?? ""} — {plan.name}
             </Text>
-            <Text style={styles.footerBrand}>CoachPlate</Text>
+            {coachLogoUrl ? <Image src={coachLogoUrl} style={styles.footerLogo} /> : <Text style={styles.footerBrand}>CoachPlate</Text>}
             <Text style={styles.footerText} render={({ pageNumber, totalPages }) => `Pagina ${pageNumber} van ${totalPages}`} />
           </View>
         </Page>
