@@ -307,6 +307,11 @@ export default function TrainingPlanPdfDocument({ plan, days }: Props) {
                               <Text style={styles.metricText}>Reps: {exerciseInPlan.reps ?? "-"}</Text>
                             </View>
                             <View style={styles.metricBadge}>
+                              <Text style={styles.metricText}>
+                                Gewicht: {exerciseInPlan.weight_kg ? `${exerciseInPlan.weight_kg} kg` : "-"}
+                              </Text>
+                            </View>
+                            <View style={styles.metricBadge}>
                               <Text style={styles.metricText}>Rust: {exerciseInPlan.rest_seconds ?? 0} sec</Text>
                             </View>
                           </View>
