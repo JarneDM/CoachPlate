@@ -77,7 +77,7 @@ export async function updateCoachProfile(formData: FormData) {
 
     if (uploadError) {
       console.error("Error uploading coach logo:", uploadError);
-      if (!hasServiceRole && (uploadError.message.toLowerCase().includes("row-level security") || uploadError.statusCode === 403)) {
+      if (!hasServiceRole && (uploadError.message.toLowerCase().includes("row-level security") || uploadError.statusCode === "403")) {
         redirect("/settings?error=Logo+upload+geblokkeerd+door+storage+policy");
       }
       redirect("/settings?error=Logo+upload+mislukt");
