@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { Plus, X, ChevronDown, ChevronUp, Timer, Repeat } from "lucide-react";
+import { Plus, X, ChevronDown, ChevronUp } from "lucide-react";
 import { updateExercise } from "@/app/services/training-plans/builder-actions";
+import { TextInput } from "./InputText";
 
 interface Exercise {
   id: string;
@@ -95,6 +96,7 @@ function ExerciseRow({ etp, planId, onRemove }: { etp: ExerciseTrainingPlan; pla
   const [expanded, setExpanded] = useState(false);
   const [sets, setSets] = useState(etp.sets ?? 3);
   const [reps, setReps] = useState(etp.reps ?? 10);
+  const [weight_kg, setWeightKg] = useState(etp.weight_kg ?? 0);
   const [rest, setRest] = useState(etp.rest_seconds ?? 0);
   const [isPending, startTransition] = useTransition();
 
@@ -153,6 +155,15 @@ function ExerciseRow({ etp, planId, onRemove }: { etp: ExerciseTrainingPlan; pla
               }}
               min={1}
             />
+            <TextInput
+              label="KG"
+              value={weight_kg}
+              onChange={(v) => {
+                setWeightKg(v);
+                handleUpdate("weight_kg", v);
+              }}
+              min={1}
+            />
             <NumberInput
               label="Rust (sec)"
               value={rest}
@@ -206,3 +217,4 @@ function NumberInput({
     </div>
   );
 }
+

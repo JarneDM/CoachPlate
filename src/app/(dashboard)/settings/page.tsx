@@ -144,7 +144,7 @@ export default async function SettingsPage({
               />
             </div>
 
-            <div>
+            {/* <div>
               <label htmlFor="brand_color" className="block text-sm text-gray-600 mb-1">
                 Merkkleur (hex)
               </label>
@@ -159,7 +159,7 @@ export default async function SettingsPage({
                 />
               </div>
               <p className="text-xs text-gray-400 mt-1">Voorbeeld: #16a34a</p>
-            </div>
+            </div> */}
 
             <button
               type="submit"
