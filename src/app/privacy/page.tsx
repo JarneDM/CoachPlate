@@ -16,7 +16,7 @@ export default function PrivacyPage() {
           <h2>1. Wie zijn wij?</h2>
           <p>
             CoachPlate is een softwareplatform voor voedingscoaches en personal trainers, ontwikkeld door Jarne De Meyer, gevestigd te
-            Sint-Niklaas, België. Je kan ons bereiken via jarnedm@outlook.com of via coachplate.app.
+            Sint-Niklaas, België. Je kan ons bereiken via info@coachplate.com of via coachplate.app.
           </p>
 
           <h2>2. Welke persoonsgegevens verzamelen wij?</h2>
@@ -88,7 +88,7 @@ export default function PrivacyPage() {
             </li>
           </ul>
           <p>
-            Om een van deze rechten uit te oefenen, stuur een e-mail naar jarnedm@outlook.com. Wij behandelen je verzoek binnen 30 dagen.
+            Om een van deze rechten uit te oefenen, stuur een e-mail naar info@coachplate.com. Wij behandelen je verzoek binnen 30 dagen.
           </p>
 
           <h2>7. Beveiliging</h2>
@@ -116,7 +116,7 @@ export default function PrivacyPage() {
           <h2>9. Contact</h2>
           <ul>
             <li>Naam: Jarne De Meyer</li>
-            <li>E-mail: jarnedm@outlook.com</li>
+            <li>E-mail: info@coachplate.com</li>
             <li>Locatie: Sint-Niklaas, België</li>
             <li>Website: coachplate.com</li>
           </ul>

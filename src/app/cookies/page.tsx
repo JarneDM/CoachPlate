@@ -76,8 +76,8 @@ export default function CookiesPage() {
           <h2>7. Contact</h2>
           <p>
             Voor vragen over ons cookiebeleid:{" "}
-            <a href="mailto:jarnedm@outlook.com" className="text-green-600 hover:underline">
-              jarnedm@outlook.com
+            <a href="mailto:info@coachplate.com" className="text-green-600 hover:underline">
+              info@coachplate.com
             </a>
           </p>
         </div>
