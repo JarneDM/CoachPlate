@@ -3,14 +3,70 @@ import { createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 
 const comparisonRows = [
-  { feature: "Klanten limiet", starter: "Tot 20", pro: "Onbeperkt", team: "Onbeperkt + teampool" },
-  { feature: "Maaltijdschema-bouwer", starter: "Inbegrepen", pro: "Inbegrepen", team: "Inbegrepen" },
-  { feature: "Trainingsschema-bouwer", starter: "Inbegrepen", pro: "Inbegrepen", team: "Inbegrepen" },
-  { feature: "AI-generatie", starter: "Basis", pro: "Geavanceerd", team: "Geavanceerd + templates" },
-  { feature: "Exports", starter: "Standaard", pro: "Prioriteit", team: "Prioriteit + branding" },
-  // { feature: "Support", starter: "Email", pro: "Priority email", team: "Dedicated manager" },
+  {
+    feature: "Klanten",
+    gratis: "Tot 5",
+    starter: "Tot 20",
+    pro: "Onbeperkt",
+    team: "Onbeperkt + teampool",
+  },
+  {
+    feature: "Maaltijdschema-bouwer",
+    gratis: "✓",
+    starter: "✓",
+    pro: "✓",
+    team: "✓",
+  },
+  {
+    feature: "Trainingsschema-bouwer",
+    gratis: "✓",
+    starter: "✓",
+    pro: "✓",
+    team: "✓",
+  },
+  // {
+  //   feature: "Deelbare links",
+  //   gratis: "✓",
+  //   starter: "✓",
+  //   pro: "✓",
+  //   team: "✓",
+  // },
+  {
+    feature: "AI recepten generatie",
+    gratis: "5 per maand",
+    starter: "15 per maand",
+    pro: "Onbeperkt",
+    team: "Onbeperkt",
+  },
+  {
+    feature: "AI maaltijdplan generatie",
+    gratis: "—",
+    starter: "5 per maand",
+    pro: "Onbeperkt",
+    team: "Onbeperkt",
+  },
+  {
+    feature: "AI trainingsschema generatie",
+    gratis: "—",
+    starter: "5 per maand",
+    pro: "Onbeperkt",
+    team: "Onbeperkt",
+  },
+  {
+    feature: "PDF export",
+    gratis: "—",
+    starter: "✓",
+    pro: "✓ + eigen logo",
+    team: "✓ + eigen branding",
+  },
+  {
+    feature: "Meerdere coaches",
+    gratis: "—",
+    starter: "—",
+    pro: "—",
+    team: "✓",
+  },
 ];
-
 const faqItems = [
   {
     question: "Kan ik op elk moment van pakket wisselen?",
@@ -192,6 +248,9 @@ export default async function PricingPage() {
                     Functie
                   </th>
                   <th className="border-b border-slate-200 px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                    Gratis
+                  </th>
+                  <th className="border-b border-slate-200 px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
                     Starter
                   </th>
                   <th className="border-b border-slate-200 px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.12em] text-green-700">
@@ -206,6 +265,7 @@ export default async function PricingPage() {
                 {comparisonRows.map((row) => (
                   <tr key={row.feature}>
                     <td className="border-b border-slate-100 px-4 py-3 text-sm font-medium text-slate-900">{row.feature}</td>
+                    <td className="border-b border-slate-100 px-4 py-3 text-sm text-slate-700">{row.gratis}</td>
                     <td className="border-b border-slate-100 px-4 py-3 text-sm text-slate-700">{row.starter}</td>
                     <td className="border-b border-slate-100 px-4 py-3 text-sm font-semibold text-green-800">{row.pro}</td>
                     <td className="border-b border-slate-100 px-4 py-3 text-sm text-slate-700">{row.team}</td>
