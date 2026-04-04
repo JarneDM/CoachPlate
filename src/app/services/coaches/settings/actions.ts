@@ -9,7 +9,7 @@ const COACH_LOGO_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_COACH_LOGOS_BUCKET ??
 const MAX_LOGO_SIZE_BYTES = 2 * 1024 * 1024;
 
 function getServiceRoleConfig() {
-  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SERVICE_KEY ?? process.env.SUPABASE_SERVICE_ROLE;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
 
   if (!serviceRoleKey || !supabaseUrl) {
@@ -32,6 +32,11 @@ function sanitizeHexColor(input: string) {
   const prefixed = trimmed.startsWith("#") ? trimmed : `#${trimmed}`;
   const isValid = /^#[0-9a-fA-F]{6}$/.test(prefixed);
   return isValid ? prefixed.toLowerCase() : null;
+}
+
+function appendVersionQuery(url: string, version: string) {
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}v=${version}`;
 }
 
 export async function updateCoachProfile(formData: FormData) {
@@ -96,7 +101,7 @@ export async function updateCoachProfile(formData: FormData) {
     }
 
     const { data: publicUrlData } = storageClient.storage.from(COACH_LOGO_BUCKET).getPublicUrl(filePath);
-    logoUrl = publicUrlData.publicUrl;
+    logoUrl = appendVersionQuery(publicUrlData.publicUrl, Date.now().toString());
   }
 
   const { error } = await supabase
