@@ -111,7 +111,7 @@ export default async function SettingsPage({ searchParams }: { searchParams?: Se
             <h2 className="font-semibold text-gray-900">Profiel</h2>
           </div>
 
-          <form action={updateCoachProfile} encType="multipart/form-data" className="space-y-4">
+          <form action={updateCoachProfile} className="space-y-4">
             <div>
               <label htmlFor="full_name" className="block text-sm text-gray-600 mb-1">
                 Volledige naam
@@ -225,7 +225,7 @@ export default async function SettingsPage({ searchParams }: { searchParams?: Se
               key: "starter",
               title: "Starter",
               clients: "Tot 10 klanten",
-              ai: "10 AI gegenereerde recepten per maand",
+              ai: "5 AI gegenereerde recepten per maand",
             },
             {
               key: "pro",

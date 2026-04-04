@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { canGenerateRecipe } from "@/lib/supabase/subscriptionHelpers";
 
 const anthropic = new Anthropic({
@@ -22,6 +23,10 @@ export async function POST(req: NextRequest) {
   const { canGenerate, used, limit } = await canGenerateRecipe(user.id);
 
   if (!canGenerate) {
+    if (limit === 0) {
+      return NextResponse.json({ error: "AI recepten zijn niet beschikbaar bij jouw huidige plan." }, { status: 403 });
+    }
+
     return NextResponse.json(
       {
         error: `Je hebt je limit van ${limit} AI recepten per maand bereikt. Je hebt ${used} gegenereerd.`,
@@ -30,6 +35,16 @@ export async function POST(req: NextRequest) {
       },
       { status: 429 },
     );
+  }
+
+  const adminSupabase = createAdminClient();
+  const { error: logError } = await adminSupabase.from("ai_recipe_generations").insert({
+    coach_id: user.id,
+  });
+
+  if (logError) {
+    console.error("Error logging AI recipe generation:", logError);
+    return NextResponse.json({ error: "AI receptgebruik registreren mislukt" }, { status: 500 });
   }
 
   const { name, wishes, mealType } = await req.json();

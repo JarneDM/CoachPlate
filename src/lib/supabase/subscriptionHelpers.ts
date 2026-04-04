@@ -55,21 +55,24 @@ export async function canGenerateRecipe(coachId: string): Promise<{
 }> {
   const { limits } = await getSubscriptionInfo(coachId);
 
+  if (!limits.aiAccess) {
+    return { canGenerate: false, used: 0, limit: 0 };
+  }
+
   if (limits.aiRecipeGenerations === Infinity) {
     return { canGenerate: true, used: 0, limit: Infinity };
   }
 
-  // Count AI generated recipes this month
+  // Count AI recipe generation attempts this month
   const startOfMonth = new Date();
   startOfMonth.setDate(1);
   startOfMonth.setHours(0, 0, 0, 0);
 
   const supabase = await createAdminClient();
   const { count } = await supabase
-    .from("recipes")
+    .from("ai_recipe_generations")
     .select("id", { count: "exact" })
     .eq("coach_id", coachId)
-    .eq("generated_by_ai", true)
     .gte("created_at", startOfMonth.toISOString());
 
   const used = count || 0;

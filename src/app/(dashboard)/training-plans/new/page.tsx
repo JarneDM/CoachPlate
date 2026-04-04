@@ -1,7 +1,21 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ArrowLeft, Sparkles, PenLine } from "lucide-react";
+import { createClient } from "@/lib/supabase/server";
+import { canGenerateTrainingPlan } from "@/lib/supabase/subscriptionHelpers";
 
-export default function NewTrainingPlanPage() {
+export default async function NewTrainingPlanPage() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const canUseAiTrainingPlan = await canGenerateTrainingPlan(user.id);
+
   return (
     <div className="max-w-2xl mx-auto">
       <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
@@ -19,19 +33,32 @@ export default function NewTrainingPlanPage() {
       </div>
 
       <div className="grid grid-cols-2 gap-4">
-        <Link
-          href="/training-plans/new/ai"
-          className="group bg-white rounded-xl border border-gray-100 hover:border-green-300 hover:shadow-sm p-6 transition-all flex flex-col items-center text-center gap-3"
-        >
-          <div className="w-14 h-14 bg-green-50 group-hover:bg-green-100 rounded-2xl flex items-center justify-center transition-colors">
-            <Sparkles size={24} className="text-green-600" />
+        {canUseAiTrainingPlan ? (
+          <Link
+            href="/training-plans/new/ai"
+            className="group bg-white rounded-xl border border-gray-100 hover:border-green-300 hover:shadow-sm p-6 transition-all flex flex-col items-center text-center gap-3"
+          >
+            <div className="w-14 h-14 bg-green-50 group-hover:bg-green-100 rounded-2xl flex items-center justify-center transition-colors">
+              <Sparkles size={24} className="text-green-600" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-gray-900">Genereren met AI</h2>
+              <p className="text-xs text-gray-400 mt-1">AI maakt automatisch een schema op basis van klantdoelen</p>
+            </div>
+            <span className="bg-green-50 text-green-700 text-xs font-medium px-2.5 py-1 rounded-full">Aanbevolen</span>
+          </Link>
+        ) : (
+          <div className="group bg-white rounded-xl border border-gray-100 p-6 transition-all flex flex-col items-center text-center gap-3 opacity-70 cursor-not-allowed">
+            <div className="w-14 h-14 bg-green-50 rounded-2xl flex items-center justify-center">
+              <Sparkles size={24} className="text-green-600" />
+            </div>
+            <div>
+              <h2 className="font-semibold text-gray-900">Genereren met AI</h2>
+              <p className="text-xs text-gray-400 mt-1">Beschikbaar vanaf een geldig plan voor AI trainingsschema’s.</p>
+            </div>
+            <span className="bg-gray-100 text-gray-600 text-xs font-medium px-2.5 py-1 rounded-full">Niet beschikbaar</span>
           </div>
-          <div>
-            <h2 className="font-semibold text-gray-900">Genereren met AI</h2>
-            <p className="text-xs text-gray-400 mt-1">AI maakt automatisch een schema op basis van klantdoelen</p>
-          </div>
-          <span className="bg-green-50 text-green-700 text-xs font-medium px-2.5 py-1 rounded-full">Aanbevolen</span>
-        </Link>
+        )}
 
         <Link
           href="/training-plans/new/manual"

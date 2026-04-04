@@ -13,7 +13,7 @@ export type PlanKey = keyof typeof PRICE_IDS;
 export const PLAN_LIMITS = {
   free: {
     maxClients: 5,
-    aiRecipeGenerations: 5,
+    aiRecipeGenerations: 0,
     aiMealPlanGeneration: false,
     aiTrainingPlanGeneration: false,
     pdfExport: false,
@@ -22,7 +22,7 @@ export const PLAN_LIMITS = {
   },
   starter: {
     maxClients: 10,
-    aiRecipeGenerations: 15,
+    aiRecipeGenerations: 5,
     aiMealPlanGeneration: false,
     aiTrainingPlanGeneration: false,
     pdfExport: true,

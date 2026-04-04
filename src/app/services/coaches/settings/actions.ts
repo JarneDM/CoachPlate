@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 
 const COACH_LOGO_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_COACH_LOGOS_BUCKET ?? "coach-logos";
 const MAX_LOGO_SIZE_BYTES = 2 * 1024 * 1024;
+const COACH_LOGO_EXTENSIONS = ["png", "jpg"] as const;
 
 function getLogoExtension(contentType: string) {
   if (contentType === "image/png") return "png";
@@ -21,6 +22,11 @@ function sanitizeHexColor(input: string) {
   const prefixed = trimmed.startsWith("#") ? trimmed : `#${trimmed}`;
   const isValid = /^#[0-9a-fA-F]{6}$/.test(prefixed);
   return isValid ? prefixed.toLowerCase() : null;
+}
+
+function appendVersionQuery(url: string, version: string) {
+  const separator = url.includes("?") ? "&" : "?";
+  return `${url}${separator}v=${version}`;
 }
 
 export async function updateCoachProfile(formData: FormData) {
@@ -63,6 +69,7 @@ export async function updateCoachProfile(formData: FormData) {
     }
 
     const filePath = `${user.id}/logo.${extension}`;
+    const staleFilePaths = COACH_LOGO_EXTENSIONS.filter((ext) => ext !== extension).map((ext) => `${user.id}/logo.${ext}`);
     const fileBuffer = Buffer.from(await logoFile.arrayBuffer());
 
     const hasServiceRole = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
@@ -83,8 +90,13 @@ export async function updateCoachProfile(formData: FormData) {
       redirect("/settings?error=Logo+upload+mislukt");
     }
 
+    const { error: removeError } = await storageClient.storage.from(COACH_LOGO_BUCKET).remove(staleFilePaths);
+    if (removeError) {
+      console.error("Error removing old coach logo:", removeError);
+    }
+
     const { data: publicUrlData } = storageClient.storage.from(COACH_LOGO_BUCKET).getPublicUrl(filePath);
-    logoUrl = publicUrlData.publicUrl;
+    logoUrl = appendVersionQuery(publicUrlData.publicUrl, Date.now().toString());
   }
 
   const { error } = await supabase

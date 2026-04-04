@@ -1,11 +1,14 @@
 import { getMealPlansPaginated } from "@/app/services/coaches/mealplans/getMealPlans";
 import React from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { CalendarDays, User, ArrowRight, Plus, Clock, FileDown } from "lucide-react";
 import Button from "@/components/CTA/Button";
 import DeleteWeekPlanButton from "@/components/meal-plans/DeleteWeekPlanButton";
 import { getClients } from "@/app/services/clients/clients";
 import Filter from "@/components/clients/Filter";
+import { createClient } from "@/lib/supabase/server";
+import { canExportPdf } from "@/lib/supabase/subscriptionHelpers";
 
 const PAGE_SIZE = 12;
 
@@ -43,6 +46,17 @@ async function MealPlans({ searchParams }: { searchParams?: SearchParams | Promi
   const params = (await Promise.resolve(searchParams)) ?? {};
   const rawPage = Number(params.page);
   const currentPage = Number.isFinite(rawPage) && rawPage > 0 ? Math.floor(rawPage) : 1;
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const canUsePdfExport = await canExportPdf(user.id);
 
   const { data: mealplans, totalCount } = await getMealPlansPaginated(currentPage, PAGE_SIZE, params.client);
   const totalPages = Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
@@ -120,14 +134,21 @@ async function MealPlans({ searchParams }: { searchParams?: SearchParams | Promi
                   </div>
                 </div>
                 <div className="flex w-full flex-wrap items-center gap-2 md:ml-4 md:w-auto md:shrink-0 md:justify-end">
-                  <Link
-                    href={`/api/export-pdf/meal-plan/${plan.id}`}
-                    target="_blank"
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-green-100 bg-green-50 px-3 py-2 text-sm text-green-700 transition-colors hover:bg-green-100"
-                  >
-                    <FileDown size={14} />
-                    PDF
-                  </Link>
+                  {canUsePdfExport ? (
+                    <Link
+                      href={`/api/export-pdf/meal-plan/${plan.id}`}
+                      target="_blank"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-green-100 bg-green-50 px-3 py-2 text-sm text-green-700 transition-colors hover:bg-green-100"
+                    >
+                      <FileDown size={14} />
+                      PDF
+                    </Link>
+                  ) : (
+                    <div className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg border border-gray-100 bg-gray-50 px-3 py-2 text-sm text-gray-400">
+                      <FileDown size={14} />
+                      PDF
+                    </div>
+                  )}
                   <Link
                     href={`/meal-plans/${plan.id}`}
                     className="flex items-center gap-1.5 rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-green-700"

@@ -1,8 +1,11 @@
 import { getClientPlans, getClientWorkoutPlans } from "@/app/services/clients/plans/plans";
 import { getClientById } from "@/app/services/clients/clients";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { CalendarDays, ArrowRight, Plus, Clock, FileDown } from "lucide-react";
 import Button from "@/components/CTA/Button";
+import { createClient } from "@/lib/supabase/server";
+import { canExportPdf } from "@/lib/supabase/subscriptionHelpers";
 
 type Plan = {
   id: string;
@@ -16,6 +19,17 @@ type Plan = {
 
 async function ClientPlans({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  const canUsePdfExport = await canExportPdf(user.id);
+
   const [plans, client, workoutPlans] = await Promise.all([getClientPlans(id), getClientById(id), getClientWorkoutPlans(id)]);
 
   return (
@@ -95,14 +109,21 @@ async function ClientPlans({ params }: { params: Promise<{ id: string }> }) {
                 />
               </Link>
 
-              <Link
-                href={`/api/export-pdf/meal-plan/${plan.id}`}
-                target="_blank"
-                className="inline-flex items-center gap-1.5 text-sm text-green-700 bg-green-50 hover:bg-green-100 border border-green-100 rounded-lg px-3 py-2 transition-colors shrink-0"
-              >
-                <FileDown size={14} />
-                PDF
-              </Link>
+              {canUsePdfExport ? (
+                <Link
+                  href={`/api/export-pdf/meal-plan/${plan.id}`}
+                  target="_blank"
+                  className="inline-flex items-center gap-1.5 text-sm text-green-700 bg-green-50 hover:bg-green-100 border border-green-100 rounded-lg px-3 py-2 transition-colors shrink-0"
+                >
+                  <FileDown size={14} />
+                  PDF
+                </Link>
+              ) : (
+                <div className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg border border-gray-100 bg-gray-50 px-3 py-2 text-sm text-gray-400 shrink-0">
+                  <FileDown size={14} />
+                  PDF
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -176,14 +197,21 @@ async function ClientPlans({ params }: { params: Promise<{ id: string }> }) {
                 />
               </Link>
 
-              <Link
-                href={`/api/export-pdf/training-plan/${plan.id}`}
-                target="_blank"
-                className="inline-flex items-center gap-1.5 text-sm text-green-700 bg-green-50 hover:bg-green-100 border border-green-100 rounded-lg px-3 py-2 transition-colors shrink-0"
-              >
-                <FileDown size={14} />
-                PDF
-              </Link>
+              {canUsePdfExport ? (
+                <Link
+                  href={`/api/export-pdf/training-plan/${plan.id}`}
+                  target="_blank"
+                  className="inline-flex items-center gap-1.5 text-sm text-green-700 bg-green-50 hover:bg-green-100 border border-green-100 rounded-lg px-3 py-2 transition-colors shrink-0"
+                >
+                  <FileDown size={14} />
+                  PDF
+                </Link>
+              ) : (
+                <div className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-lg border border-gray-100 bg-gray-50 px-3 py-2 text-sm text-gray-400 shrink-0">
+                  <FileDown size={14} />
+                  PDF
+                </div>
+              )}
             </div>
           ))}
         </div>

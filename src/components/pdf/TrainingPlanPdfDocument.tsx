@@ -1,6 +1,5 @@
 import React from "react";
-import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
-import Image from "next/image";
+import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 
 type Exercise = {
   id?: string;
@@ -260,7 +259,7 @@ export default function TrainingPlanPdfDocument({ plan, days, coachLogoUrl }: Pr
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            {coachLogoUrl ? <Image src={coachLogoUrl} alt="Coach Logo" /> : <Text style={styles.brandName}>COACHPLATE</Text>}
+            {coachLogoUrl ? <Image src={coachLogoUrl} style={styles.brandLogo} /> : <Text style={styles.brandName}>COACHPLATE</Text>}
             <Text style={styles.planTitle}>{plan.name || "Trainingsschema"}</Text>
             <Text style={styles.planMeta}>Aangemaakt op {formatDate(plan.created_at)}</Text>
             <Text style={styles.planMeta}>
@@ -344,7 +343,7 @@ export default function TrainingPlanPdfDocument({ plan, days, coachLogoUrl }: Pr
 
         <View style={styles.footer} fixed>
           {coachLogoUrl ? (
-            <Image src={coachLogoUrl} alt="coach logo" />
+            <Image src={coachLogoUrl} style={styles.footerLogo} />
           ) : (
             <Text style={styles.footerText}>CoachPlate - Trainingsschema export</Text>
           )}
