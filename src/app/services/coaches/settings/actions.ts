@@ -8,6 +8,17 @@ import { createClient } from "@/lib/supabase/server";
 const COACH_LOGO_BUCKET = process.env.NEXT_PUBLIC_SUPABASE_COACH_LOGOS_BUCKET ?? "coach-logos";
 const MAX_LOGO_SIZE_BYTES = 2 * 1024 * 1024;
 
+function getServiceRoleConfig() {
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SERVICE_KEY ?? process.env.SUPABASE_SERVICE_ROLE;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? process.env.SUPABASE_URL;
+
+  if (!serviceRoleKey || !supabaseUrl) {
+    return null;
+  }
+
+  return { serviceRoleKey, supabaseUrl };
+}
+
 function getLogoExtension(contentType: string) {
   if (contentType === "image/png") return "png";
   if (contentType === "image/jpeg") return "jpg";
@@ -65,9 +76,10 @@ export async function updateCoachProfile(formData: FormData) {
     const filePath = `${user.id}/logo.${extension}`;
     const fileBuffer = Buffer.from(await logoFile.arrayBuffer());
 
-    const hasServiceRole = Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY);
-    const storageClient = hasServiceRole
-      ? createSupabaseClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!)
+    const serviceRoleConfig = getServiceRoleConfig();
+    const hasServiceRole = Boolean(serviceRoleConfig);
+    const storageClient = serviceRoleConfig
+      ? createSupabaseClient(serviceRoleConfig.supabaseUrl, serviceRoleConfig.serviceRoleKey)
       : supabase;
 
     const { error: uploadError } = await storageClient.storage.from(COACH_LOGO_BUCKET).upload(filePath, fileBuffer, {
@@ -78,7 +90,7 @@ export async function updateCoachProfile(formData: FormData) {
     if (uploadError) {
       console.error("Error uploading coach logo:", uploadError);
       if (!hasServiceRole && (uploadError.message.toLowerCase().includes("row-level security") || uploadError.statusCode === "403")) {
-        redirect("/settings?error=Logo+upload+geblokkeerd+door+storage+policy");
+        redirect("/settings?error=Logo+upload+geblokkeerd.+Zet+SUPABASE_SERVICE_ROLE_KEY+of+maak+storage+policy");
       }
       redirect("/settings?error=Logo+upload+mislukt");
     }
