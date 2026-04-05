@@ -40,6 +40,7 @@ function appendVersionQuery(url: string, version: string) {
 }
 
 export async function updateCoachProfile(formData: FormData) {
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -132,10 +133,15 @@ export async function updateCoachProfile(formData: FormData) {
 }
 
 export async function updateCoachPassword(formData: FormData) {
+  let loading = true;
   const supabase = await createClient();
 
   const password = String(formData.get("password") ?? "");
   const confirmPassword = String(formData.get("confirm_password") ?? "");
+
+  if (loading) {
+    redirect("/settings?loading=password");
+  }
 
   if (password.length < 8) {
     redirect("/settings?error=Wachtwoord+moet+minstens+8+tekens+hebben");
@@ -151,6 +157,8 @@ export async function updateCoachPassword(formData: FormData) {
     console.error("Error updating password:", error);
     redirect("/settings?error=Wachtwoord+updaten+mislukt");
   }
+
+  loading = false;
 
   redirect("/settings?saved=password");
 }

@@ -6,6 +6,7 @@ import { updateCoachPassword, updateCoachProfile } from "@/app/services/coaches/
 import { PLAN_LIMITS } from "@/lib/stripe";
 import PasswordFields from "@/components/settings/PasswordFields";
 import SettingsPasswordToast from "@/components/settings/SettingsPasswordToast";
+import SettingsSubmitButton from "@/components/settings/SettingsSubmitButton";
 import { Toaster } from "@/components/ui/sonner";
 
 type SearchParams = {
@@ -163,12 +164,11 @@ export default async function SettingsPage({ searchParams }: { searchParams?: Se
               <p className="text-xs text-gray-400 mt-1">Voorbeeld: #16a34a</p>
             </div> */}
 
-            <button
-              type="submit"
+            <SettingsSubmitButton
+              label="Profiel opslaan"
+              pendingLabel="Profiel wordt opgeslagen..."
               className="inline-flex items-center justify-center rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-700 transition-colors"
-            >
-              Profiel opslaan
-            </button>
+            />
           </form>
         </section>
 
@@ -181,12 +181,11 @@ export default async function SettingsPage({ searchParams }: { searchParams?: Se
           <form action={updateCoachPassword} className="space-y-4">
             <PasswordFields />
 
-            <button
-              type="submit"
+            <SettingsSubmitButton
+              label="Wachtwoord updaten"
+              pendingLabel="Wachtwoord wordt geüpdatet..."
               className="inline-flex items-center justify-center rounded-lg bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-800 transition-colors"
-            >
-              Wachtwoord updaten
-            </button>
+            />
           </form>
         </section>
       </div>
