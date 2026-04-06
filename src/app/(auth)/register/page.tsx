@@ -31,6 +31,18 @@ export default function RegisterPage() {
     void redirectIfLoggedIn();
   }, [router, supabase]);
 
+  function generateInviteCode(fullName: string): string {
+    const initials = fullName
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 3);
+
+    const random = Math.floor(1000 + Math.random() * 9000);
+    return `COACH-${initials}-${random}`;
+  }
+
   async function handleRegister() {
     setLoading(true);
     setError("");
@@ -62,6 +74,7 @@ export default function RegisterPage() {
           terms_accepted: true,
           terms_accepted_at: acceptedAt,
           terms_version: "2026-03-29",
+          role: "coach",
         },
       },
     });
@@ -71,6 +84,23 @@ export default function RegisterPage() {
       setLoading(false);
       return;
     }
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      setError("Registratie gelukt, maar gebruiker niet gevonden. Probeer opnieuw in te loggen.");
+      setLoading(false);
+      return;
+    }
+
+    await supabase.from("coaches").insert({
+      id: user.id,
+      full_name: normalizedName,
+      email: normalizedEmail,
+      invite_code: generateInviteCode(normalizedName),
+    });
 
     router.push("/dashboard");
   }

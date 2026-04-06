@@ -4,25 +4,20 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
-import { CalendarDays, ChefHat, Dumbbell, LayoutDashboard, Menu, NotepadText, Settings, Users, X } from "lucide-react";
+import { CalendarDays, Dumbbell, LayoutDashboard, Menu, Settings, X } from "lucide-react";
 import LogoutButton from "@/components/LogoutButton";
 
-type MobileDashboardMenuProps = {
-  coachName?: string | null;
-  coachEmail?: string | null;
+type MobileClientMenuProps = {
+  clientName?: string | null;
+  clientEmail?: string | null;
 };
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/dashboard/clients", label: "Klanten", icon: Users },
-  { href: "/meal-plans", label: "Menu's", icon: CalendarDays },
-  { href: "/recipes", label: "Recepten", icon: NotepadText },
-  { href: "/public-recipes", label: "Publieke recepten", icon: ChefHat },
-  { href: "/training-plans", label: "Schema's", icon: Dumbbell },
-  { href: "/settings", label: "Instellingen", icon: Settings },
+  { href: "/client/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/client/settings", label: "Instellingen", icon: Settings },
 ];
 
-export default function MobileDashboardMenu({ coachName, coachEmail }: MobileDashboardMenuProps) {
+export default function MobileClientMenu({ clientName, clientEmail }: MobileClientMenuProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -87,11 +82,11 @@ export default function MobileDashboardMenu({ coachName, coachEmail }: MobileDas
         <div className="mt-5 border-t border-gray-100 pt-4">
           <div className="mb-3 flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-sm font-bold text-green-700">
-              {(coachName?.charAt(0) || "C").toUpperCase()}
+              {(clientName?.charAt(0) || "K").toUpperCase()}
             </div>
             <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-gray-900">{coachName || "Coach"}</p>
-              <p className="truncate text-xs text-gray-400">{coachEmail || ""}</p>
+              <p className="truncate text-sm font-medium text-gray-900">{clientName || "Klant"}</p>
+              <p className="truncate text-xs text-gray-400">{clientEmail || ""}</p>
             </div>
           </div>
           <LogoutButton />

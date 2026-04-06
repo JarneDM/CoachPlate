@@ -17,7 +17,7 @@ function normalizeOptionalNumber(value: FormDataEntryValue | null) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
-export async function createClientAction(formData: FormData) {
+export async function updateClientAction(formData: FormData) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -25,10 +25,15 @@ export async function createClientAction(formData: FormData) {
 
   if (!user) redirect("/login");
 
+  const clientId = String(formData.get("id") ?? "").trim();
   const fullName = String(formData.get("full_name") ?? "").trim();
 
+  if (!clientId) {
+    redirect("/dashboard/clients?error=Ongeldige%20klant");
+  }
+
   if (!fullName) {
-    redirect("/clients/add?error=Naam%20is%20verplicht");
+    redirect(`/dashboard/clients/${clientId}/edit?error=Naam%20is%20verplicht`);
   }
 
   const allergiesInput = String(formData.get("allergies") ?? "").trim();
@@ -40,7 +45,6 @@ export async function createClientAction(formData: FormData) {
     : null;
 
   const payload = {
-    coach_id: user.id,
     full_name: fullName,
     email: normalizeOptionalText(formData.get("email")),
     birth_date: normalizeOptionalText(formData.get("birth_date")),
@@ -48,7 +52,6 @@ export async function createClientAction(formData: FormData) {
     weight_kg: normalizeOptionalNumber(formData.get("weight_kg")),
     height_cm: normalizeOptionalNumber(formData.get("height_cm")),
     goal: normalizeOptionalText(formData.get("goal")),
-    active: normalizeOptionalText(formData.get("active")),
     calories_goal: normalizeOptionalNumber(formData.get("calories_goal")),
     protein_goal: normalizeOptionalNumber(formData.get("protein_goal")),
     carbs_goal: normalizeOptionalNumber(formData.get("carbs_goal")),
@@ -58,15 +61,26 @@ export async function createClientAction(formData: FormData) {
     notes: normalizeOptionalText(formData.get("notes")),
   };
 
-  const { error } = await supabase.from("clients").insert(payload);
+  const { data, error } = await supabase
+    .from("clients")
+    .update(payload)
+    .eq("id", clientId)
+    .eq("coach_id", user.id)
+    .select("id")
+    .maybeSingle();
 
-  //! use shadcn toast instead of query params for error handling
   if (error) {
-    const message = encodeURIComponent(error.message || "Kon klant niet opslaan");
-    redirect(`/clients/add?error=${message}`);
+    const message = encodeURIComponent(error.message || "Kon klant niet bijwerken");
+    redirect(`/dashboard/clients/${clientId}/edit?error=${message}`);
   }
 
-  revalidatePath("/clients");
+  if (!data) {
+    redirect(`/dashboard/clients/${clientId}/edit?error=Kon%20deze%20klant%20niet%20bijwerken`);
+  }
+
+  revalidatePath("/dashboard/clients");
+  revalidatePath(`/dashboard/clients/${clientId}`);
   revalidatePath("/dashboard");
-  redirect("/clients?created=1");
+
+  redirect(`/dashboard/clients/${clientId}?updated=1`);
 }

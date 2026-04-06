@@ -5,6 +5,7 @@ export interface Coach {
   logo_url?: string;
   brand_color?: string;
   created_at: string;
+  invite_code: string;
 }
 
 export interface Client {

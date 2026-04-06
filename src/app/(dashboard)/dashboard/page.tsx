@@ -43,7 +43,12 @@ export default async function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-        <StatCard label="Actieve klanten" value={clientCount ?? 0} icon={<Users className="w-5 h-5 text-black" />} href="/clients" />
+        <StatCard
+          label="Actieve klanten"
+          value={clientCount ?? 0}
+          icon={<Users className="w-5 h-5 text-black" />}
+          href="/dashboard/clients"
+        />
         <StatCard label="Weekplannen" value={planCount ?? 0} icon={<CalendarDays className="w-5 h-5 text-black" />} href="/meal-plans" />
         <StatCard
           label="Huidig plan"
@@ -72,7 +77,7 @@ export default async function DashboardPage() {
       <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-semibold text-gray-900">Recente klanten</h2>
-          <Link href="/clients" className="text-sm text-green-600 hover:underline">
+          <Link href="/dashboard/clients" className="text-sm text-green-600 hover:underline">
             Alle klanten →
           </Link>
         </div>
@@ -90,7 +95,7 @@ export default async function DashboardPage() {
                     <p className="text-xs text-gray-400">{client.goal ?? "Geen doel ingesteld"}</p>
                   </div>
                 </div>
-                <Link href={`/clients/${client.id}`} className="text-xs text-green-600 hover:underline">
+                <Link href={`/dashboard/clients/${client.id}`} className="text-xs text-green-600 hover:underline">
                   Bekijk →
                 </Link>
               </div>
@@ -101,7 +106,7 @@ export default async function DashboardPage() {
             <Users className="w-10 h-10 text-gray-400 mx-auto mb-8" />
             <p className="text-gray-400 text-sm mb-3">Je hebt nog geen klanten toegevoegd.</p>
             <Link
-              href="/clients/add"
+              href="/dashboard/clients/add"
               className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
             >
               Eerste klant toevoegen
@@ -112,7 +117,7 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <QuickAction
-          href="/clients/add"
+          href="/dashboard/clients/add"
           icon={<Users className="w-5 h-5 text-black" />}
           title="Nieuwe klant"
           description="Voeg een klant toe"

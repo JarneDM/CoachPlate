@@ -21,6 +21,16 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const role = user?.user_metadata?.role;
+
+  if (role === "client" && request.nextUrl.pathname.startsWith("/dashboard")) {
+    return NextResponse.redirect(new URL("/client/dashboard", request.url));
+  }
+
+  if (role === "coach" && request.nextUrl.pathname.startsWith("/client")) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
   if (
     !user &&
     !request.nextUrl.pathname.startsWith("/login") &&
@@ -36,5 +46,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/clients/:path*", "/meal-plans/:path*", "/recipes/:path*", "/settings/:path*"],
+  matcher: ["/dashboard/:path*", "/meal-plans/:path*", "/recipes/:path*", "/settings/:path*"],
 };
