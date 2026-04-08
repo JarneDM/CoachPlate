@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
-import { CalendarDays, Dumbbell, LayoutDashboard, Menu, Settings, X } from "lucide-react";
+import { LayoutDashboard, Menu, Settings, X } from "lucide-react";
 import LogoutButton from "@/components/LogoutButton";
 
 type MobileClientMenuProps = {
