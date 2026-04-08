@@ -5,6 +5,7 @@ import LogoutButton from "@/components/LogoutButton";
 import { LayoutDashboard, NotepadText, Settings, Users, CalendarDays, Dumbbell, ChefHat } from "lucide-react";
 import { NavItem } from "@/components/NavItem";
 import Link from "next/link";
+import Image from "next/image";
 import MobileDashboardMenu from "@/components/MobileDashboardMenu";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -42,9 +43,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
       <div className="mx-auto flex w-full">
         <aside className="hidden h-screen w-72 flex-col border-r border-gray-100 bg-white lg:sticky lg:top-0 lg:z-30 lg:flex">
           <div className="p-6 border-b border-gray-100">
-            <Link href={"/"}>
-              <h1 className="text-xl font-bold text-green-600">CoachPlate</h1>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Image src="/image.png" width={32} height={32} alt="CoachPlate" className="h-8 w-8" />
+              <Link href={"/"}>
+                <h1 className="text-xl font-bold text-green-600">CoachPlate</h1>
+              </Link>
+            </div>
             <p className="text-xs text-gray-400 mt-0.5">Voor coaches</p>
           </div>
 
