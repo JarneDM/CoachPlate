@@ -79,12 +79,15 @@ export async function changeCoach(data: { coach_id: string }) {
 
   if (coachError || !coach) return { error: "Coach niet gevonden" };
 
-  const { error } = await admin
-    .from("clients")
-    .update({ coach_id: coach?.id || null })
-    .eq("user_id", user.id);
+  if (coach) {
+    const { error } = await admin
+      .from("clients")
+      .update({ coach_id: coach?.id || null })
+      .eq("user_id", user.id);
 
-  if (error) return { error: "Opslaan mislukt" };
+    if (error) return { error: "Opslaan mislukt" };
+  }
+
 
   revalidatePath("/client/settings");
   revalidatePath("/client/dashboard");
