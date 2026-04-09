@@ -5,7 +5,9 @@ import { usePathname } from "next/navigation";
 
 export function NavItem({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
   const pathname = usePathname();
-  const isActive = pathname === href || pathname.startsWith(`${href}/`);
+  const url = pathname === href || pathname.startsWith(`${href}/`);
+  const rest = pathname.startsWith("/dashboard/");
+  const isActive = rest ? pathname.split("/")[2] === href.split("/")[2] : url; 
 
   return (
     <Link
