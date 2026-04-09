@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { changeCoach, updateClientProfile } from "@/app/services/client/updateProfile";
+import { useEffect, useState } from "react";
+import { changeCoach, getCoachName, updateClientProfile } from "@/app/services/client/updateProfile";
 import { User, Weight, Target, AlertTriangle, CheckCircle, XCircle } from "lucide-react";
 import { set } from "react-hook-form";
 
@@ -35,6 +35,7 @@ interface Props {
     goal?: string | null;
     preferences?: string | null;
     allergies?: string[] | null;
+    coach_id?: string | null;
   };
 }
 
@@ -74,6 +75,26 @@ export default function ClientSettingsForm({ client }: Props) {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [coachCode, setCoachCode] = useState("");
+
+  const [coachName, setCoachName] = useState("Geen coach");
+
+  async function fetchCoachName() {
+    try {
+      const res = await getCoachName(client.coach_id!);
+      setCoachName(res || "Geen coach");
+    } catch (error) {
+      console.error("Error fetching coach name:", error);
+    }
+  }
+
+  useEffect(() => {
+    async function loadCoachName() {
+      if (client.coach_id) {
+        await fetchCoachName();
+      }
+    }
+    loadCoachName();
+  }, [client.coach_id]);
 
   function toggleAllergen(allergen: string) {
     setAllergies((prev) =>
@@ -312,7 +333,7 @@ export default function ClientSettingsForm({ client }: Props) {
           )}
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-1">
+        <div className="flex items-center justify-start gap-3 pt-1">
           <button
             type="submit"
             disabled={loading}
@@ -325,7 +346,10 @@ export default function ClientSettingsForm({ client }: Props) {
 
       <hr className="w-full mt-4 mb-4" />
 
-      <div className="border-t-2 border-t-black">
+      <div className="">
+        <p className="text-sm mb-2">
+          Jouw coach nu: <b>{coachName}</b>
+        </p>
         <p className={label}>Verander van coach:</p>
         <input
           type="text"

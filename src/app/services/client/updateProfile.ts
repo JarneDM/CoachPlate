@@ -77,7 +77,7 @@ export async function changeCoach(data: { coach_id: string }) {
     .eq("invite_code", data.coach_id.toUpperCase())
     .maybeSingle();
 
-  if (coachError) return { error: "Coach niet gevonden" };
+  if (coachError || !coach) return { error: "Coach niet gevonden" };
 
   const { error } = await admin
     .from("clients")
@@ -90,4 +90,14 @@ export async function changeCoach(data: { coach_id: string }) {
   revalidatePath("/client/dashboard");
 
   return { success: true };
+}
+
+export async function getCoachName(coach_id: string | null): Promise<string | null> {
+  if (!coach_id) return null;
+
+  const admin = createAdminClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+
+  const { data: coach } = await admin.from("coaches").select("full_name").eq("id", coach_id).maybeSingle();
+
+  return coach?.full_name || null;
 }

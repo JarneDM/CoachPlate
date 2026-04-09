@@ -17,7 +17,7 @@ export default async function ClientSettingsPage() {
 
   const { data: client } = await admin
     .from("clients")
-    .select("full_name, email, weight_kg, height_cm, birth_date, gender, goal, preferences, allergies")
+    .select("coach_id,full_name, email, weight_kg, height_cm, birth_date, gender, goal, preferences, allergies")
     .eq("user_id", user.id)
     .maybeSingle();
 
