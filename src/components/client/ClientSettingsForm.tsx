@@ -363,7 +363,7 @@ export default function ClientSettingsForm({ client }: Props) {
           onClick={() => handleCodeChange()}
           className="bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg px-6 py-2.5 text-sm transition-colors mt-2"
         >
-          Verzoek verzenden
+          Verander
         </button>
       </div>
       <div className="mt-5 border-t border-gray-200 pt-5">
