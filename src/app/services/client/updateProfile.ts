@@ -71,7 +71,13 @@ export async function changeCoach(data: { coach_id: string }) {
 
   const admin = createAdminClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
-  const { data: coach } = await admin.from("coaches").select("id").eq("invite_code", data.coach_id.toUpperCase()).maybeSingle();
+  const { data: coach, error: coachError } = await admin
+    .from("coaches")
+    .select("id")
+    .eq("invite_code", data.coach_id.toUpperCase())
+    .maybeSingle();
+
+  if (coachError) return { error: "Coach niet gevonden" };
 
   const { error } = await admin
     .from("clients")
