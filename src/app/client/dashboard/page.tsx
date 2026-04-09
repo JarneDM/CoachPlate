@@ -25,16 +25,8 @@ export default async function ClientDashboardPage() {
   if (!client) redirect("/join");
 
   const [{ data: mealPlans }, { data: trainingPlans }] = await Promise.all([
-    admin
-      .from("meal_plans")
-      .select("id, name, start_date, end_date, is_active")
-      .eq("client_id", client.id)
-      .order("created_at", { ascending: false }),
-    admin
-      .from("training_plans")
-      .select("id, name, created_at")
-      .eq("client_id", client.id)
-      .order("created_at", { ascending: false }),
+    admin.from("meal_plans").select("id, name, created_at").eq("client_id", client.id).order("created_at", { ascending: false }),
+    admin.from("training_plans").select("id, name, created_at").eq("client_id", client.id).order("created_at", { ascending: false }),
   ]);
 
   return (
@@ -47,14 +39,15 @@ export default async function ClientDashboardPage() {
         <p className="text-gray-500 mt-1">Hier vind je al je plannen van je coach.</p>
       </div>
 
-      {/* Weekplannen */}
       <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <CalendarDays size={18} className="text-green-600" />
             <h2 className="font-semibold text-gray-900">Weekplannen</h2>
           </div>
-          <span className="text-sm text-gray-400">{mealPlans?.length ?? 0} plan{(mealPlans?.length ?? 0) !== 1 ? "nen" : ""}</span>
+          <span className="text-sm text-gray-400">
+            {mealPlans?.length ?? 0} plan{(mealPlans?.length ?? 0) !== 1 ? "nen" : ""}
+          </span>
         </div>
 
         {!mealPlans?.length ? (
@@ -71,18 +64,17 @@ export default async function ClientDashboardPage() {
                 className="flex items-center justify-between rounded-xl border border-gray-100 px-4 py-3 hover:border-green-200 hover:bg-green-50/30 transition-colors group"
               >
                 <div className="flex items-center gap-3">
-                  {plan.is_active && (
-                    <span className="w-2 h-2 rounded-full bg-green-500 shrink-0" />
-                  )}
                   <div>
                     <p className="text-sm font-medium text-gray-900">{plan.name}</p>
-                    {plan.start_date && (
+                    {
                       <p className="text-xs text-gray-400 mt-0.5">
-                        {new Date(plan.start_date).toLocaleDateString("nl-BE", { day: "numeric", month: "short" })}
-                        {plan.end_date &&
-                          ` → ${new Date(plan.end_date).toLocaleDateString("nl-BE", { day: "numeric", month: "short" })}`}
+                        {new Date(plan.created_at).toLocaleDateString("nl-BE", {
+                          day: "numeric",
+                          month: "long",
+                          year: "numeric",
+                        })}
                       </p>
-                    )}
+                    }
                   </div>
                 </div>
                 <ArrowRight size={16} className="text-gray-300 group-hover:text-green-500 transition-colors shrink-0" />
@@ -92,14 +84,15 @@ export default async function ClientDashboardPage() {
         )}
       </div>
 
-      {/* Trainingsschema's */}
       <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <Dumbbell size={18} className="text-green-600" />
             <h2 className="font-semibold text-gray-900">Trainingsschema&apos;s</h2>
           </div>
-          <span className="text-sm text-gray-400">{trainingPlans?.length ?? 0} schema{(trainingPlans?.length ?? 0) !== 1 ? "&apos;s" : ""}</span>
+          <span className="text-sm text-gray-400">
+            {trainingPlans?.length ?? 0} schema{(trainingPlans?.length ?? 0) !== 1 ? "&apos;s" : ""}
+          </span>
         </div>
 
         {!trainingPlans?.length ? (
