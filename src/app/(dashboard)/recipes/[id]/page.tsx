@@ -155,7 +155,7 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
               </div>
               <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
                 <ol className="list-decimal">
-                  {recipe.instructions.split(",").map((step: string, index: number) => {
+                  {recipe.instructions.split("|").map((step: string, index: number) => {
                     return (
                       <li key={index} className="mb-2">
                         {step}

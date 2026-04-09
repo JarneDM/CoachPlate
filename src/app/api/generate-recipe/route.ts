@@ -24,7 +24,7 @@ Geef ALLEEN een JSON object terug in dit exacte formaat, geen extra tekst:
 {
   "name": "naam van het recept",
   "description": "korte beschrijving",
-  "instructions": "stap voor stap bereiding, gescheiden door kommas",
+  "instructions": "stap voor stap bereiding, gescheiden door |, geen genummerde lijst",
   "prep_time_min": 15,
   "servings": 1,
   "meal_type": "${mealType || "lunch"}",
