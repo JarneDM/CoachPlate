@@ -6,6 +6,7 @@ import { LayoutDashboard, CalendarDays, Dumbbell, Settings } from "lucide-react"
 import { NavItem } from "@/components/NavItem";
 import LogoutButton from "@/components/LogoutButton";
 import MobileClientMenu from "@/components/MobileClientMenu";
+import Image from "next/image";
 
 export default async function ClientLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -34,7 +35,6 @@ export default async function ClientLayout({ children }: { children: React.React
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Mobile header */}
       <header className="sticky top-0 z-1500 border-b border-gray-100 bg-white/95 px-4 py-3 backdrop-blur lg:hidden">
         <div className="mx-auto flex max-w-5xl items-center justify-between">
           <Link href="/" className="text-lg font-bold text-green-600">
@@ -47,9 +47,12 @@ export default async function ClientLayout({ children }: { children: React.React
       <div className="mx-auto flex w-full">
         <aside className="hidden h-screen w-72 flex-col border-r border-gray-100 bg-white lg:sticky lg:top-0 lg:z-30 lg:flex">
           <div className="p-6 border-b border-gray-100">
-            <Link href="/">
-              <h1 className="text-xl font-bold text-green-600">CoachPlate</h1>
-            </Link>
+            <div className="flex items-center gap-2">
+              <Image src="/image.png" alt="CoachPlate" width={40} height={40} />
+              <Link href="/">
+                <h1 className="text-xl font-bold text-green-600">CoachPlate</h1>
+              </Link>
+            </div>
             <p className="text-xs text-gray-400 mt-0.5">Jouw plannen</p>
           </div>
 
