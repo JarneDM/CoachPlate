@@ -131,14 +131,11 @@ export default async function ClientRecipePage({ params }: { params: Promise<{ i
       </div>
 
       {recipe.description && (
-        <p className="text-gray-500 text-sm leading-relaxed mb-8 bg-white border border-gray-100 rounded-xl p-5">
-          {recipe.description}
-        </p>
+        <p className="text-gray-500 text-sm leading-relaxed mb-8 bg-white border border-gray-100 rounded-xl p-5">{recipe.description}</p>
       )}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="col-span-2 space-y-6">
-          {/* Macro's */}
           <div className="bg-white rounded-xl border border-gray-100 p-6">
             <div className="flex items-center gap-2 mb-4">
               <Flame size={16} className="text-green-600" />
@@ -176,9 +173,8 @@ export default async function ClientRecipePage({ params }: { params: Promise<{ i
             </div>
           </div>
 
-          {/* Bereidingswijze */}
           {recipe.instructions && (
-            <div className="bg-white rounded-xl border border-gray-100 p-6">
+            <div className="bg-white rounded-xl border border-gray-100 p-6 pl-8">
               <div className="flex items-center gap-2 mb-4">
                 <BookOpen size={16} className="text-green-600" />
                 <h2 className="font-semibold text-gray-900 text-sm">Bereidingswijze</h2>
@@ -192,7 +188,6 @@ export default async function ClientRecipePage({ params }: { params: Promise<{ i
           )}
         </div>
 
-        {/* Ingrediënten */}
         <div>
           <div className="bg-white rounded-xl border border-gray-100 p-6">
             <div className="flex items-center gap-2 mb-4">
@@ -204,10 +199,7 @@ export default async function ClientRecipePage({ params }: { params: Promise<{ i
               <>
                 <ul className="space-y-2">
                   {ingredients.map((ri) => (
-                    <li
-                      key={ri.id}
-                      className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"
-                    >
+                    <li key={ri.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
                       <span className="text-sm text-gray-700 truncate flex-1">{ri.ingredients.name}</span>
                       <span className="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-full ml-2 shrink-0">
                         {ri.amount_g}g
@@ -220,9 +212,7 @@ export default async function ClientRecipePage({ params }: { params: Promise<{ i
                     <Scale size={11} />
                     Totaal gewicht
                   </span>
-                  <span className="text-xs font-semibold text-gray-600">
-                    {ingredients.reduce((t, ri) => t + ri.amount_g, 0)}g
-                  </span>
+                  <span className="text-xs font-semibold text-gray-600">{ingredients.reduce((t, ri) => t + ri.amount_g, 0)}g</span>
                 </div>
               </>
             ) : (

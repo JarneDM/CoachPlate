@@ -148,7 +148,7 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
           </div>
 
           {recipe.instructions && (
-            <div className="bg-white rounded-xl border border-gray-100 p-6">
+            <div className="bg-white rounded-xl border border-gray-100 p-6 pl-8">
               <div className="flex items-center gap-2 mb-4">
                 <BookOpen size={16} className="text-green-600" />
                 <h2 className="font-semibold text-gray-900 text-sm">Bereidingswijze</h2>
