@@ -24,7 +24,7 @@ export default async function ClientSettingsPage() {
   if (!client) redirect("/join");
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="mx-auto w-full max-w-2xl space-y-6 px-4 sm:px-6 lg:px-0">
       <div>
         <h1 className="text-2xl font-bold text-gray-900">Instellingen</h1>
         <p className="text-sm text-gray-400 mt-1">Beheer je persoonlijke gegevens.</p>

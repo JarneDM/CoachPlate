@@ -58,3 +58,30 @@ function parseBirthDate(value: string | null): string | null {
   if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
   return null;
 }
+
+export async function changeCoach(data: { coach_id: string }) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!data.coach_id) return { error: "Coach code is vereist" };
+
+  if (!user) return { error: "Niet ingelogd" };
+
+  const admin = createAdminClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+
+  const { data: coach } = await admin.from("coaches").select("id").eq("invite_code", data.coach_id.toUpperCase()).maybeSingle();
+
+  const { error } = await admin
+    .from("clients")
+    .update({ coach_id: coach?.id || null })
+    .eq("user_id", user.id);
+
+  if (error) return { error: "Opslaan mislukt" };
+
+  revalidatePath("/client/settings");
+  revalidatePath("/client/dashboard");
+
+  return { success: true };
+}
