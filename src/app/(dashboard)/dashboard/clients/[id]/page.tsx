@@ -53,7 +53,7 @@ async function ClientDetailPage({ params }: { params: { id: string } }) {
   return (
     <div className="mx-auto max-w-5xl">
       <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
-        <Link href="/clients" className="hover:text-gray-600 transition-colors">
+        <Link href="/dashboard/clients" className="hover:text-gray-600 transition-colors">
           Klanten
         </Link>
         <span>/</span>
@@ -76,7 +76,7 @@ async function ClientDetailPage({ params }: { params: { id: string } }) {
           </div>
         </div>
         <Link
-          href={`/clients/${id}/edit`}
+          href={`/dashboard/clients/${id}/edit`}
           className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
         >
           Bewerken
@@ -172,7 +172,7 @@ async function ClientDetailPage({ params }: { params: { id: string } }) {
             <div className="space-y-2">
               <ActionButton href={`/meal-plans/new?client=${id}`} icon={<CalendarDays size={16} />} label="Nieuw weekplan" />
               <ActionButton href={`/meal-plans/new?client=${id}&ai=true`} icon={<Bot size={16} />} label="AI weekplan genereren" />
-              <ActionButton href={`/clients/${id}/plans`} icon={<ClipboardList size={16} />} label="Alle plannen bekijken" />
+              <ActionButton href={`/dashboard/clients/${id}/plans`} icon={<ClipboardList size={16} />} label="Alle plannen bekijken" />
             </div>
           </Section>
         </div>

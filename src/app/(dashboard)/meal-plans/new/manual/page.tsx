@@ -32,7 +32,7 @@ export default async function NewMealPlanPage() {
           <h3 className="font-semibold text-gray-900 mb-2">Geen klanten gevonden</h3>
           <p className="text-gray-400 text-sm mb-6">Voeg eerst een klant toe voor je een weekplan aanmaakt.</p>
           <Link
-            href="/clients/add"
+            href="/dashboard/clients/add"
             className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors"
           >
             Klant toevoegen

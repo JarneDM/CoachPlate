@@ -21,11 +21,11 @@ async function ClientPlans({ params }: { params: Promise<{ id: string }> }) {
   return (
     <div className="max-w-5xl mx-auto">
       <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
-        <Link href="/clients" className="hover:text-gray-600 transition-colors">
+        <Link href="/dashboard/clients" className="hover:text-gray-600 transition-colors">
           Klanten
         </Link>
         <span>/</span>
-        <Link href={`/clients/${id}`} className="hover:text-gray-600 transition-colors">
+        <Link href={`/dashboard/clients/${id}`} className="hover:text-gray-600 transition-colors">
           {client?.full_name ?? "Klant"}
         </Link>
         <span>/</span>

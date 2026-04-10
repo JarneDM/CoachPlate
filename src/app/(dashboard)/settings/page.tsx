@@ -8,6 +8,7 @@ import PasswordFields from "@/components/settings/PasswordFields";
 import SettingsPasswordToast from "@/components/settings/SettingsPasswordToast";
 import SettingsSubmitButton from "@/components/settings/SettingsSubmitButton";
 import { Toaster } from "@/components/ui/sonner";
+import { InviteCodeCard } from "@/components/coach/InviteCodeCard";
 
 type SearchParams = {
   saved?: string;
@@ -190,6 +191,10 @@ export default async function SettingsPage({ searchParams }: { searchParams?: Se
         </section>
       </div>
 
+      <div className="mt-6">
+        <InviteCodeCard inviteCode={coach?.invite_code} />
+      </div>
+
       <section id="pricing" className="mt-8 bg-white border border-gray-100 rounded-xl p-6">
         <h2 className="font-semibold text-gray-900 mb-1">Abonnementen</h2>
         <p className="text-sm text-gray-500 mb-5">Upgrade-opties worden binnenkort beschikbaar via Stripe checkout.</p>
@@ -238,5 +243,5 @@ export default async function SettingsPage({ searchParams }: { searchParams?: Se
 async function getCoachData(userId: string) {
   const supabase = await createClient();
 
-  return supabase.from("coaches").select("full_name, email, brand_color, logo_url").eq("id", userId).single();
+  return supabase.from("coaches").select("full_name, email, brand_color, logo_url, invite_code").eq("id", userId).single();
 }

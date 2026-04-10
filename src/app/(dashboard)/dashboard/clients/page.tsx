@@ -18,7 +18,7 @@ async function ClientsPage() {
         </div>
         <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto">
           <Button href="/meal-plans/new" label="Nieuw weekplan" icon={<CalendarDays size={14} />} width="w-auto" />
-          <Button href="/clients/add" label="Nieuwe klant" icon={<Plus size={14} />} width="w-auto" />
+          <Button href="/dashboard/clients/add" label="Nieuwe klant" icon={<Plus size={14} />} width="w-auto" />
         </div>
       </div>
 
@@ -28,7 +28,7 @@ async function ClientsPage() {
             <div key={client.id} className="relative">
               <Link
                 key={client.id}
-                href={`/clients/${client.id}`}
+                href={`/dashboard/clients/${client.id}`}
                 className="group relative flex items-center justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all hover:border-green-200 hover:shadow-md"
               >
                 <div className="flex items-center gap-4 min-w-0">
@@ -83,7 +83,7 @@ async function ClientsPage() {
           <h3 className="font-semibold text-gray-900 mb-2">Nog geen klanten</h3>
           <p className="text-gray-400 text-sm mb-6">Voeg je eerste klant toe om te beginnen.</p>
           <div className="flex items-center justify-center">
-            <Button href="/clients/add" label="Eerste klant toevoegen" icon={<Plus size={14} />} width="max-w-[300px] w-auto" />
+            <Button href="/dashboard/clients/add" label="Eerste klant toevoegen" icon={<Plus size={14} />} width="max-w-[300px] w-auto" />
           </div>
         </div>
       )}

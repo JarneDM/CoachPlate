@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Client } from "@/types";
 import { getClientById } from "@/app/services/clients/clients";
-import { updateClientAction } from "@/app/(dashboard)/clients/[id]/edit/actions";
+import { updateClientAction } from "@/app/(dashboard)/dashboard/clients/[id]/edit/actions";
 import type { EditClientPageProps } from "@/types";
 import { formatDateForInput, valueOrEmpty } from "@/app/services/input/input";
 
@@ -23,11 +23,11 @@ async function EditClientPage({ params, searchParams }: EditClientPageProps) {
   return (
     <div className="max-w-4xl mx-auto text-black">
       <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
-        <Link href="/clients" className="hover:text-gray-600 transition-colors">
+        <Link href="/dashboard/clients" className="hover:text-gray-600 transition-colors">
           Klanten
         </Link>
         <span>/</span>
-        <Link href={`/clients/${id}`} className="hover:text-gray-600 transition-colors">
+        <Link href={`/dashboard/clients/${id}`} className="hover:text-gray-600 transition-colors">
           {client.full_name}
         </Link>
         <span>/</span>
@@ -219,7 +219,7 @@ async function EditClientPage({ params, searchParams }: EditClientPageProps) {
 
           <div className="flex items-center justify-end gap-3 pt-2">
             <Link
-              href={`/clients/${id}`}
+              href={`/dashboard/clients/${id}`}
               className="inline-flex items-center rounded-lg border border-gray-200 px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
             >
               Annuleren

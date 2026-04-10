@@ -1,42 +1,58 @@
 import React from "react";
-import { getRecipeById } from "@/app/services/recipes/recipes";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ChefHat, Clock, Flame, Dumbbell, Wheat, Droplets, UtensilsCrossed, ArrowLeft, Scale, BookOpen, Pencil } from "lucide-react";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
+import { ChefHat, Clock, Flame, Dumbbell, Wheat, Droplets, UtensilsCrossed, ArrowLeft, Scale, BookOpen } from "lucide-react";
 import { MacroCard } from "@/components/recipes/MacroCard";
 import { Ingredient } from "@/types/index";
-import { createClient } from "@/lib/supabase/server";
 
-async function RecipeDetail({ params }: { params: { id: string } }) {
+async function PublicRecipeDetail({ params }: { params: { id: string } }) {
   const { id } = await params;
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const admin = createAdminClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
-  let recipe: Awaited<ReturnType<typeof getRecipeById>> | null = null;
+  const { data: recipe, error } = await admin
+    .from("recipes")
+    .select(
+      `
+      *,
+      recipe_ingredients (
+        id,
+        amount_g,
+        ingredients (
+          id,
+          name,
+          calories,
+          protein_g,
+          carbs_g,
+          fat_g
+        )
+      )
+    `,
+    )
+    .eq("id", id)
+    .maybeSingle();
 
-  try {
-    recipe = await getRecipeById(id);
-  } catch {
+  if (error) {
+    console.error("Error fetching public recipe:", error);
     notFound();
   }
 
   if (!recipe) notFound();
 
-  const hasIngredients = recipe.recipe_ingredients.length > 0;
+  const ingredients = (recipe.recipe_ingredients ?? []) as Ingredient[];
+  const hasIngredients = ingredients.length > 0;
 
   const totalCalories: number = hasIngredients
-    ? recipe.recipe_ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.calories, 0)
+    ? ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.calories, 0)
     : (recipe.calories ?? 0) * (recipe.servings ?? 1);
   const totalProtein: number = hasIngredients
-    ? recipe.recipe_ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.protein_g, 0)
+    ? ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.protein_g, 0)
     : (recipe.protein_g ?? 0) * (recipe.servings ?? 1);
   const totalCarbs: number = hasIngredients
-    ? recipe.recipe_ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.carbs_g, 0)
+    ? ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.carbs_g, 0)
     : (recipe.carbs_g ?? 0) * (recipe.servings ?? 1);
   const totalFat: number = hasIngredients
-    ? recipe.recipe_ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.fat_g, 0)
+    ? ingredients.reduce((total: number, ri: Ingredient) => total + (ri.amount_g / 100) * ri.ingredients.fat_g, 0)
     : (recipe.fat_g ?? 0) * (recipe.servings ?? 1);
 
   const perServing = {
@@ -56,7 +72,7 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
   return (
     <div className="mx-auto max-w-5xl">
       <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
-        <Link href="/recipes" className="flex items-center gap-1.5 hover:text-gray-600 transition-colors">
+        <Link href="/client/public-recipes" className="flex items-center gap-1.5 hover:text-gray-600 transition-colors">
           <ArrowLeft size={14} />
           Recepten
         </Link>
@@ -93,15 +109,6 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
             </div>
           </div>
         </div>
-        {recipe.coach_id === user?.id && (
-          <Link
-            href={`/recipes/${recipe.id}/edit`}
-            className="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-          >
-            <Pencil size={14} />
-            Bewerken
-          </Link>
-        )}
       </div>
 
       {recipe.description && (
@@ -175,9 +182,9 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
               <h2 className="font-semibold text-gray-900 text-sm">Ingrediënten</h2>
             </div>
 
-            {recipe.recipe_ingredients.length > 0 ? (
+            {ingredients.length > 0 ? (
               <ul className="space-y-2">
-                {recipe.recipe_ingredients.map((ri: Ingredient) => (
+                {ingredients.map((ri: Ingredient) => (
                   <li key={ri.id} className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0">
                     <span className="text-sm text-gray-700 truncate flex-1">{ri.ingredients.name}</span>
                     <span className="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded-full ml-2 shrink-0">
@@ -196,7 +203,7 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
                 Totaal gewicht
               </span>
               <span className="text-xs font-semibold text-gray-600">
-                {recipe.recipe_ingredients.reduce((t: number, ri: Ingredient) => t + ri.amount_g, 0)}g
+                {ingredients.reduce((t: number, ri: Ingredient) => t + ri.amount_g, 0)}g
               </span>
             </div>
           </div>
@@ -206,6 +213,4 @@ async function RecipeDetail({ params }: { params: { id: string } }) {
   );
 }
 
-
-
-export default RecipeDetail;
+export default PublicRecipeDetail;
