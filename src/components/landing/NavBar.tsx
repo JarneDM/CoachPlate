@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { User } from '@supabase/supabase-js';
+import MobileNavBar from "./MobileNavBar";
 
 function NavBar({user}: {user: User | null}) {
 
@@ -12,7 +13,11 @@ function NavBar({user}: {user: User | null}) {
           CoachPlate
         </Link>
 
-        <ul className="flex items-center gap-2 sm:gap-3">
+        <div className="lg:hidden">
+          <MobileNavBar user={user} />
+        </div>
+
+        <ul className="hidden lg:flex items-center gap-2 lg:gap-4">
           <li>
             <Link
               href="/pricing"
@@ -22,14 +27,16 @@ function NavBar({user}: {user: User | null}) {
             </Link>
           </li>
 
-          <li>
-            <Link
-              href="/join"
-              className="rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-green-50 hover:text-green-900"
-            >
-              Ik ben klant
-            </Link>
-          </li>
+          {(!user || user.user_metadata?.role === "client") && (
+            <li>
+              <Link
+                href="/join"
+                className="rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-green-50 hover:text-green-900"
+              >
+                Join met Coach Code
+              </Link>
+            </li>
+          )}
 
           {user ? (
             <li>

@@ -12,7 +12,9 @@ export default async function JoinPage({ searchParams }: { searchParams: Promise
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-green-600">CoachPlate</h1>
+          <h1 className="text-3xl font-bold text-green-600">
+            <Link href="/">CoachPlate</Link>
+          </h1>
           <p className="text-gray-500 mt-1 text-sm">Maak een account aan en bekijk je plannen</p>
         </div>
 

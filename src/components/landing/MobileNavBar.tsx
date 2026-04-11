@@ -4,27 +4,30 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
-import { CalendarDays, Dumbbell, LayoutDashboard, Menu, NotepadText, Settings, Users, X, LibraryBig } from "lucide-react";
-import LogoutButton from "@/components/LogoutButton";
+import { Flag, LayoutDashboard, Menu, Users, X, LogIn, Tags, LucideIcon } from "lucide-react";
+import { User } from "@supabase/supabase-js";
 
-type MobileDashboardMenuProps = {
-  coachName?: string | null;
-  coachEmail?: string | null;
+type MobileNavBarProps = {
+  user: User | null;
 };
 
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/dashboard/clients", label: "Klanten", icon: Users },
-  { href: "/meal-plans", label: "Menu's", icon: CalendarDays },
-  { href: "/recipes", label: "Recepten", icon: NotepadText },
-  { href: "/public-recipes", label: "Publieke recepten", icon: LibraryBig },
-  { href: "/training-plans", label: "Schema's", icon: Dumbbell },
-  { href: "/settings", label: "Instellingen", icon: Settings },
-];
 
-export default function MobileDashboardMenu({ coachName, coachEmail }: MobileDashboardMenuProps) {
+export default function MobileNavBar({ user }: MobileNavBarProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  const role = user?.user_metadata?.role;
+
+  const navItems = [
+    { href: "/pricing", label: "Prijzen", icon: Tags },
+    ...(!user || role === "client" ? [{ href: "/join", label: "Join met Coach Code", icon: Users }] : []),
+    ...(user
+      ? [{ href: "/dashboard", label: "Dashboard", icon: LayoutDashboard }]
+      : [
+          { href: "/login", label: "Inloggen", icon: LogIn },
+          { href: "/register", label: "Start gratis", icon: Flag },
+        ]),
+  ] as { href: string; label: string; icon: LucideIcon }[];
 
   const overlay = (
     <div
@@ -37,12 +40,7 @@ export default function MobileDashboardMenu({ coachName, coachEmail }: MobileDas
       aria-modal="true"
       aria-hidden={!open}
     >
-      <button
-        type="button"
-        onClick={() => setOpen(false)}
-        className="absolute inset-0 bg-gray-900/50"
-        aria-label="Sluit menu"
-      />
+      <button type="button" onClick={() => setOpen(false)} className="absolute inset-0 bg-gray-900/50" aria-label="Sluit menu" />
 
       <aside
         className={[
@@ -69,7 +67,7 @@ export default function MobileDashboardMenu({ coachName, coachEmail }: MobileDas
 
             return (
               <Link
-                key={item.href}
+                key={`${item.href}-${item.label}`}
                 href={item.href}
                 onClick={() => setOpen(false)}
                 className={[
@@ -77,25 +75,12 @@ export default function MobileDashboardMenu({ coachName, coachEmail }: MobileDas
                   active ? "bg-green-50 text-green-700" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
                 ].join(" ")}
               >
-                <Icon size={16} />
+                <Icon size={18} />
                 <span>{item.label}</span>
               </Link>
             );
           })}
         </nav>
-
-        <div className="mt-5 border-t border-gray-100 pt-4">
-          <div className="mb-3 flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100 text-sm font-bold text-green-700">
-              {(coachName?.charAt(0) || "C").toUpperCase()}
-            </div>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-gray-900">{coachName || "Coach"}</p>
-              <p className="truncate text-xs text-gray-400">{coachEmail || ""}</p>
-            </div>
-          </div>
-          <LogoutButton />
-        </div>
       </aside>
     </div>
   );
@@ -108,7 +93,7 @@ export default function MobileDashboardMenu({ coachName, coachEmail }: MobileDas
         className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
         aria-label="Open menu"
       >
-        <Menu size={16} />
+        <Menu size={18} />
         Menu
       </button>
 
