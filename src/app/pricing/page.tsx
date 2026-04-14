@@ -257,7 +257,7 @@ export default async function PricingPage() {
                     Pro
                   </th>
                   <th className="border-b border-slate-200 px-4 py-3 text-left text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-                    Team
+                    Studio
                   </th>
                 </tr>
               </thead>
