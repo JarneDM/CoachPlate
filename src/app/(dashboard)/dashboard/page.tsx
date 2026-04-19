@@ -10,6 +10,7 @@ import { getMealPlans } from "@/app/services/coaches/mealplans/getMealPlans";
 import { getRecentClients } from "@/app/services/coaches/recentclients/getRecentClients";
 import { getSubscription } from "@/app/services/coaches/subscription/getSubscription";
 import { Client } from "@/types";
+import { sendEmail } from "@/app/services/email/sendEmail";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -40,6 +41,14 @@ export default async function DashboardPage() {
           <Hand className="h-5 w-5 text-green-600" />
         </h1>
         <p className="text-gray-500 mt-1">Hier is een overzicht van je CoachPlate activiteit.</p>
+        <button
+          onClick={async () => {
+            await sendEmail(coach?.full_name?.split(" ")[0] ?? "Gebruiker");
+          }}
+          className="bg-green-600 hover:bg-green-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors whitespace-nowrap ml-4"
+        >
+          Stuur welkom email
+        </button>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
