@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { CalendarDays, Dumbbell, ArrowRight, Hand } from "lucide-react";
+import { CalendarDays, Dumbbell, ArrowRight, Hand, CalendarRange } from "lucide-react";
 
 export default async function ClientDashboardPage() {
   const supabase = await createClient();
@@ -37,6 +37,13 @@ export default async function ClientDashboardPage() {
           <Hand className="h-5 w-5 text-green-600" />
         </h1>
         <p className="text-gray-500 mt-1">Hier vind je al je plannen van je coach.</p>
+        <Link
+          href="/client/appointments"
+          className="mt-4 inline-flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-green-700"
+        >
+          <CalendarRange size={16} />
+          Afspraak inplannen
+        </Link>
       </div>
 
       <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">

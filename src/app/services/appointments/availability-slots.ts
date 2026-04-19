@@ -17,6 +17,7 @@ export async function getAvailabilitySlots(from?: string, to?: string) {
     .from("availability_slots")
     .select("*")
     .eq("coach_id", user!.id)
+    .eq("is_booked", false)
     .order("date", { ascending: true })
     .order("start_time", { ascending: true });
 
@@ -33,25 +34,30 @@ export async function getAvailabilitySlots(from?: string, to?: string) {
   return data;
 }
 
-export async function createAvailabilitySlot({
-  date,
-  startTime,
-  endTime,
-  type,
-}: CreateAvailabilitySlotInput) {
+export async function createAvailabilitySlot({ date, startTime, endTime, type, clientId }: CreateAvailabilitySlotInput) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  return supabase.from("availability_slots").insert({
+  const { error } = await supabase.from("availability_slots").insert({
     coach_id: user?.id,
     date,
     start_time: startTime,
     end_time: endTime,
     type,
+    client_id: clientId || null,
     is_booked: false,
   });
+
+  console.log("Create availability slot result:", { error });
+
+  if (error) {
+    console.error("Error creating availability slot:", error);
+    return { error: "Tijdslot aanmaken mislukt" };
+  }
+
+  return { success: true };
 }
 
 export async function createRecurringAvailabilitySlots({
@@ -59,6 +65,7 @@ export async function createRecurringAvailabilitySlots({
   startTime,
   endTime,
   type,
+  clientId,
   interval,
   occurrences,
 }: CreateRecurringAvailabilitySlotsInput) {
@@ -74,10 +81,18 @@ export async function createRecurringAvailabilitySlots({
     start_time: startTime,
     end_time: endTime,
     type,
+    client_id: clientId || null,
     is_booked: false,
   }));
 
-  return supabase.from("availability_slots").insert(slots);
+  const { error } = await supabase.from("availability_slots").insert(slots);
+
+  if (error) {
+    console.error("Error creating recurring availability slots:", error);
+    return { error: "Recurrente tijdslots aanmaken mislukt" };
+  }
+
+  return { success: true };
 }
 
 export async function deleteAvailabilitySlot(id: string) {

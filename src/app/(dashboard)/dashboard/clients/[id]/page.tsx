@@ -21,7 +21,9 @@ import {
   Bot,
   NotebookPen,
   Cake,
+  CalendarCheck2,
 } from "lucide-react";
+import { getAppointmentsForClient } from "@/app/services/appointments/appointments";
 
 async function ClientDetailPage({ params }: { params: { id: string } }) {
   const { id } = await params;
@@ -35,6 +37,7 @@ async function ClientDetailPage({ params }: { params: { id: string } }) {
   }
 
   if (!client) notFound();
+  const appointments = await getAppointmentsForClient(client.id);
   const bmi =
     client.weight_kg && client.height_cm
       ? (client.weight_kg / Math.pow(client.height_cm / 100, 2)).toFixed(1)
@@ -137,6 +140,28 @@ async function ClientDetailPage({ params }: { params: { id: string } }) {
               </div>
             ) : (
               <Empty text="Geen voorkeuren of notities" />
+            )}
+          </Section>
+
+          <Section title="Afspraaknotities" icon={<CalendarCheck2 size={16} />}>
+            {appointments.some((appointment) => appointment.notes) ? (
+              <div className="space-y-3">
+                {appointments
+                  .filter((appointment) => appointment.notes)
+                  .map((appointment) => (
+                    <div key={appointment.id} className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="text-sm font-medium text-gray-900">
+                          {appointment.slot_type ?? appointment.appointment_types?.type ?? "Afspraak"} · {appointment.date}
+                        </p>
+                        <span className="text-xs text-gray-400">{appointment.status}</span>
+                      </div>
+                      <p className="mt-2 text-sm text-gray-700 whitespace-pre-line">{appointment.notes}</p>
+                    </div>
+                  ))}
+              </div>
+            ) : (
+              <Empty text="Nog geen notities uit afspraken beschikbaar" />
             )}
           </Section>
         </div>

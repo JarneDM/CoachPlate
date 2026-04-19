@@ -27,6 +27,7 @@ export interface CreateAvailabilitySlotInput {
   startTime: string;
   endTime: string;
   type?: string;
+  clientId?: string;
 }
 
 export interface CreateRecurringAvailabilitySlotsInput {
@@ -34,6 +35,7 @@ export interface CreateRecurringAvailabilitySlotsInput {
   startTime: string;
   endTime: string;
   type?: string;
+  clientId?: string;
   interval: RecurrenceInterval;
   occurrences: number;
 }
