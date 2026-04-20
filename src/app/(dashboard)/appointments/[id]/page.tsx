@@ -29,7 +29,7 @@ export default async function AppointmentDetailPage({ params }: { params: Promis
         </p>
         <h1 className="mt-2 text-3xl font-bold text-gray-900">{appointment.clients?.full_name ?? "Afspraak"}</h1>
         <p className="mt-2 text-sm text-gray-600">
-          {appointment.date} · {appointment.start_time} - {appointment.end_time}
+          {appointment.date} · {appointment.start_time.slice(0, 5)} - {appointment.end_time.slice(0, 5)}
         </p>
       </div>
 

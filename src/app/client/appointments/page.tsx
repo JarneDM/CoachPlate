@@ -102,16 +102,16 @@ export default async function ClientAppointmentsPage({ searchParams }: { searchP
             ) : (
               <div className="space-y-3">
                 {appointments.map((appointment) => (
-                  <div key={appointment.id} className="rounded-xl border border-gray-100 p-3">
-                    <p className="text-sm font-medium text-gray-900">
-                      {appointment.slot_type ?? appointment.appointment_types?.type ?? "Afspraak"}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {appointment.availability_slots.date} · {appointment.availability_slots.start_time.slice(0, 5)} -{" "}
-                      {appointment.availability_slots.end_time.slice(0, 5)}
-                    </p>
-                    <p className="mt-1 text-xs text-gray-400">{appointment.status}</p>
-                  </div>
+                  <Link href={`/client/appointments/${appointment.id}`} key={appointment.id} className="cursor-pointer hover:bg-gray-50">
+                    <div key={appointment.id} className="mt-2 mb-2 rounded-xl border-2 bg-gray-100 border-solid border-red-500 p-3">
+                      <p className="text-sm font-medium text-gray-900">{appointment.availability_slots.type || "Afspraak"}</p>
+                      <p className="text-xs text-gray-500">
+                        {appointment.availability_slots.date} · {appointment.availability_slots.start_time.slice(0, 5)} -{" "}
+                        {appointment.availability_slots.end_time.slice(0, 5)}
+                      </p>
+                      <p className="mt-1 text-xs text-gray-400">{appointment.status}</p>
+                    </div>
+                  </Link>
                 ))}
               </div>
             )}

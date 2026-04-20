@@ -50,8 +50,6 @@ export async function createAvailabilitySlot({ date, startTime, endTime, type, c
     is_booked: false,
   });
 
-  console.log("Create availability slot result:", { error });
-
   if (error) {
     console.error("Error creating availability slot:", error);
     return { error: "Tijdslot aanmaken mislukt" };

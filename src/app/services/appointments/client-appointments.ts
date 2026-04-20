@@ -139,17 +139,6 @@ export async function getClientAppointmentSlots(from?: string, to?: string) {
     })(),
   ]);
 
-  console.log("Fetched client appointment data:", {
-    coach: coachResult.data,
-    slots: slotsResult.data,
-    appointments: appointmentsResult.data,
-    errors: {
-      coachError: coachResult.error,
-      slotsError: slotsResult.error,
-      appointmentsError: appointmentsResult.error,
-    },
-  });
-
   return {
     coach: coachResult.data ?? null,
     slots: slotsResult.data ?? [],
