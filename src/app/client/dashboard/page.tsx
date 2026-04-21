@@ -111,7 +111,7 @@ export default async function ClientDashboardPage() {
             <h2 className="font-semibold text-gray-900">Trainingsschema&apos;s</h2>
           </div>
           <span className="text-sm text-gray-400">
-            {trainingPlans?.length ?? 0} schema{(trainingPlans?.length ?? 0) !== 1 ? "&apos;s" : ""}
+            {trainingPlans?.length ?? 0} schema{(trainingPlans?.length ?? 0) !== 1 ? "'s" : ""}
           </span>
         </div>
 
