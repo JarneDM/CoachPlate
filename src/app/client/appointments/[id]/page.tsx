@@ -2,13 +2,13 @@ import React from 'react'
 import { getAppointmentById } from "@/app/services/appointments/appointments";
 import { notFound } from 'next/dist/client/components/navigation';
 import Link from 'next/dist/client/link';
-import { getCoachName } from '@/app/services/client/updateProfile';
+import { getCoach } from "@/app/services/client/updateProfile";
 
 async function ClientAppointmentDetails({params}: {params: {id: string}}) {
   const { id } = await params;
 
   const appointment = await getAppointmentById(id);
-  const coach = await getCoachName(appointment.coach_id);
+  const coach = await getCoach();
 
   if (!appointment) notFound();
 
@@ -16,7 +16,7 @@ async function ClientAppointmentDetails({params}: {params: {id: string}}) {
     <div className="mx-auto max-w-4xl space-y-6">
       <div>
         <p className="text-sm text-gray-500">
-          <Link href="/appointments" className="hover:text-gray-700">
+          <Link href="/client/appointments" className="hover:text-gray-700">
             Afspraken
           </Link>
           <span className="mx-2">/</span>
@@ -38,7 +38,7 @@ async function ClientAppointmentDetails({params}: {params: {id: string}}) {
           </div>
           <div>
             <p className="text-sm uppercase tracking-wide text-gray-400">Coach</p>
-            <p className="mt-1 text-sm font-medium text-gray-900">{coach}</p>
+            <p className="mt-1 text-sm font-medium text-gray-900">{coach?.full_name ?? "je coach"}</p>
           </div>
           <div>
             <p className="text-sm uppercase tracking-wide text-gray-400">Status</p>

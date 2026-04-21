@@ -6,7 +6,7 @@ import { getClientAppointmentSlots } from "@/app/services/appointments/client-ap
 import { AppointmentBookingCard } from "@/components/appointments/AppointmentBookingCard";
 import { CalendarCheck2, Clock3, ChevronLeft, ChevronRight } from "lucide-react";
 import { getWeekRangeFromOffset, parseWeekOffset } from "@/app/services/appointments/week";
-import { getCoachName } from "@/app/services/client/updateProfile";
+import { getCoach } from "@/app/services/client/updateProfile";
 
 type SearchParams = {
   week?: string;
@@ -33,13 +33,13 @@ export default async function ClientAppointmentsPage({ searchParams }: { searchP
   const weekOffset = parseWeekOffset(params.week);
   const { from, to, label } = getWeekRangeFromOffset(weekOffset);
   const { slots, appointments } = await getClientAppointmentSlots(from, to);
-  const coachName = await getCoachName(client.coach_id);
+  const coach = await getCoach();
  
   return (
     <div className="space-y-6">
       <div className="rounded-3xl border border-green-100 bg-linear-to-br from-green-50 via-white to-lime-50 p-6 shadow-sm">
         <p className="text-sm font-medium uppercase tracking-wide text-green-600">Afspraak inplannen</p>
-        <h1 className="mt-2 text-3xl font-bold text-gray-900">Kies een beschikbaar moment bij {coachName ?? "je coach"}</h1>
+        <h1 className="mt-2 text-3xl font-bold text-gray-900">Kies een beschikbaar moment bij {coach.full_name ?? "je coach"}</h1>
         <p className="mt-2 text-sm text-gray-600">
           Selecteer een tijdslot en bevestig je check-in call. Jij en je coach krijgen meteen een bevestiging.
         </p>
@@ -84,7 +84,7 @@ export default async function ClientAppointmentsPage({ searchParams }: { searchP
           ) : (
             <div className="grid gap-4 md:grid-cols-2">
               {slots.map((slot) => (
-                <AppointmentBookingCard key={slot.id} slot={slot} coachName={coachName} />
+                <AppointmentBookingCard key={slot.id} slot={slot} coachName={coach.full_name} />
               ))}
             </div>
           )}
@@ -103,7 +103,7 @@ export default async function ClientAppointmentsPage({ searchParams }: { searchP
               <div className="space-y-3">
                 {appointments.map((appointment) => (
                   <Link href={`/client/appointments/${appointment.id}`} key={appointment.id} className="cursor-pointer hover:bg-gray-50">
-                    <div key={appointment.id} className="mt-2 mb-2 rounded-xl border-2 bg-gray-100 border-solid border-red-500 p-3">
+                    <div key={appointment.id} className="mt-2 mb-2 rounded-xl border-2 bg-gray-100 border-solid p-3">
                       <p className="text-sm font-medium text-gray-900">{appointment.availability_slots.type || "Afspraak"}</p>
                       <p className="text-xs text-gray-500">
                         {appointment.availability_slots.date} · {appointment.availability_slots.start_time.slice(0, 5)} -{" "}

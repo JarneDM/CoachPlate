@@ -3,6 +3,7 @@ import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { CalendarDays, Dumbbell, ArrowRight, Hand, CalendarRange } from "lucide-react";
+import { getCoach } from "@/app/services/client/updateProfile";
 
 export default async function ClientDashboardPage() {
   const supabase = await createClient();
@@ -24,9 +25,21 @@ export default async function ClientDashboardPage() {
 
   if (!client) redirect("/join");
 
+  const coach = await getCoach();
+
   const [{ data: mealPlans }, { data: trainingPlans }] = await Promise.all([
-    admin.from("meal_plans").select("id, name, created_at").eq("client_id", client.id).order("created_at", { ascending: false }),
-    admin.from("training_plans").select("id, name, created_at").eq("client_id", client.id).order("created_at", { ascending: false }),
+    admin
+      .from("meal_plans")
+      .select("id, name, created_at")
+      .eq("client_id", client.id)
+      .eq("coach_id", coach.id)
+      .order("created_at", { ascending: false }),
+    admin
+      .from("training_plans")
+      .select("id, name, created_at")
+      .eq("client_id", client.id)
+      .eq("coach_id", coach.id)
+      .order("created_at", { ascending: false }),
   ]);
 
   return (

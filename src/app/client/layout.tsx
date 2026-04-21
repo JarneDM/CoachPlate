@@ -31,6 +31,7 @@ export default async function ClientLayout({ children }: { children: React.React
   const navItems = [
     { href: "/client/dashboard", label: "Dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
     { href: "/client/appointments", label: "Afspraken", icon: <CalendarRange className="h-5 w-5" /> },
+    { href: "/client/meal-plans", label: "Menu's", icon: <CalendarDays className="h-5 w-5" /> },
     { href: "/client/public-recipes", label: "Publieke recepten", icon: <CalendarDays className="h-5 w-5" /> },
     { href: "/client/settings", label: "Instellingen", icon: <Settings className="h-5 w-5" /> },
   ];
