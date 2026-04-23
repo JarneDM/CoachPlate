@@ -6,7 +6,7 @@ import { useState } from "react";
 export function InviteCodeCard({ inviteCode }: { inviteCode: string }) {
   const [copied, setCopied] = useState(false);
 
-  const joinUrl = `https://coachplate.com/join?code=${inviteCode}`;
+  const joinUrl = `https://www.coachplate.com/join?code=${inviteCode}`;
 
   async function handleCopy() {
     await navigator.clipboard.writeText(joinUrl);
