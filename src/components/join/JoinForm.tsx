@@ -1,16 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { joinViaCode } from "@/app/services/auth/join";
 import { KeyRound, User, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar } from "../ui/calendar";
 
 export default function JoinForm({ initialCode }: { initialCode: string }) {
   const [step, setStep] = useState<"code" | "register">(initialCode ? "register" : "code");
   const [code, setCode] = useState(initialCode);
   const [coachName, setCoachName] = useState("");
   const [fullName, setFullName] = useState("");
+  const [birthday, setBirthday] = useState<Date | undefined>(new Date());
   const [email, setEmail] = useState("");
+  const [goal, setGoal] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -19,7 +23,22 @@ export default function JoinForm({ initialCode }: { initialCode: string }) {
 
   const router = useRouter();
 
-  // Stap 1 — Code verifiëren
+  // when user uses invite link
+  useEffect(() => {
+    if (initialCode) {
+      fetch("/api/verify-invite-code", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: initialCode.toUpperCase() }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.coachName) setCoachName(data.coachName);
+        });
+    }
+  }, [initialCode]);
+
+  // when user puts code in manually
   async function handleVerifyCode() {
     if (!code) {
       setError("Vul een code in");
@@ -47,7 +66,6 @@ export default function JoinForm({ initialCode }: { initialCode: string }) {
     setVerifying(false);
   }
 
-  // Stap 2 — Account aanmaken
   async function handleRegister() {
     if (!fullName) {
       setError("Vul je naam in");
@@ -57,6 +75,12 @@ export default function JoinForm({ initialCode }: { initialCode: string }) {
       setError("Vul je e-mailadres in");
       return;
     }
+
+    if (!birthday) {
+      setError("Vul je geboortedatum in");
+      return;
+    }
+
     if (password.length < 8) {
       setError("Wachtwoord moet minstens 8 tekens zijn");
       return;
@@ -65,11 +89,15 @@ export default function JoinForm({ initialCode }: { initialCode: string }) {
     setLoading(true);
     setError("");
 
+    const hasGoal = goal.trim().length > 0;
+
     const result = await joinViaCode({
       code: code.toUpperCase(),
       email,
       password,
       fullName,
+      birthday: birthday.toISOString().split("T")[0],
+      goal: hasGoal ? goal : undefined,
     });
 
     if (result?.error) {
@@ -81,7 +109,6 @@ export default function JoinForm({ initialCode }: { initialCode: string }) {
     router.push("/client/dashboard");
   }
 
-  // Stap 1 — Code invoeren
   if (step === "code") {
     return (
       <div className="space-y-4">
@@ -118,7 +145,6 @@ export default function JoinForm({ initialCode }: { initialCode: string }) {
     );
   }
 
-  // Stap 2 — Registratie
   return (
     <div className="space-y-4">
       <div>
@@ -136,7 +162,6 @@ export default function JoinForm({ initialCode }: { initialCode: string }) {
 
       {error && <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg p-3">{error}</div>}
 
-      {/* Naam */}
       <div>
         <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
           <User size={14} className="text-gray-400" />
@@ -151,7 +176,28 @@ export default function JoinForm({ initialCode }: { initialCode: string }) {
         />
       </div>
 
-      {/* Email */}
+      <div>
+        <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
+          <CalendarIcon size={14} className="text-gray-400" />
+          Geboortedatum
+        </label>
+        <Calendar mode="single" selected={birthday} onSelect={setBirthday} captionLayout="dropdown" className="rounded-lg border" />
+      </div>
+
+      <div>
+        <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
+          <User size={14} className="text-gray-400" />
+          Doelstelling
+        </label>
+        <input
+          type="text"
+          value={goal}
+          onChange={(e) => setGoal(e.target.value)}
+          placeholder="Bijv. Afvallen, spieropbouw, gezonder eten"
+          className="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+        />
+      </div>
+
       <div>
         <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
           <Mail size={14} className="text-gray-400" />
@@ -166,7 +212,6 @@ export default function JoinForm({ initialCode }: { initialCode: string }) {
         />
       </div>
 
-      {/* Wachtwoord */}
       <div>
         <label className="flex items-center gap-1.5 text-sm font-medium text-gray-700 mb-1.5">
           <Lock size={14} className="text-gray-400" />
@@ -189,7 +234,7 @@ export default function JoinForm({ initialCode }: { initialCode: string }) {
 
       <button
         onClick={handleRegister}
-        disabled={loading || !fullName || !email || !password}
+        disabled={loading || !fullName || !email || !password || !birthday}
         className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-300 text-white font-medium rounded-lg py-2.5 text-sm transition-colors"
       >
         {loading ? "Account aanmaken..." : "Account aanmaken"}

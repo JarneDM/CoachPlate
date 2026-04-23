@@ -8,26 +8,25 @@ export async function joinViaCode({
   email,
   password,
   fullName,
+  birthday,
+  goal,
 }: {
   code: string;
   email: string;
   password: string;
   fullName: string;
+  birthday: string;
+  goal?: string;
 }) {
   const supabase = await createClient();
-  const admin = createAdminClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const admin = createAdminClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
-  // 1. Coach ophalen via code
   const { data: coach, error: codeError } = await admin.from("coaches").select("id").eq("invite_code", code).maybeSingle();
 
   if (codeError || !coach) {
     return { error: "Ongeldige code" };
   }
 
-  // 2. Supabase account aanmaken
   const { data, error: authError } = await supabase.auth.signUp({
     email,
     password,
@@ -46,11 +45,9 @@ export async function joinViaCode({
     return { error: "Account aanmaken mislukt" };
   }
 
-  // 3. Client profiel aanmaken of updaten
   const { data: existingClient } = await admin.from("clients").select("id").eq("coach_id", coach.id).eq("email", email).maybeSingle();
 
   if (existingClient) {
-    // Bestaande client koppelen aan user account
     await admin
       .from("clients")
       .update({
@@ -59,13 +56,14 @@ export async function joinViaCode({
       })
       .eq("id", existingClient.id);
   } else {
-    // Nieuw client profiel aanmaken
     await admin.from("clients").insert({
       coach_id: coach.id,
       user_id: data.user.id,
       full_name: fullName,
       email,
+      birth_date: birthday,
       has_account: true,
+      goal,
     });
   }
 
