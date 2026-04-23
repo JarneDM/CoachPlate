@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { createPortal } from "react-dom";
-import { CalendarDays, LayoutDashboard, Menu, Settings, X } from "lucide-react";
+import { CalendarDays, LayoutDashboard, Menu, Settings, X, CalendarRange } from "lucide-react";
 import LogoutButton from "@/components/LogoutButton";
 
 type MobileClientMenuProps = {
@@ -14,6 +14,7 @@ type MobileClientMenuProps = {
 
 const navItems = [
   { href: "/client/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/client/appointments", label: "Afspraken", icon: CalendarRange },
   { href: "/client/public-recipes", label: "Publieke recepten", icon: CalendarDays },
   { href: "/client/settings", label: "Instellingen", icon: Settings },
 ];

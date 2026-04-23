@@ -2,7 +2,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { LayoutDashboard, CalendarDays, Dumbbell, Settings } from "lucide-react";
+import { LayoutDashboard, CalendarDays, Dumbbell, Settings, CalendarRange } from "lucide-react";
 import { NavItem } from "@/components/NavItem";
 import LogoutButton from "@/components/LogoutButton";
 import MobileClientMenu from "@/components/MobileClientMenu";
@@ -30,6 +30,8 @@ export default async function ClientLayout({ children }: { children: React.React
 
   const navItems = [
     { href: "/client/dashboard", label: "Dashboard", icon: <LayoutDashboard className="h-5 w-5" /> },
+    { href: "/client/appointments", label: "Afspraken", icon: <CalendarRange className="h-5 w-5" /> },
+    { href: "/client/meal-plans", label: "Menu's", icon: <CalendarDays className="h-5 w-5" /> },
     { href: "/client/public-recipes", label: "Publieke recepten", icon: <CalendarDays className="h-5 w-5" /> },
     { href: "/client/settings", label: "Instellingen", icon: <Settings className="h-5 w-5" /> },
   ];

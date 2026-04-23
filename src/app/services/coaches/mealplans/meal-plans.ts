@@ -1,9 +1,12 @@
 
-import { createClient } from "@/lib/supabase/server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 export async function getMealPlanById(id: string) {
-  const supabase = await createClient();
+  const admin = createAdminClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
 
-  const { data, error } = await supabase
+  const { data, error } = await admin
     .from("meal_plans")
     .select(
       `

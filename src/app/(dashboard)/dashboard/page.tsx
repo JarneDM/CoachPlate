@@ -10,6 +10,7 @@ import { getMealPlans } from "@/app/services/coaches/mealplans/getMealPlans";
 import { getRecentClients } from "@/app/services/coaches/recentclients/getRecentClients";
 import { getSubscription } from "@/app/services/coaches/subscription/getSubscription";
 import { Client } from "@/types";
+// import { WelcomeEmailButton } from "@/components/coach/WelcomeEmailButton";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -40,6 +41,7 @@ export default async function DashboardPage() {
           <Hand className="h-5 w-5 text-green-600" />
         </h1>
         <p className="text-gray-500 mt-1">Hier is een overzicht van je CoachPlate activiteit.</p>
+        {/* <WelcomeEmailButton name={coach?.full_name?.split(" ")[0] ?? "Gebruiker"} /> */}
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">

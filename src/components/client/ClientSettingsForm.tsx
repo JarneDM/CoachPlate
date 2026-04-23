@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { changeCoach, getCoachName, updateClientProfile } from "@/app/services/client/updateProfile";
+import { changeCoach, getCoach, updateClientProfile } from "@/app/services/client/updateProfile";
 import { User, Weight, Target, AlertTriangle, CheckCircle, XCircle } from "lucide-react";
-import { set } from "react-hook-form";
 
 const ALLERGENS = [
   "Gluten",
@@ -80,8 +79,8 @@ export default function ClientSettingsForm({ client }: Props) {
 
   async function fetchCoachName() {
     try {
-      const res = await getCoachName(client.coach_id!);
-      setCoachName(res || "Geen coach");
+      const res = await getCoach();
+      setCoachName(res?.full_name || "Geen coach");
     } catch (error) {
       console.error("Error fetching coach name:", error);
     }

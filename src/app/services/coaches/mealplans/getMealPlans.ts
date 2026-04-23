@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { createClient as createAdminClient } from "@supabase/supabase-js";
 export const getMealPlans = async () => {
   const supabase = await createClient();
   const {
@@ -51,6 +52,48 @@ export const getMealPlansPaginated = async (page: number, pageSize: number, clie
     )
     .eq("coach_id", user!.id)
     .eq(clientId ? "client_id" : "", clientId)
+    .order("created_at", { ascending: false })
+    .range(from, to);
+
+  if (error) {
+    console.error("Error fetching paginated meal plans:", error);
+    return { data: [], totalCount: 0 };
+  }
+
+  return { data: data ?? [], totalCount: count ?? 0 };
+};
+
+export const getClientMealPlansPaginated = async (page: number, pageSize: number) => {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const safePage = Math.max(1, page);
+  const safePageSize = Math.max(1, pageSize);
+  const from = (safePage - 1) * safePageSize;
+  const to = from + safePageSize - 1;
+
+  const admin = createAdminClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
+
+  const { data: clientRow } = await admin.from("clients").select("*").eq("user_id", user!.id).maybeSingle();
+
+  if (!clientRow) return { data: [], totalCount: 0 };
+
+  const { data, error, count } = await admin
+    .from("meal_plans")
+    .select(
+      `
+      *,
+      clients (
+        id,
+        full_name
+      )
+    `,
+      { count: "exact" },
+    )
+    .eq("client_id", clientRow.id)
+    .eq("coach_id", clientRow.coach_id)
     .order("created_at", { ascending: false })
     .range(from, to);
 

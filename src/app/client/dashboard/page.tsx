@@ -2,7 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import { createClient as createAdminClient } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { CalendarDays, Dumbbell, ArrowRight, Hand } from "lucide-react";
+import { CalendarDays, Dumbbell, ArrowRight, Hand, CalendarRange } from "lucide-react";
+import { getCoach } from "@/app/services/client/updateProfile";
 
 export default async function ClientDashboardPage() {
   const supabase = await createClient();
@@ -24,9 +25,21 @@ export default async function ClientDashboardPage() {
 
   if (!client) redirect("/join");
 
+  const coach = await getCoach();
+
   const [{ data: mealPlans }, { data: trainingPlans }] = await Promise.all([
-    admin.from("meal_plans").select("id, name, created_at").eq("client_id", client.id).order("created_at", { ascending: false }),
-    admin.from("training_plans").select("id, name, created_at").eq("client_id", client.id).order("created_at", { ascending: false }),
+    admin
+      .from("meal_plans")
+      .select("id, name, created_at")
+      .eq("client_id", client.id)
+      .eq("coach_id", coach.id)
+      .order("created_at", { ascending: false }),
+    admin
+      .from("training_plans")
+      .select("id, name, created_at")
+      .eq("client_id", client.id)
+      .eq("coach_id", coach.id)
+      .order("created_at", { ascending: false }),
   ]);
 
   return (
@@ -37,6 +50,13 @@ export default async function ClientDashboardPage() {
           <Hand className="h-5 w-5 text-green-600" />
         </h1>
         <p className="text-gray-500 mt-1">Hier vind je al je plannen van je coach.</p>
+        <Link
+          href="/client/appointments"
+          className="mt-4 inline-flex items-center gap-2 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-green-700"
+        >
+          <CalendarRange size={16} />
+          Afspraak inplannen
+        </Link>
       </div>
 
       <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm sm:p-6">
@@ -91,7 +111,7 @@ export default async function ClientDashboardPage() {
             <h2 className="font-semibold text-gray-900">Trainingsschema&apos;s</h2>
           </div>
           <span className="text-sm text-gray-400">
-            {trainingPlans?.length ?? 0} schema{(trainingPlans?.length ?? 0) !== 1 ? "&apos;s" : ""}
+            {trainingPlans?.length ?? 0} schema{(trainingPlans?.length ?? 0) !== 1 ? "'s" : ""}
           </span>
         </div>
 

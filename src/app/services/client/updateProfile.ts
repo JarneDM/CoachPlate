@@ -95,12 +95,21 @@ export async function changeCoach(data: { coach_id: string }) {
   return { success: true };
 }
 
-export async function getCoachName(coach_id: string | null): Promise<string | null> {
-  if (!coach_id) return null;
-
+export async function getCoach() {
   const admin = createAdminClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
-  const { data: coach } = await admin.from("coaches").select("full_name").eq("id", coach_id).maybeSingle();
+  const supabase = await createClient();
 
-  return coach?.full_name || null;
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data: clientData } = await admin.from("clients").select("coach_id").eq("user_id", user?.id).maybeSingle();
+  const coach_id = clientData?.coach_id;
+
+  if (!coach_id) return null;
+
+  const { data: coach } = await admin.from("coaches").select("*").eq("id", coach_id).maybeSingle();
+
+  return coach;
 }
