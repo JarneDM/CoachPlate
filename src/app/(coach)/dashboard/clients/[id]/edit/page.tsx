@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Client } from "@/types";
 import { getClientById } from "@/app/services/clients/clients";
-import { updateClientAction } from "@/app/(dashboard)/dashboard/clients/[id]/edit/actions";
+import { updateClientAction } from "@/app/(coach)/dashboard/clients/[id]/edit/actions";
 import type { EditClientPageProps } from "@/types";
 import { formatDateForInput, valueOrEmpty } from "@/app/services/input/input";
 
