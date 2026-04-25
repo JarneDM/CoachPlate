@@ -5,12 +5,36 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+function normalizeModelJsonText(rawText: string): string {
+  const trimmed = rawText.trim();
+  const fencedMatch = trimmed.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  return fencedMatch?.[1]?.trim() ?? trimmed;
+}
+
+function tryParseRecipe(rawText: string): object | null {
+  const cleaned = normalizeModelJsonText(rawText).trim();
+
+  try {
+    return JSON.parse(cleaned);
+  } catch {
+    const start = cleaned.indexOf("{");
+    const end = cleaned.lastIndexOf("}");
+    if (start === -1 || end === -1 || end <= start) return null;
+    try {
+      return JSON.parse(cleaned.slice(start, end + 1));
+    } catch {
+      return null;
+    }
+  }
+}
+
 export async function POST(req: NextRequest) {
   const { name, wishes, mealType } = await req.json();
 
   const message = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 1024,
+    system: "Antwoord ALLEEN met geldige JSON. Geen tekst voor/na de JSON. Geen markdown code blocks. Start met { en eindig met }.",
     messages: [
       {
         role: "user",
@@ -24,7 +48,7 @@ Geef ALLEEN een JSON object terug in dit exacte formaat, geen extra tekst:
 {
   "name": "naam van het recept",
   "description": "korte beschrijving",
-  "instructions": "stap voor stap bereiding, gescheiden door |, geen genummerde lijst",
+  "instructions": "stap voor stap bereiding, gescheiden door | geen genummerde lijst",
   "prep_time_min": 15,
   "servings": 1,
   "meal_type": "${mealType || "lunch"}",
@@ -51,10 +75,10 @@ Geef ALLEEN de JSON terug, geen markdown, geen uitleg.`,
     return NextResponse.json({ error: "Onverwacht antwoord van AI" }, { status: 500 });
   }
 
-  try {
-    const recipe = JSON.parse(response.text);
-    return NextResponse.json({ recipe });
-  } catch {
+  const recipe = tryParseRecipe(response.text);
+  if (!recipe) {
     return NextResponse.json({ error: "AI gaf geen geldige JSON terug" }, { status: 500 });
   }
+
+  return NextResponse.json({ recipe });
 }

@@ -142,7 +142,7 @@ export async function POST(req: NextRequest) {
   }
 
   const message = await anthropic.messages.create({
-    model: "claude-sonnet-4-20250514",
+    model: "claude-haiku-4-5-20251001",
     max_tokens: 20000,
     system: "Antwoord ALLEEN met geldige JSON. Geen tekst voor/na de JSON. Geen markdown code blocks. Start met { en eindig met }.",
     messages: [
@@ -168,7 +168,7 @@ KRITIEK: Het TOTAAL van alle 4 maaltijden (ontbijt+lunch+avondeten+snack) PER DA
 Verdeel de doelen logisch over 4 maaltijden (ontbijt ~25%, lunch ~30%, avondeten ~35%, snack ~10% van totaal).
 
 RETOURNEER ALLEEN DIT JSON FORMAAT:
-{"days":[{"day":"Maandag","meals":{"ontbijt":{"name":"Naam max 5 woorden","calories":450,"protein_g":35,"carbs_g":45,"fat_g":15,"prep_time_min":15,"instructions":"stap 1,stap 2,stap 3","ingredients":[{"name":"ingredient1","amount_g":100,"calories":120,"protein_g":8,"carbs_g":10,"fat_g":5},{"name":"ingredient2","amount_g":50,"calories":80,"protein_g":6,"carbs_g":8,"fat_g":3}]},"lunch":{...},"avondeten":{...},"snack":{...}}},...)]}
+{"days":[{"day":"Maandag","meals":{"ontbijt":{"name":"Naam max 5 woorden","calories":450,"protein_g":35,"carbs_g":45,"fat_g":15,"prep_time_min":15,"instructions":"stap 1|stap 2|stap 3","ingredients":[{"name":"ingredient1","amount_g":100,"calories":120,"protein_g":8,"carbs_g":10,"fat_g":5},{"name":"ingredient2","amount_g":50,"calories":80,"protein_g":6,"carbs_g":8,"fat_g":3}]},"lunch":{...},"avondeten":{...},"snack":{...}}},...)]}
 
 - Elke dag: Maandag t/m Zondag in volgorde.
 - Elke ingredient: name (max 2 woorden), amount_g (geheel getal), calories, protein_g, carbs_g, fat_g.
