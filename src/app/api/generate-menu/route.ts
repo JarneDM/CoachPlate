@@ -157,7 +157,7 @@ DAGDOELEN:
 - Totale koolhydraten/dag: ${client.carbs_goal}g
 - Totaal vet/dag: ${client.fat_goal}g
 Allergie(ën): ${(client.allergies || []).join(", ") || "geen"} (alles wat deze klant niet mag eten, vermijden in ingrediënten)
-Voorkeur: ${client.preferences || "geen"}
+Voorkeur: ${client.preferences || "geen"}, klant MOET aan zijn calorieën voldoen 
 
 KRITIEK: Het TOTAAL van alle 4 maaltijden (ontbijt+lunch+avondeten+snack) PER DAG moet zo dicht mogelijk bij deze doelen liggen:
 - kcal: max ±50 afwijking van doel
