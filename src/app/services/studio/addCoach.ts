@@ -1,0 +1,1 @@
+// adding a coach to the studio
